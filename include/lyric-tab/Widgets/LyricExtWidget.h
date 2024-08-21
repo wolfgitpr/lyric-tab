@@ -18,7 +18,6 @@ namespace FillLyric
 #ifndef USE_LITE_CONTROLS
     using Button = QPushButton;
     using SwitchButton = QCheckBox;
-    using LineEdit = QLineEdit;
 #endif
     class LYRIC_TAB_EXPORT LyricExtWidget final : public QWidget {
         Q_OBJECT
