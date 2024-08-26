@@ -392,8 +392,6 @@ namespace FillLyric {
 
     void LyricWrapView::init(const QList<QList<LangNote>> &noteLists) {
         this->clear();
-        m_startSplitter = new SplitterItem(0, 0, this->width(), this);
-        m_scene->addItem(m_startSplitter);
 
         const auto langMgr = LangMgr::ILanguageManager::instance();
 
@@ -438,15 +436,8 @@ namespace FillLyric {
             height += m_cellList->height();
         }
 
-        if (m_startSplitter != nullptr) {
-            m_startSplitter->setPos(0, height);
-            height += m_startSplitter->height();
-        }
-
         for (const auto &m_cellList : m_cellLists) {
             m_cellList->updateSplitter(width);
-            if (m_startSplitter != nullptr)
-                m_startSplitter->setWidth(width);
         }
 
         this->setSceneRect(QRectF(0, 0, width, height));
@@ -467,7 +458,6 @@ namespace FillLyric {
         for (const auto &m_cellList : m_cellLists) {
             height += m_cellList->height();
         }
-        height += m_startSplitter->height();
         return height;
     }
 
@@ -543,9 +533,7 @@ namespace FillLyric {
             m_autoWrap ? this->width() - this->verticalScrollBar()->width() : this->maxListWidth();
         for (const auto &m_cellList : m_cellLists) {
             m_cellList->updateSplitter(width);
-            m_startSplitter->setWidth(width);
         }
-        m_startSplitter->setPos(0, this->height() - m_startSplitter->height());
         this->setSceneRect(QRectF(0, 0, width, this->height()));
         this->update();
     }

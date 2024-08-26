@@ -41,7 +41,7 @@ namespace FillLyric
 
         qreal m_lineHeight = 1;
 
-        QPen m_pen = QPen(QColor(120, 120, 120), 1);
+        QPen m_pen = QPen(QColor(120, 120, 120), 0.5);
 
         qreal m_margin = 5;
 

@@ -2,10 +2,10 @@
 
 #include <QPainter>
 
-namespace FillLyric {
+namespace FillLyric
+{
     SplitterItem::SplitterItem(const qreal &x, const qreal &y, const qreal &w, QGraphicsView *view,
-                               QGraphicsItem *parent)
-        : QGraphicsItem(parent), m_view(view) {
+                               QGraphicsItem *parent) : QGraphicsItem(parent), m_view(view) {
         this->setX(x);
         this->setY(y);
         this->setWidth(w);
@@ -16,18 +16,22 @@ namespace FillLyric {
     SplitterItem::~SplitterItem() = default;
 
     QRectF SplitterItem::boundingRect() const {
-        return {0, 0, width(), height()};
+        if (this->isVisible())
+            return {0, 0, width(), height()};
+        else
+            return {0, 0, 0, m_margin};
     }
 
     QPainterPath SplitterItem::shape() const {
         QPainterPath path;
-        path.addRect({0, m_margin, width(), m_lineHeight});
+        if (this->isVisible())
+            path.addRect({0, m_margin, width(), m_lineHeight});
+        else
+            path.addRect({0, 0, 0, m_margin});
         return path;
     }
 
-    qreal SplitterItem::width() const {
-        return mW;
-    }
+    qreal SplitterItem::width() const { return mW; }
 
     void SplitterItem::setWidth(const qreal &w) {
         mW = w;
@@ -35,11 +39,17 @@ namespace FillLyric {
     }
 
     qreal SplitterItem::height() const {
-        return m_lineHeight + m_margin * 2;
+        if (this->isVisible())
+            return m_lineHeight + m_margin * 2;
+        else
+            return m_margin;
     }
 
     qreal SplitterItem::deltaY() const {
-        return m_lineHeight + m_margin + 1;
+        if (this->isVisible())
+            return m_lineHeight + m_margin + 1;
+        else
+            return m_margin;
     }
 
     void SplitterItem::setLineHeight(const qreal &lh) {
@@ -47,9 +57,7 @@ namespace FillLyric {
         update();
     }
 
-    QPen SplitterItem::pen() const {
-        return m_pen;
-    }
+    QPen SplitterItem::pen() const { return m_pen; }
 
     void SplitterItem::setPen(const QPen &pen) {
         if (m_pen != pen) {
@@ -65,15 +73,12 @@ namespace FillLyric {
         }
     }
 
-    qreal SplitterItem::margin() const {
-        return m_margin;
-    }
+    qreal SplitterItem::margin() const { return m_margin; }
 
-    void SplitterItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                             QWidget *widget) {
+    void SplitterItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
         painter->setPen(m_pen);
         for (int i = 0; i < m_lineHeight; i++) {
-            painter->drawLine(QPointF(0, m_margin + i), QPointF(mW, m_margin + i));
+            painter->drawLine(QPointF(m_margin, m_margin + i), QPointF(mW, m_margin + i));
         }
     }
 
@@ -81,14 +86,11 @@ namespace FillLyric {
         const auto cellBackBrush = m_view->property("spliterPen").toStringList()[1];
         if (!cellBackBrush.isEmpty()) {
             const auto colorStr = cellBackBrush.split(',');
-            const QVector<int> colorValue = {colorStr[0].toInt(), colorStr[1].toInt(),
-                                             colorStr[2].toInt(), colorStr[3].toInt()};
 
             if (colorStr.size() == 5) {
-                m_pen = QPen(QColor(colorStr[0].toInt(), colorStr[1].toInt(), colorStr[2].toInt(),
-                                    colorStr[3].toInt()),
+                m_pen = QPen(QColor(colorStr[0].toInt(), colorStr[1].toInt(), colorStr[2].toInt(), colorStr[3].toInt()),
                              colorStr[4].toInt());
             }
         }
     }
-}
+} // namespace FillLyric

@@ -3,23 +3,28 @@
 #include <QGraphicsOpacityEffect>
 #include <QStyleOptionGraphicsItem>
 
-#include "../../Commands/Cell/EditCellCmd.h"
 #include "../../Commands/Cell/ChangeSyllableCmd.h"
+#include "../../Commands/Cell/EditCellCmd.h"
 
+#include "../../Commands/Cell/AddNextCellCmd.h"
+#include "../../Commands/Cell/AddPrevCellCmd.h"
 #include "../../Commands/Cell/ClearCellCmd.h"
 #include "../../Commands/Cell/DeleteCellCmd.h"
-#include "../../Commands/Cell/AddPrevCellCmd.h"
-#include "../../Commands/Cell/AddNextCellCmd.h"
 
-namespace FillLyric {
-    CellList::CellList(const qreal &x, const qreal &y, const QList<LangNote *> &noteList,
-                       QGraphicsScene *scene, QGraphicsView *view, QUndoStack *undoStack)
-        : m_view(view), m_scene(scene), m_history(undoStack) {
+namespace FillLyric
+{
+    CellList::CellList(const qreal &x, const qreal &y, const QList<LangNote *> &noteList, QGraphicsScene *scene,
+                       QGraphicsView *view, QUndoStack *undoStack) :
+        m_view(view), m_scene(scene), m_history(undoStack) {
         this->setPos(x, y);
         m_scene->addItem(this);
         setFlag(ItemIsSelectable);
 
         m_splitter = new SplitterItem(0, 0, m_curWidth, m_view, this);
+        if (y <= 0)
+            m_splitter->hide();
+        else
+            m_splitter->show();
 
         m_handle = new HandleItem(m_view, this);
         m_handle->setPos(0, m_splitter->margin());
@@ -35,12 +40,9 @@ namespace FillLyric {
         connect(m_handle, &HandleItem::selectAll, this, &CellList::selectList);
     }
 
-    QRectF CellList::boundingRect() const {
-        return {0, deltaY(), m_curWidth, m_height};
-    }
+    QRectF CellList::boundingRect() const { return {0, deltaY(), m_curWidth, m_height}; }
 
-    void CellList::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                         QWidget *widget) {
+    void CellList::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
         painter->setPen(Qt::NoPen);
         if (option->state & QStyle::State_Selected) {
             painter->setBrush(QColor(255, 255, 255, 10));
@@ -61,26 +63,24 @@ namespace FillLyric {
         m_splitter = nullptr;
     }
 
-    void CellList::setAutoWrap(const bool &autoWrap) {
-        m_autoWarp = autoWrap;
-    }
+    void CellList::setAutoWrap(const bool &autoWrap) { m_autoWarp = autoWrap; }
 
-    qreal CellList::deltaX() const {
-        return m_handle->width() + 3;
-    }
+    qreal CellList::deltaX() const { return m_handle->width() + 3; }
 
-    qreal CellList::deltaY() const {
-        return m_splitter->deltaY();
-    }
+    qreal CellList::deltaY() const { return m_splitter->deltaY(); }
 
     void CellList::setBaseY(const qreal &y) {
+        if (y <= 0)
+            m_splitter->hide();
+        else
+            m_splitter->show();
+
+        m_handle->setPos(0, m_splitter->margin());
         this->setPos(x(), y);
         this->updateCellPos();
     }
 
-    qreal CellList::height() const {
-        return m_height;
-    }
+    qreal CellList::height() const { return m_height; }
 
     qreal CellList::cellWidth() const {
         if (m_autoWarp) {
@@ -93,9 +93,7 @@ namespace FillLyric {
         return width + deltaX();
     }
 
-    QGraphicsView *CellList::view() const {
-        return m_view;
-    }
+    QGraphicsView *CellList::view() const { return m_view; }
 
     void CellList::selectCells(const QPointF &startPos, const QPointF &endPos) {
         qreal x = this->x() + deltaX();
@@ -312,21 +310,13 @@ namespace FillLyric {
         m_history->push(new ChangeSyllableCmd(this, cell, syllable));
     }
 
-    void CellList::clearCell(LyricCell *cell) {
-        m_history->push(new ClearCellCmd(this, cell));
-    }
+    void CellList::clearCell(LyricCell *cell) { m_history->push(new ClearCellCmd(this, cell)); }
 
-    void CellList::deleteCell(LyricCell *cell) {
-        m_history->push(new DeleteCellCmd(this, cell));
-    }
+    void CellList::deleteCell(LyricCell *cell) { m_history->push(new DeleteCellCmd(this, cell)); }
 
-    void CellList::addPrevCell(LyricCell *cell) {
-        m_history->push(new AddPrevCellCmd(this, cell));
-    }
+    void CellList::addPrevCell(LyricCell *cell) { m_history->push(new AddPrevCellCmd(this, cell)); }
 
-    void CellList::addNextCell(LyricCell *cell) {
-        m_history->push(new AddNextCellCmd(this, cell));
-    }
+    void CellList::addNextCell(LyricCell *cell) { m_history->push(new AddNextCellCmd(this, cell)); }
 
     void CellList::linebreak(LyricCell *cell) const {
         Q_EMIT this->linebreakSignal(static_cast<int>(m_cells.indexOf(cell)));

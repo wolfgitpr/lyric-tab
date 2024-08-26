@@ -1,7 +1,6 @@
 #ifndef LYRICWRAPVIEW_H
 #define LYRICWRAPVIEW_H
 
-#include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QRubberBand>
 
@@ -101,7 +100,6 @@ namespace FillLyric {
         QFont m_font;
         QUndoStack *m_history = new QUndoStack();
         QGraphicsScene *m_scene;
-        SplitterItem *m_startSplitter = nullptr;
 
         QList<CellList *> m_cellLists;
         QList<LyricCell *> m_selectedCells{};
