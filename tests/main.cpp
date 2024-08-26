@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 
     window.setCentralWidget(lyricTab);
     window.show();
-    window.resize(1280, 720);
+    window.resize(800, 600);
 
     return QApplication::exec();
 }

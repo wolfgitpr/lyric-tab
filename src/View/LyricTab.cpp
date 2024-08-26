@@ -148,6 +148,7 @@ namespace FillLyric
         const QString text = "Halloween蝉声--陪かな伴着qwe行云流浪---\nka回-忆-开始132后安静遥望远方"
                              "\n荒草覆没的古井--枯塘\n匀-散asdaw一缕过往\n";
         m_lyricBaseWidget->m_textEdit->setPlainText(text);
+        m_lyricExtWidget->m_wrapView->init(CleanLyric::splitAuto(text));
     }
 
     void LyricTab::_on_btnToTable_clicked() const {
