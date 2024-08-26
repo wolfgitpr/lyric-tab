@@ -3,7 +3,8 @@
 
 #include <lyric-tab/Controls/CellList.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class EditCellCmdfinal final : public QUndoCommand {
     public:
@@ -22,6 +23,6 @@ namespace FillLyric {
     };
 
 
-} // FillLyric
+} // namespace FillLyric
 
 #endif // EDITCELLCMD_H

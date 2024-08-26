@@ -1,12 +1,13 @@
 #include "MoveDownLinesCmd.h"
 
-namespace FillLyric {
-    MoveDownLinesCmd::MoveDownLinesCmd(LyricWrapView *view, const QList<CellList *> &lists,
-                                       QUndoCommand *parent)
-        : QUndoCommand(parent), m_view(view) {
+namespace FillLyric
+{
+    MoveDownLinesCmd::MoveDownLinesCmd(LyricWrapView *view, const QList<CellList *> &lists, QUndoCommand *parent) :
+        QUndoCommand(parent), m_view(view) {
         QMap<qlonglong, CellList *> map;
-        for (const auto &list : lists)
+        for (const auto &list : lists) {
             map[m_view->cellLists().indexOf(list)] = list;
+        }
         m_lists = map.values();
     }
 
@@ -19,4 +20,4 @@ namespace FillLyric {
         m_view->moveDownLists(m_lists);
         m_view->repaintCellLists();
     }
-} // FillLyric
+} // namespace FillLyric

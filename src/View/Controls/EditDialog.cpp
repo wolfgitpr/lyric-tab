@@ -1,13 +1,13 @@
 #include <lyric-tab/Controls/EditDialog.h>
 
-#include <QLineEdit>
 #include <QHBoxLayout>
+#include <QLineEdit>
 #include <qvalidator.h>
 
-namespace FillLyric {
-    EditDialog::EditDialog(const QString &lyric, const QRectF &rect, const QFont &font,
-                           QWidget *parent)
-        : QDialog(parent) {
+namespace FillLyric
+{
+    EditDialog::EditDialog(const QString &lyric, const QRectF &rect, const QFont &font, QWidget *parent) :
+        QDialog(parent) {
         setObjectName("section-edit-popup");
         setWindowFlags(Qt::Popup);
 
@@ -18,7 +18,8 @@ namespace FillLyric {
 
         const QFontMetrics fm(lineEdit->font());
         const auto offset = fm.horizontalAdvance(" ") * 2;
-        auto adjust = [=](const QString &text) {
+        auto adjust = [=](const QString &text)
+        {
             this->resize(fm.horizontalAdvance(text) + offset * 4, lineEdit->height()); //
         };
         connect(lineEdit, &QLineEdit::textChanged, this, adjust);
@@ -33,8 +34,7 @@ namespace FillLyric {
 
         this->setLayout(layout);
         this->adjustSize();
-        this->move(
-            parent->mapToGlobal(QPoint(rect.left(), rect.center().y() - this->height() / 2)));
+        this->move(parent->mapToGlobal(QPoint(rect.left(), rect.center().y() - this->height() / 2)));
 
         lineEdit->setFocus();
         lineEdit->setValidator(&validator);
@@ -43,25 +43,26 @@ namespace FillLyric {
 
     bool EditDialog::event(QEvent *event) {
         switch (event->type()) {
-            case QEvent::KeyPress:
-            case QEvent::ShortcutOverride: {
+        case QEvent::KeyPress:
+        case QEvent::ShortcutOverride:
+            {
                 switch (dynamic_cast<QKeyEvent *>(event)->key()) {
-                    case Qt::Key_Enter:
-                    case Qt::Key_Return:
-                        accept();
-                        break;
-                    case Qt::Key_Escape:
-                        reject();
-                        break;
-                    default:
-                        break;
+                case Qt::Key_Enter:
+                case Qt::Key_Return:
+                    accept();
+                    break;
+                case Qt::Key_Escape:
+                    reject();
+                    break;
+                default:
+                    break;
                 }
                 break;
             }
-            default:
-                break;
+        default:
+            break;
         }
         return QDialog::event(event);
     }
 
-} // FillLyric
+} // namespace FillLyric

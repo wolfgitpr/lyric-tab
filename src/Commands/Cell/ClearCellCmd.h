@@ -3,7 +3,8 @@
 
 #include <lyric-tab/Controls/CellList.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class ClearCellCmd final : public QUndoCommand {
     public:
@@ -19,6 +20,6 @@ namespace FillLyric {
         LyricCell *m_newCell;
     };
 
-} // FillLyric
+} // namespace FillLyric
 
 #endif // CLEARCELLCMD_H

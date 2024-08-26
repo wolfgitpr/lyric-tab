@@ -1,9 +1,9 @@
 #include "LinebreakCmd.h"
 
-namespace FillLyric {
-    LinebreakCmd::LinebreakCmd(LyricWrapView *view, CellList *cellList, const int &index,
-                               QUndoCommand *parent)
-        : QUndoCommand(parent), m_view(view), m_index(index), m_list(cellList) {
+namespace FillLyric
+{
+    LinebreakCmd::LinebreakCmd(LyricWrapView *view, CellList *cellList, const int &index, QUndoCommand *parent) :
+        QUndoCommand(parent), m_view(view), m_index(index), m_list(cellList) {
         m_cellListIndex = static_cast<int>(m_view->cellLists().indexOf(m_list));
         m_cells = m_list->m_cells.mid(index);
         m_newList = m_view->createNewList();
@@ -33,4 +33,4 @@ namespace FillLyric {
         }
         m_view->repaintCellLists();
     }
-} // FillLyric
+} // namespace FillLyric

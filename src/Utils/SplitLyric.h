@@ -4,18 +4,17 @@
 #include <QList>
 #include <language-manager/LangCommon.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
     class CleanLyric {
     public:
         static QList<QList<LangNote>> splitAuto(const QString &input);
 
         static QList<QList<LangNote>> splitByChar(const QString &input);
 
-        static QList<QList<LangNote>> splitCustom(const QString &input,
-                                                  const QStringList &splitter);
+        static QList<QList<LangNote>> splitCustom(const QString &input, const QStringList &splitter);
     };
-}
-
+} // namespace FillLyric
 
 
 #endif // DS_EDITOR_LITE_CLEANLYRIC_H

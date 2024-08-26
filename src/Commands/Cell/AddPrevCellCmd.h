@@ -1,8 +1,8 @@
 #ifndef ADDPREVCELLCMD_H
 #define ADDPREVCELLCMD_H
 
-#include <lyric-tab/Controls/LyricCell.h>
 #include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricCell.h>
 
 namespace FillLyric
 {

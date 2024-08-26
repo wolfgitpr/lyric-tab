@@ -3,12 +3,12 @@
 
 #include <lyric-tab/Controls/LyricWrapView.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class ClearCellsCmd final : public QUndoCommand {
     public:
-        explicit ClearCellsCmd(LyricWrapView *view, QList<LyricCell *> cells,
-                               QUndoCommand *parent = nullptr);
+        explicit ClearCellsCmd(LyricWrapView *view, QList<LyricCell *> cells, QUndoCommand *parent = nullptr);
         void undo() override;
         void redo() override;
 
@@ -22,6 +22,6 @@ namespace FillLyric {
         QList<LyricCell *> m_cells;
     };
 
-} // FillLyric
+} // namespace FillLyric
 
 #endif // CLEARCELLSCMD_H

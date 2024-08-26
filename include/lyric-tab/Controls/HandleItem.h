@@ -6,7 +6,8 @@
 
 #include <lyric-tab/LyricTabGlobal.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
     class LYRIC_TAB_EXPORT HandleItem final : public QObject, public QGraphicsItem {
         Q_OBJECT
         Q_INTERFACES(QGraphicsItem)
@@ -37,8 +38,7 @@ namespace FillLyric {
         [[nodiscard]] QRectF boundingRect() const override;
         [[nodiscard]] QPainterPath shape() const override;
 
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                   QWidget *widget) override;
+        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     private:
         enum State {
@@ -47,8 +47,7 @@ namespace FillLyric {
             Selected = 2,
         };
 
-        QVector<QBrush> m_backgroundBrush = {QColor(83, 83, 85), QColor(137, 137, 139),
-                                             QColor(112, 156, 255)};
+        QVector<QBrush> m_backgroundBrush = {QColor(83, 83, 85), QColor(137, 137, 139), QColor(112, 156, 255)};
 
         qreal mW = 13;
         qreal mH = 0;
@@ -57,6 +56,6 @@ namespace FillLyric {
         QGraphicsView *m_view;
     };
 
-} // FillLyric
+} // namespace FillLyric
 
 #endif // HANDLEITEM_H

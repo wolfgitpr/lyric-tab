@@ -3,7 +3,8 @@
 
 #include "LrcDecoder.h"
 
-namespace LrcTools {
+namespace LrcTools
+{
     class LrcDecoderPrivate {
         Q_DECLARE_PUBLIC(LrcDecoder)
     public:
@@ -28,6 +29,6 @@ namespace LrcTools {
     private:
         LrcDecoder *q_ptr{};
     };
-} // LrcTools
+} // namespace LrcTools
 
 #endif // DS_EDITOR_LITE_LRCDECODER_P_H

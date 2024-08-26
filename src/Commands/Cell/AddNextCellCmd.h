@@ -3,12 +3,12 @@
 
 #include <lyric-tab/Controls/CellList.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class AddNextCellCmd final : public QUndoCommand {
     public:
-        explicit AddNextCellCmd(CellList *cellList, LyricCell *cell,
-                                QUndoCommand *parent = nullptr);
+        explicit AddNextCellCmd(CellList *cellList, LyricCell *cell, QUndoCommand *parent = nullptr);
         void undo() override;
         void redo() override;
 
@@ -17,6 +17,6 @@ namespace FillLyric {
         int m_index;
         LyricCell *m_newCell;
     };
-} // FillLyric
+} // namespace FillLyric
 
 #endif // ADDNEXTCELLCMD_H

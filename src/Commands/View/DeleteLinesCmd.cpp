@@ -1,9 +1,9 @@
 #include "DeleteLinesCmd.h"
 
-namespace FillLyric {
-    DeleteLinesCmd::DeleteLinesCmd(LyricWrapView *view, const QList<CellList *> &lists,
-                                   QUndoCommand *parent)
-        : QUndoCommand(parent), m_view(view) {
+namespace FillLyric
+{
+    DeleteLinesCmd::DeleteLinesCmd(LyricWrapView *view, const QList<CellList *> &lists, QUndoCommand *parent) :
+        QUndoCommand(parent), m_view(view) {
         for (const auto &list : lists) {
             m_listMap[static_cast<int>(m_view->cellLists().indexOf(list))] = list;
         }
@@ -24,4 +24,4 @@ namespace FillLyric {
         m_view->repaintCellLists();
     }
 
-} // FillLyric
+} // namespace FillLyric

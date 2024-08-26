@@ -2,10 +2,10 @@
 
 #include <language-manager/ILanguageManager.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
     EditCellCmdfinal::EditCellCmdfinal(CellList *cellList, LyricCell *cell, const QString &lyric,
-                                       QUndoCommand *parent)
-        : QUndoCommand(parent), m_list(cellList), m_cell(cell) {
+                                       QUndoCommand *parent) : QUndoCommand(parent), m_list(cellList), m_cell(cell) {
         m_oldNote = cell->note();
         m_index = m_list->m_cells.indexOf(cell);
         const auto langMgr = LangMgr::ILanguageManager::instance();
@@ -35,4 +35,4 @@ namespace FillLyric {
         m_list->updateRect(m_cell);
         m_cell->update();
     }
-} // FillLyric
+} // namespace FillLyric

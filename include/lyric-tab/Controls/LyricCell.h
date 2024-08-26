@@ -1,17 +1,18 @@
 #ifndef LYRICCELL_H
 #define LYRICCELL_H
 
-#include <QObject>
 #include <QApplication>
+#include <QObject>
 
-#include <QGraphicsView>
 #include <QGraphicsObject>
+#include <QGraphicsView>
 
 #include <language-manager/LangCommon.h>
 
 #include <lyric-tab/LyricTabGlobal.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
     class LYRIC_TAB_EXPORT LyricCell final : public QGraphicsObject {
         Q_OBJECT
 
@@ -58,8 +59,7 @@ namespace FillLyric {
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
         void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                   QWidget *widget) override;
+        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     private:
         void updateLyricRect();
@@ -96,18 +96,17 @@ namespace FillLyric {
             Selected = 2,
         };
 
-        QVector<QBrush> m_backgroundBrush = {Qt::NoBrush, QColor(255, 255, 255, 15),
-                                             QColor(255, 255, 255, 30)};
+        QVector<QBrush> m_backgroundBrush = {Qt::NoBrush, QColor(255, 255, 255, 15), QColor(255, 255, 255, 30)};
         QVector<QPen> m_borderPen = {QPen(QColor(83, 83, 85), 2), QPen(QColor(137, 137, 139), 2),
                                      QPen(QColor(155, 186, 255), 2)};
 
         enum PenType { MultiTone = 1, Revised, G2pError };
 
-        QVector<QPen> m_lyricPen = {QColor(240, 240, 240), QColor(240, 240, 240),
-                                    QColor(240, 240, 240), QColor(240, 240, 240)};
-        QVector<QPen> m_syllablePen = {QColor(240, 240, 240), QColor(155, 186, 255),
-                                       QColor(255, 204, 153), QColor(255, 155, 157)};
+        QVector<QPen> m_lyricPen = {QColor(240, 240, 240), QColor(240, 240, 240), QColor(240, 240, 240),
+                                    QColor(240, 240, 240)};
+        QVector<QPen> m_syllablePen = {QColor(240, 240, 240), QColor(155, 186, 255), QColor(255, 204, 153),
+                                       QColor(255, 155, 157)};
     };
-}
+} // namespace FillLyric
 
 #endif // LYRICCELL_H

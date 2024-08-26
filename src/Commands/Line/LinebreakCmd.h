@@ -3,7 +3,8 @@
 
 #include <lyric-tab/Controls/LyricWrapView.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class LinebreakCmd final : public QUndoCommand {
     public:
@@ -21,6 +22,6 @@ namespace FillLyric {
         QList<LyricCell *> m_cells;
     };
 
-} // FillLyric
+} // namespace FillLyric
 
 #endif // LINEBREAKCMD_H

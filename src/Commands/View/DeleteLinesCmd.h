@@ -3,12 +3,12 @@
 
 #include <lyric-tab/Controls/LyricWrapView.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class DeleteLinesCmd final : public QUndoCommand {
     public:
-        explicit DeleteLinesCmd(LyricWrapView *view, const QList<CellList *>& lists,
-                                QUndoCommand *parent = nullptr);
+        explicit DeleteLinesCmd(LyricWrapView *view, const QList<CellList *> &lists, QUndoCommand *parent = nullptr);
         void undo() override;
         void redo() override;
 
@@ -17,6 +17,6 @@ namespace FillLyric {
         QMap<int, CellList *> m_listMap;
     };
 
-} // FillLyric
+} // namespace FillLyric
 
 #endif // DELETELINES_H

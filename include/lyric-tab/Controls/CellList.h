@@ -5,20 +5,21 @@
 #include <QTimer>
 #include <QUndoStack>
 
-#include <lyric-tab/Controls/LyricCell.h>
 #include <lyric-tab/Controls/HandleItem.h>
+#include <lyric-tab/Controls/LyricCell.h>
 #include <lyric-tab/Controls/SplitterItem.h>
 
 #include <lyric-tab/LyricTabGlobal.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class LYRIC_TAB_EXPORT CellList final : public QGraphicsObject {
         Q_OBJECT
 
     public:
-        explicit CellList(const qreal &x, const qreal &y, const QList<LangNote *> &noteList,
-                          QGraphicsScene *scene, QGraphicsView *view, QUndoStack *undoStack);
+        explicit CellList(const qreal &x, const qreal &y, const QList<LangNote *> &noteList, QGraphicsScene *scene,
+                          QGraphicsView *view, QUndoStack *undoStack);
 
         void clear();
         void setAutoWrap(const bool &autoWrap);
@@ -71,8 +72,7 @@ namespace FillLyric {
 
     protected:
         [[nodiscard]] QRectF boundingRect() const override;
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-                   QWidget *widget) override;
+        void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     private:
         bool m_autoWarp = false;
@@ -98,6 +98,6 @@ namespace FillLyric {
         void addNextCell(FillLyric::LyricCell *cell);
         void linebreak(FillLyric::LyricCell *cell) const;
     };
-}
+} // namespace FillLyric
 
 #endif // CELLLIST_H

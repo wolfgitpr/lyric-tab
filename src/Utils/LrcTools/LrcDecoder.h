@@ -1,26 +1,25 @@
 #ifndef DS_EDITOR_LITE_LRCDECODER_H
 #define DS_EDITOR_LITE_LRCDECODER_H
 
-#include <QObject>
-#include <QString>
 #include <QMap>
+#include <QObject>
 #include <QSharedPointer>
+#include <QString>
 
 // Refer to: https://github.com/mengps/LrcDecoder
 
-namespace LrcTools {
+namespace LrcTools
+{
 
     struct LyricPacket {
         QString lyric;
         qint64 pts = 0;
 
-        [[nodiscard]] bool isEmpty() const {
-            return lyric.isEmpty() && pts == 0;
-        }
+        [[nodiscard]] bool isEmpty() const { return lyric.isEmpty() && pts == 0; }
     };
 
     class LrcDecoderPrivate;
-    class LrcDecoder final: public QObject {
+    class LrcDecoder final : public QObject {
         Q_OBJECT
         Q_DECLARE_PRIVATE(LrcDecoder)
     public:
@@ -44,6 +43,6 @@ namespace LrcTools {
         QSharedPointer<LrcDecoderPrivate> d_ptr;
     };
 
-} // LrcTools
+} // namespace LrcTools
 
 #endif // DS_EDITOR_LITE_LRCDECODER_H

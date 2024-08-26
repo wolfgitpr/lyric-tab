@@ -6,7 +6,8 @@
 
 #include <lyric-tab/LyricTabGlobal.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
     class LYRIC_TAB_EXPORT PhonicTextEdit final : public QPlainTextEdit {
         Q_OBJECT
     public:
@@ -19,6 +20,6 @@ namespace FillLyric {
         void wheelEvent(QWheelEvent *event) override;
         void contextMenuEvent(QContextMenuEvent *event) override;
     };
-}
+} // namespace FillLyric
 
 #endif // DS_EDITOR_LITE_PHONICTEXTEDIT_H

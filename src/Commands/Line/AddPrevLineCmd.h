@@ -3,12 +3,12 @@
 
 #include <lyric-tab/Controls/LyricWrapView.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class AddPrevLineCmd final : public QUndoCommand {
     public:
-        explicit AddPrevLineCmd(LyricWrapView *view, CellList *cellList,
-                                QUndoCommand *parent = nullptr);
+        explicit AddPrevLineCmd(LyricWrapView *view, CellList *cellList, QUndoCommand *parent = nullptr);
         void undo() override;
         void redo() override;
 
@@ -18,6 +18,6 @@ namespace FillLyric {
         CellList *m_newList;
     };
 
-} // FillLyric
+} // namespace FillLyric
 
 #endif // ADDPREVLINECMD_H

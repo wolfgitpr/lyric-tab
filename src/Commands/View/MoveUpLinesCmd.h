@@ -3,12 +3,12 @@
 
 #include <lyric-tab/Controls/LyricWrapView.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class MoveUpLinesCmd final : public QUndoCommand {
     public:
-        explicit MoveUpLinesCmd(LyricWrapView *view, const QList<CellList *> &lists,
-                                QUndoCommand *parent = nullptr);
+        explicit MoveUpLinesCmd(LyricWrapView *view, const QList<CellList *> &lists, QUndoCommand *parent = nullptr);
         void undo() override;
         void redo() override;
 
@@ -17,6 +17,6 @@ namespace FillLyric {
         QList<CellList *> m_lists;
     };
 
-} // FillLyric
+} // namespace FillLyric
 
 #endif // MOVEUPLINESCMD_H

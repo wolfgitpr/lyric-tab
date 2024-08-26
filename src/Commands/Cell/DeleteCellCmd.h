@@ -3,7 +3,8 @@
 
 #include <lyric-tab/Controls/CellList.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class DeleteCellCmd final : public QUndoCommand {
     public:
@@ -17,6 +18,6 @@ namespace FillLyric {
         LyricCell *m_cell;
     };
 
-} // FillLyric
+} // namespace FillLyric
 
 #endif // DELETECELL_H

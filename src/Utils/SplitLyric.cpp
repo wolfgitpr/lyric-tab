@@ -3,7 +3,8 @@
 
 #include <QDebug>
 
-namespace FillLyric {
+namespace FillLyric
+{
     QList<QList<LangNote>> CleanLyric::splitAuto(const QString &input) {
         QList<QList<LangNote>> result;
         QList<LangNote> notes;
@@ -54,8 +55,7 @@ namespace FillLyric {
         return result;
     }
 
-    QList<QList<LangNote>> CleanLyric::splitCustom(const QString &input,
-                                                   const QStringList &splitter) {
+    QList<QList<LangNote>> CleanLyric::splitCustom(const QString &input, const QStringList &splitter) {
         const auto langMgr = LangMgr::ILanguageManager::instance();
         const auto linebreakFactory = langMgr->language("linebreak");
 
@@ -91,4 +91,4 @@ namespace FillLyric {
             result.append(notes);
         return result;
     }
-}
+} // namespace FillLyric

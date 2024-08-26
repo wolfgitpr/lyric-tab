@@ -4,22 +4,21 @@
 #include <QGraphicsScene>
 #include <QRubberBand>
 
-#include <lyric-tab/Controls/LyricCell.h>
 #include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricCell.h>
 
 #include <lyric-tab/LyricTabGlobal.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
     class LYRIC_TAB_EXPORT LyricWrapView final : public QGraphicsView {
         Q_OBJECT
 
-        Q_PROPERTY(
-            QStringList cellBackgroundBrush READ cellBackgroundBrush WRITE setCellBackgroundBrush)
+        Q_PROPERTY(QStringList cellBackgroundBrush READ cellBackgroundBrush WRITE setCellBackgroundBrush)
         Q_PROPERTY(QStringList cellBorderPen READ cellBorderPen WRITE setCellBorderPen)
         Q_PROPERTY(QStringList cellLyricPen READ cellLyricPen WRITE setCellLyricPen)
         Q_PROPERTY(QStringList cellSyllablePen READ cellSyllablePen WRITE setCellSyllablePen)
-        Q_PROPERTY(QStringList handleBackgroundBrush READ handleBackgroundBrush WRITE
-                       setHandleBackgroundBrush)
+        Q_PROPERTY(QStringList handleBackgroundBrush READ handleBackgroundBrush WRITE setHandleBackgroundBrush)
         Q_PROPERTY(QStringList spliterPen READ spliterPen WRITE setSpliterPen)
 
     public:
@@ -40,7 +39,7 @@ namespace FillLyric {
         void appendList(const QList<LangNote *> &noteList);
 
         void moveUpLists(const QList<CellList *> &cellLists);
-        void moveDownLists(QList<CellList *> cellLists);
+        void moveDownLists(const QList<CellList *> &cellLists);
 
         CellList *mapToList(const QPointF &pos);
         QPointF mapToCellRect(const QPointF &pos);
@@ -115,5 +114,5 @@ namespace FillLyric {
     private Q_SLOTS:
         void updateRect();
     };
-}
+} // namespace FillLyric
 #endif // LYRICWRAPVIEW_H

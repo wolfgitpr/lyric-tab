@@ -3,12 +3,13 @@
 
 #include <lyric-tab/Controls/CellList.h>
 
-namespace FillLyric {
+namespace FillLyric
+{
 
     class ChangeSyllableCmd final : public QUndoCommand {
     public:
-        explicit ChangeSyllableCmd(CellList *cellList, LyricCell *cell,
-                                   const QString &syllableRevised, QUndoCommand *parent = nullptr);
+        explicit ChangeSyllableCmd(CellList *cellList, LyricCell *cell, const QString &syllableRevised,
+                                   QUndoCommand *parent = nullptr);
         void undo() override;
         void redo() override;
 
@@ -20,6 +21,6 @@ namespace FillLyric {
         QString m_syllableRevised;
     };
 
-} // Lyric
+} // namespace FillLyric
 
 #endif // CHANGESYLLABLECMD_H

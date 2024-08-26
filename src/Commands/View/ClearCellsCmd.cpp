@@ -2,14 +2,14 @@
 
 #include <utility>
 
-namespace FillLyric {
-    ClearCellsCmd::ClearCellsCmd(LyricWrapView *view, QList<LyricCell *> cells,
-                                 QUndoCommand *parent)
-        : QUndoCommand(parent), m_view(view), m_cells(std::move(cells)) {
+namespace FillLyric
+{
+    ClearCellsCmd::ClearCellsCmd(LyricWrapView *view, QList<LyricCell *> cells, QUndoCommand *parent) :
+        QUndoCommand(parent), m_view(view), m_cells(std::move(cells)) {
         for (const auto &cell : m_cells) {
             if (const auto cellList = m_view->mapToList(cell->lyricRect().center().toPoint())) {
-                m_cellsMap[cellList][static_cast<int>(cellList->m_cells.indexOf(cell))] = {
-                    cellList->createNewCell(), cell};
+                m_cellsMap[cellList][static_cast<int>(cellList->m_cells.indexOf(cell))] = {cellList->createNewCell(),
+                                                                                           cell};
             }
         }
     }
@@ -39,4 +39,4 @@ namespace FillLyric {
         }
         m_view->repaintCellLists();
     }
-} // FillLyric
+} // namespace FillLyric
