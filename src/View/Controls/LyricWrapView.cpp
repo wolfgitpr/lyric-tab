@@ -94,16 +94,19 @@ namespace FillLyric
     void LyricWrapView::wheelEvent(QWheelEvent *event) {
         if (event->modifiers() & Qt::ControlModifier) {
             const auto fontSizeDelta = event->angleDelta().y() / 120.0;
-            QFont font = this->font();
-            const auto newSize = font.pointSizeF() + fontSizeDelta;
-            if (newSize >= 9 && newSize != font.pointSizeF()) {
-                font.setPointSizeF(newSize);
-                this->setFont(font);
-                Q_EMIT this->fontSizeChanged();
-                for (const auto &cellList : m_cellLists) {
-                    cellList->setFont(font);
+            constexpr double minimumStep = 0.25;
+            if (std::abs(fontSizeDelta) >= minimumStep) {
+                QFont font = this->font();
+                const auto newSize = font.pointSizeF() + fontSizeDelta;
+                if (newSize >= 9 && newSize != font.pointSizeF()) {
+                    font.setPointSizeF(newSize);
+                    this->setFont(font);
+                    Q_EMIT this->fontSizeChanged();
+                    for (const auto &cellList : m_cellLists) {
+                        cellList->setFont(font);
+                    }
+                    event->accept();
                 }
-                event->accept();
             }
         } else {
             QGraphicsView::wheelEvent(event);
@@ -418,7 +421,8 @@ namespace FillLyric
         const auto width = m_autoWrap ? this->width() - this->verticalScrollBar()->width() : this->maxListWidth();
         for (const auto &m_cellList : m_cellLists) {
             m_cellList->setBaseY(height);
-            m_cellList->setWidth(width);
+            if (width != this->sceneRect().width())
+                m_cellList->setWidth(width);
             height += m_cellList->height();
         }
 
@@ -426,7 +430,8 @@ namespace FillLyric
             m_cellList->updateSplitter(width);
         }
 
-        this->setSceneRect(QRectF(0, 0, width, height));
+        if (width != this->sceneRect().width() || height != this->sceneRect().height())
+            this->setSceneRect(QRectF(0, 0, width, height));
         this->update();
     }
 
@@ -518,7 +523,9 @@ namespace FillLyric
         for (const auto &m_cellList : m_cellLists) {
             m_cellList->updateSplitter(width);
         }
-        this->setSceneRect(QRectF(0, 0, width, this->height()));
+
+        if (width != this->sceneRect().width())
+            this->setSceneRect(QRectF(0, 0, width, this->height()));
         this->update();
     }
 
