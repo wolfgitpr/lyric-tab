@@ -1,8 +1,11 @@
 #include <lyric-tab/LyricTab.h>
 
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricCell.h>
+
 #include <QFileDialog>
+#include <language-manager/ILanguageManager.h>
 #include "../Utils/SplitLyric.h"
-#include "language-manager/ILanguageManager.h"
 
 #include <QMessageBox>
 

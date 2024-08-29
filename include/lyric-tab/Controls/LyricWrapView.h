@@ -1,13 +1,19 @@
 #ifndef LYRICWRAPVIEW_H
 #define LYRICWRAPVIEW_H
 
-#include <lyric-tab/Controls/CellList.h>
-#include <lyric-tab/Controls/LyricCell.h>
+#include <QFont>
+#include <QGraphicsView>
+#include <QUndoStack>
+
+#include <language-manager/LangCommon.h>
 
 #include <lyric-tab/LyricTabGlobal.h>
 
 namespace FillLyric
 {
+    class CellList;
+    class LyricCell;
+
     class LYRIC_TAB_EXPORT LyricWrapView final : public QGraphicsView {
         Q_OBJECT
 

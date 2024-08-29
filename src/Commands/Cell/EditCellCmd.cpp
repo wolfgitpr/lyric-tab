@@ -2,6 +2,9 @@
 
 #include <language-manager/ILanguageManager.h>
 
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricCell.h>
+
 namespace FillLyric
 {
     EditCellCmdfinal::EditCellCmdfinal(CellList *cellList, LyricCell *cell, const QString &lyric,

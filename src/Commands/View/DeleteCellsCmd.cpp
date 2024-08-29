@@ -1,5 +1,9 @@
 #include "DeleteCellsCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricCell.h>
+#include <lyric-tab/Controls/LyricWrapView.h>
+
 namespace FillLyric
 {
     DeleteCellsCmd::DeleteCellsCmd(LyricWrapView *view, QList<LyricCell *> cells, QUndoCommand *parent) :

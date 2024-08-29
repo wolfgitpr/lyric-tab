@@ -1,10 +1,14 @@
 #ifndef DELETECELLSCMD_H
 #define DELETECELLSCMD_H
 
-#include <lyric-tab/Controls/LyricWrapView.h>
+#include <QMap>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class LyricCell;
+    class CellList;
+    class LyricWrapView;
 
     class DeleteCellsCmd final : public QUndoCommand {
     public:

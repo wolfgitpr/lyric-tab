@@ -1,10 +1,12 @@
 #ifndef ADDNEXTCELLCMD_H
 #define ADDNEXTCELLCMD_H
 
-#include <lyric-tab/Controls/CellList.h>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class LyricCell;
+    class CellList;
 
     class AddNextCellCmd final : public QUndoCommand {
     public:

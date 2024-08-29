@@ -1,4 +1,5 @@
 #include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricCell.h>
 
 #include <QGraphicsOpacityEffect>
 #include <QStyleOptionGraphicsItem>

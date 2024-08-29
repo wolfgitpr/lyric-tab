@@ -1,10 +1,12 @@
 #ifndef CLEARCELLCMD_H
 #define CLEARCELLCMD_H
 
-#include <lyric-tab/Controls/CellList.h>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class LyricCell;
+    class CellList;
 
     class ClearCellCmd final : public QUndoCommand {
     public:

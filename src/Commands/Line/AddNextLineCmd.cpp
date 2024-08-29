@@ -1,5 +1,8 @@
 #include "AddNextLineCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricWrapView.h>
+
 namespace FillLyric
 {
     AddNextLineCmd::AddNextLineCmd(LyricWrapView *view, CellList *cellList, QUndoCommand *parent) :

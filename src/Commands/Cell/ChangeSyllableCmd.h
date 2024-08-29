@@ -1,10 +1,12 @@
 #ifndef CHANGESYLLABLECMD_H
 #define CHANGESYLLABLECMD_H
 
-#include <lyric-tab/Controls/CellList.h>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class LyricCell;
+    class CellList;
 
     class ChangeSyllableCmd final : public QUndoCommand {
     public:

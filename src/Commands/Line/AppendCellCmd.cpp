@@ -1,9 +1,10 @@
 #include "AppendCellCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+
 namespace FillLyric
 {
-    AppendCellCmd::AppendCellCmd(LyricWrapView *view, CellList *cellList, QUndoCommand *parent) :
-        QUndoCommand(parent), m_view(view), m_list(cellList) {
+    AppendCellCmd::AppendCellCmd(CellList *cellList, QUndoCommand *parent) : QUndoCommand(parent), m_list(cellList) {
         m_newCell = m_list->createNewCell();
     }
 

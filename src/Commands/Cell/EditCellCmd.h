@@ -1,10 +1,14 @@
 #ifndef EDITCELLCMD_H
 #define EDITCELLCMD_H
 
-#include <lyric-tab/Controls/CellList.h>
+#include <QUndoCommand>
+
+#include <language-manager/LangCommon.h>
 
 namespace FillLyric
 {
+    class LyricCell;
+    class CellList;
 
     class EditCellCmdfinal final : public QUndoCommand {
     public:

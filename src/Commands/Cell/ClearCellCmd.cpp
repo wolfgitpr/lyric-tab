@@ -1,5 +1,7 @@
 #include "ClearCellCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+
 namespace FillLyric
 {
     ClearCellCmd::ClearCellCmd(CellList *cellList, LyricCell *cell, QUndoCommand *parent) :

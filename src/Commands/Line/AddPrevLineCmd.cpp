@@ -1,5 +1,8 @@
 #include "AddPrevLineCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricWrapView.h>
+
 namespace FillLyric
 {
     AddPrevLineCmd::AddPrevLineCmd(LyricWrapView *view, CellList *cellList, QUndoCommand *parent) :

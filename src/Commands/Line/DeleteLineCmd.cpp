@@ -1,5 +1,8 @@
 #include "DeleteLineCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricWrapView.h>
+
 namespace FillLyric
 {
     DeleteLineCmd::DeleteLineCmd(LyricWrapView *view, CellList *cellList, QUndoCommand *parent) :

@@ -1,10 +1,14 @@
 #ifndef CLEARCELLSCMD_H
 #define CLEARCELLSCMD_H
 
-#include <lyric-tab/Controls/LyricWrapView.h>
+#include <QMap>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class LyricCell;
+    class CellList;
+    class LyricWrapView;
 
     class ClearCellsCmd final : public QUndoCommand {
     public:

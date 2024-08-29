@@ -1,17 +1,21 @@
 #ifndef CELLLIST_H
 #define CELLLIST_H
 
+#include <QApplication>
 #include <QTimer>
 #include <QUndoStack>
 
+#include <language-manager/LangCommon.h>
+
 #include <lyric-tab/Controls/HandleItem.h>
-#include <lyric-tab/Controls/LyricCell.h>
 #include <lyric-tab/Controls/SplitterItem.h>
 
 #include <lyric-tab/LyricTabGlobal.h>
 
 namespace FillLyric
 {
+    class CellQss;
+    class LyricCell;
 
     class LYRIC_TAB_EXPORT CellList final : public QGraphicsObject {
         Q_OBJECT

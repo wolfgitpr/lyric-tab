@@ -1,5 +1,8 @@
 #include "ChangeSyllableCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricCell.h>
+
 namespace FillLyric
 {
     ChangeSyllableCmd::ChangeSyllableCmd(CellList *cellList, LyricCell *cell, const QString &syllableRevised,

@@ -1,10 +1,12 @@
 #ifndef ADDNEXTLINEEDIT_H
 #define ADDNEXTLINEEDIT_H
 
-#include <lyric-tab/Controls/LyricWrapView.h>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class CellList;
+    class LyricWrapView;
 
     class AddNextLineCmd final : public QUndoCommand {
     public:

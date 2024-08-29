@@ -1,10 +1,12 @@
 #ifndef MOVEDOWNLINESCMD_H
 #define MOVEDOWNLINESCMD_H
 
-#include <lyric-tab/Controls/LyricWrapView.h>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class CellList;
+    class LyricWrapView;
 
     class MoveDownLinesCmd final : public QUndoCommand {
     public:

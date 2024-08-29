@@ -1,3 +1,5 @@
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricCell.h>
 #include <lyric-tab/Controls/LyricWrapView.h>
 
 #include <QMenu>
@@ -276,8 +278,7 @@ namespace FillLyric
                 for (const auto item : selectedItems)
                     item->setSelected(false);
                 cellList->setSelected(true);
-                menu->addAction(tr("append cell"),
-                                [this, cellList] { m_history->push(new AppendCellCmd(this, cellList)); });
+                menu->addAction(tr("append cell"), [this, cellList] { m_history->push(new AppendCellCmd(cellList)); });
                 menu->addSeparator();
                 menu->addAction(tr("delete line"),
                                 [this, cellList] { m_history->push(new DeleteLineCmd(this, cellList)); });

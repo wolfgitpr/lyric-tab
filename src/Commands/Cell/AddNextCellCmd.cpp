@@ -1,5 +1,7 @@
 #include "AddNextCellCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+
 namespace FillLyric
 {
     AddNextCellCmd::AddNextCellCmd(CellList *cellList, LyricCell *cell, QUndoCommand *parent) :

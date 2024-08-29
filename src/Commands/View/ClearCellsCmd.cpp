@@ -2,6 +2,10 @@
 
 #include <utility>
 
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricCell.h>
+#include <lyric-tab/Controls/LyricWrapView.h>
+
 namespace FillLyric
 {
     ClearCellsCmd::ClearCellsCmd(LyricWrapView *view, QList<LyricCell *> cells, QUndoCommand *parent) :

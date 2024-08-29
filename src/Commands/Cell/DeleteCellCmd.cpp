@@ -1,5 +1,7 @@
 #include "DeleteCellCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+
 namespace FillLyric
 {
     DeleteCellCmd::DeleteCellCmd(CellList *cellList, LyricCell *cell, QUndoCommand *parent) :

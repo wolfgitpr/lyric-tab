@@ -1,10 +1,12 @@
 #ifndef ADDPREVLINECMD_H
 #define ADDPREVLINECMD_H
 
-#include <lyric-tab/Controls/LyricWrapView.h>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class CellList;
+    class LyricWrapView;
 
     class AddPrevLineCmd final : public QUndoCommand {
     public:

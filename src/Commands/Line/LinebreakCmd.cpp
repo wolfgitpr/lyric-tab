@@ -1,5 +1,8 @@
 #include "LinebreakCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricWrapView.h>
+
 namespace FillLyric
 {
     LinebreakCmd::LinebreakCmd(LyricWrapView *view, CellList *cellList, const int &index, QUndoCommand *parent) :

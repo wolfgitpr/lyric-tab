@@ -1,10 +1,13 @@
 #ifndef DELETELINES_H
 #define DELETELINES_H
 
-#include <lyric-tab/Controls/LyricWrapView.h>
+#include <QMap>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class CellList;
+    class LyricWrapView;
 
     class DeleteLinesCmd final : public QUndoCommand {
     public:

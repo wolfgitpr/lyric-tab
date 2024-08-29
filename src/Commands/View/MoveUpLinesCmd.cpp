@@ -1,5 +1,8 @@
 #include "MoveUpLinesCmd.h"
 
+#include <lyric-tab/Controls/CellList.h>
+#include <lyric-tab/Controls/LyricWrapView.h>
+
 namespace FillLyric
 {
     MoveUpLinesCmd::MoveUpLinesCmd(LyricWrapView *view, const QList<CellList *> &lists, QUndoCommand *parent) :

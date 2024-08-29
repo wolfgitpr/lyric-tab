@@ -1,10 +1,13 @@
 #ifndef LINEBREAKCMD_H
 #define LINEBREAKCMD_H
 
-#include <lyric-tab/Controls/LyricWrapView.h>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class LyricCell;
+    class CellList;
+    class LyricWrapView;
 
     class LinebreakCmd final : public QUndoCommand {
     public:

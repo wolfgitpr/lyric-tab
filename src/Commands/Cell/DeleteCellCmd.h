@@ -1,10 +1,12 @@
 #ifndef DELETECELL_H
 #define DELETECELL_H
 
-#include <lyric-tab/Controls/CellList.h>
+#include <QUndoCommand>
 
 namespace FillLyric
 {
+    class LyricCell;
+    class CellList;
 
     class DeleteCellCmd final : public QUndoCommand {
     public:
