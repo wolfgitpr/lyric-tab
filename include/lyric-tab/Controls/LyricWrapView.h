@@ -1,9 +1,6 @@
 #ifndef LYRICWRAPVIEW_H
 #define LYRICWRAPVIEW_H
 
-#include <QGraphicsScene>
-#include <QRubberBand>
-
 #include <lyric-tab/Controls/CellList.h>
 #include <lyric-tab/Controls/LyricCell.h>
 

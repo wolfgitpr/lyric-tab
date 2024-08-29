@@ -553,11 +553,8 @@ namespace FillLyric
         m_handleBackgroundBrush = handleBackgroundBrush;
     }
 
-    QStringList LyricWrapView::spliterPen() const { return m_spliterPen;
-    }
+    QStringList LyricWrapView::spliterPen() const { return m_spliterPen; }
 
-    void LyricWrapView::setSpliterPen(const QStringList &spliterPen) {
-        m_spliterPen = spliterPen;
-    }
+    void LyricWrapView::setSpliterPen(const QStringList &spliterPen) { m_spliterPen = spliterPen; }
 
 }

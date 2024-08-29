@@ -1,7 +1,6 @@
 #ifndef CELLLIST_H
 #define CELLLIST_H
 
-#include <QObject>
 #include <QTimer>
 #include <QUndoStack>
 
@@ -75,6 +74,9 @@ namespace FillLyric
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     private:
+        void setCellQss() const;
+        QVector<QPen> qssPens(const QString &property) const;
+
         bool m_autoWarp = false;
 
         qreal m_curWidth = 0;
@@ -88,6 +90,8 @@ namespace FillLyric
 
         SplitterItem *m_splitter;
         HandleItem *m_handle;
+
+        CellQss *m_cellQss;
 
     private Q_SLOTS:
         void editCell(FillLyric::LyricCell *cell, const QString &lyric);

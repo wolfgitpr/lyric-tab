@@ -15,10 +15,12 @@ namespace FillLyric
 {
     CellList::CellList(const qreal &x, const qreal &y, const QList<LangNote *> &noteList, QGraphicsScene *scene,
                        QGraphicsView *view, QUndoStack *undoStack) :
-        m_view(view), m_scene(scene), m_history(undoStack) {
+        m_view(view), m_scene(scene), m_history(undoStack), m_cellQss(new CellQss()) {
         this->setPos(x, y);
         m_scene->addItem(this);
         setFlag(ItemIsSelectable);
+
+        this->setCellQss();
 
         m_splitter = new SplitterItem(0, 0, m_curWidth, m_view, this);
         if (y <= 0)
@@ -30,7 +32,7 @@ namespace FillLyric
         m_handle->setPos(0, m_splitter->margin());
 
         for (const auto &note : noteList) {
-            const auto lyricCell = new LyricCell(deltaX(), this->y() + deltaY(), note, m_view);
+            const auto lyricCell = new LyricCell(deltaX(), this->y() + deltaY(), note, m_view, m_cellQss);
             m_cells.append(lyricCell);
             m_scene->addItem(lyricCell);
             this->connectCell(lyricCell);
@@ -140,7 +142,7 @@ namespace FillLyric
     }
 
     LyricCell *CellList::createNewCell() const {
-        const auto lyricCell = new LyricCell(0, this->y() + deltaY(), new LangNote(), m_view);
+        const auto lyricCell = new LyricCell(0, this->y() + deltaY(), new LangNote(), m_view, m_cellQss);
         this->connectCell(lyricCell);
         return lyricCell;
     }
@@ -322,4 +324,57 @@ namespace FillLyric
         Q_EMIT this->linebreakSignal(static_cast<int>(m_cells.indexOf(cell)));
     }
 
+    QVector<QPen> CellList::qssPens(const QString &property) const {
+        QVector<QPen> penList;
+        const auto penStr = m_view->property(property.toUtf8()).toStringList()[1];
+        if (!penStr.isEmpty()) {
+            const auto penListStr = penStr.split('|');
+            for (const auto &pen : penListStr) {
+                const auto penValue = pen.split(',');
+                if (penValue.size() == 4)
+                    penList.append(QPen(
+                        QColor(penValue[0].toInt(), penValue[1].toInt(), penValue[2].toInt(), penValue[3].toInt())));
+                else if (penValue.size() == 5)
+                    penList.append(
+                        QPen(QColor(penValue[0].toInt(), penValue[1].toInt(), penValue[2].toInt(), penValue[3].toInt()),
+                             penValue[4].toInt()));
+            }
+        }
+        return penList;
+    }
+
+    void CellList::setCellQss() const {
+        const auto cellBackBrush = m_view->property("cellBackgroundBrush").toStringList()[1];
+        if (!cellBackBrush.isEmpty()) {
+            const auto brushList = cellBackBrush.split('|');
+            if (brushList.size() == 3) {
+                for (int i = 0; i < 3; i++) {
+                    if (brushList[i] == "NoBrush")
+                        m_cellQss->cellBackgroundBrush[i] = QBrush(Qt::NoBrush);
+                    else {
+                        const auto colorStr = brushList[i].split(',');
+                        const QVector<int> colorValue = {colorStr[0].toInt(), colorStr[1].toInt(), colorStr[2].toInt(),
+                                                         colorStr[3].toInt()};
+
+                        if (colorValue.size() == 4) {
+                            m_cellQss->cellBackgroundBrush[i] = QBrush(QColor(
+                                colorStr[0].toInt(), colorStr[1].toInt(), colorStr[2].toInt(), colorStr[3].toInt()));
+                        }
+                    }
+                }
+            }
+        }
+
+        const auto lyricPen = qssPens("cellLyricPen");
+        if (lyricPen.size() == 4)
+            m_cellQss->cellLyricPen = {lyricPen[0], lyricPen[1], lyricPen[2], lyricPen[3]};
+
+        const auto syllablePen = qssPens("cellSyllablePen");
+        if (syllablePen.size() == 4)
+            m_cellQss->cellSyllablePen = {syllablePen[0], syllablePen[1], syllablePen[2], syllablePen[3]};
+
+        const auto borderPen = qssPens("cellBorderPen");
+        if (borderPen.size() == 4)
+            m_cellQss->cellBorderPen = {borderPen[0], borderPen[1], borderPen[2], borderPen[3]};
+    }
 }
