@@ -116,9 +116,7 @@ namespace FillLyric
     }
 
     void LyricWrapView::mousePressEvent(QMouseEvent *event) {
-        const auto selectedItems = scene()->selectedItems();
         const auto scenePos = mapToScene(event->pos()).toPoint();
-        const auto itemAtPos = scene()->itemAt(scenePos, QTransform());
 
         if (event->button() == Qt::LeftButton) {
             // 如果按下了shift
@@ -150,35 +148,6 @@ namespace FillLyric
             rubberBandOrigin = scenePos;
         }
 
-        // 右键取消选中
-        if (event->button() == Qt::RightButton) {
-            // 右击空白处取消选中&&右击Item选中、取消其他选中
-            if (!dynamic_cast<HandleItem *>(itemAtPos)) {
-                if (!itemAtPos && !selectedItems.isEmpty())
-                    for (const auto &item : selectedItems) {
-                        item->setSelected(false);
-                    }
-                if (itemAtPos) {
-                    if (selectedItems.contains(itemAtPos))
-                        return;
-                    for (const auto &item : selectedItems) {
-                        item->setSelected(false);
-                    }
-                    itemAtPos->setSelected(true);
-                }
-            } else {
-                // 右击行首手柄取消其他选中、选中当前整行
-                if (itemAtPos->isSelected())
-                    return;
-                for (const auto &item : selectedItems) {
-                    item->setSelected(false);
-                }
-                itemAtPos->setSelected(true);
-                if (const auto cellList = mapToList(scenePos))
-                    cellList->selectList();
-            }
-            return;
-        }
         QGraphicsView::mousePressEvent(event);
     }
 
@@ -275,9 +244,7 @@ namespace FillLyric
         // selected handle or space
         if (!dynamic_cast<LyricCell *>(itemAtPos)) {
             if (const auto cellList = mapToList(scenePos)) {
-                for (const auto item : selectedItems)
-                    item->setSelected(false);
-                cellList->setSelected(true);
+                cellList->highlight();
                 menu->addAction(tr("append cell"), [this, cellList] { m_history->push(new AppendCellCmd(cellList)); });
                 menu->addSeparator();
                 menu->addAction(tr("delete line"),

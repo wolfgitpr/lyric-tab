@@ -98,6 +98,8 @@ namespace FillLyric
 
     QGraphicsView *CellList::view() const { return m_view; }
 
+    void CellList::highlight() { this->setSelected(true); }
+
     void CellList::selectCells(const QPointF &startPos, const QPointF &endPos) {
         qreal x = this->x() + deltaX();
         qreal y = this->y() + m_splitter->deltaY();

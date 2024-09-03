@@ -67,6 +67,8 @@ namespace FillLyric
         void updateWidth(const qreal &w) const;
 
     protected:
+        void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+        void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
         void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
         void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 

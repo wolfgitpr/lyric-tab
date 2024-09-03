@@ -59,6 +59,28 @@ namespace FillLyric
 
     void LyricCell::setSyllableRect(const QRect &rect) { m_sRect = rect; }
 
+    void LyricCell::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+        if (event->button() == Qt::RightButton && scene()->selectedItems().size() > 1 && this->isSelected())
+            return;
+        if (!(event->modifiers() & Qt::ControlModifier)) {
+            for (const auto item : scene()->selectedItems()) {
+                item->setSelected(false);
+            }
+        }
+        this->setSelected(true);
+    }
+
+    void LyricCell::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+        if (event->button() == Qt::RightButton && scene()->selectedItems().size() > 1 && this->isSelected())
+            return;
+        if (!(event->modifiers() & Qt::ControlModifier)) {
+            for (const auto item : scene()->selectedItems()) {
+                item->setSelected(false);
+            }
+        }
+        this->setSelected(true);
+    }
+
     void LyricCell::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
         if (lyricRect().contains(event->scenePos())) {
             const auto lRect = lyricRect();

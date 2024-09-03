@@ -40,6 +40,7 @@ namespace FillLyric
 
         LyricCell *createNewCell() const;
 
+        void highlight();
         void selectCells(const QPointF &startPos, const QPointF &endPos);
 
         void appendCell(LyricCell *cell);
