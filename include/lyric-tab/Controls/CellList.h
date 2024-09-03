@@ -27,18 +27,18 @@ namespace FillLyric
         void clear();
         void setAutoWrap(const bool &autoWrap);
 
-        [[nodiscard]] qreal deltaX() const;
+        qreal deltaX() const;
 
-        [[nodiscard]] qreal deltaY() const;
+        qreal deltaY() const;
 
         void setBaseY(const qreal &y);
 
-        [[nodiscard]] qreal height() const;
-        [[nodiscard]] qreal cellWidth() const;
+        qreal height() const;
+        qreal cellWidth() const;
 
-        [[nodiscard]] QGraphicsView *view() const;
+        QGraphicsView *view() const;
 
-        [[nodiscard]] LyricCell *createNewCell() const;
+        LyricCell *createNewCell() const;
 
         void selectCells(const QPointF &startPos, const QPointF &endPos);
 
@@ -74,7 +74,7 @@ namespace FillLyric
         void selectList() const;
 
     protected:
-        [[nodiscard]] QRectF boundingRect() const override;
+        QRectF boundingRect() const override;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     private:

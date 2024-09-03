@@ -15,16 +15,16 @@ namespace FillLyric
         explicit HandleItem(QGraphicsView *view, QGraphicsItem *parent = nullptr);
         ~HandleItem() override;
 
-        [[nodiscard]] qreal width() const;
+        qreal width() const;
         void setWidth(const qreal &w);
 
-        [[nodiscard]] qreal height() const;
+        qreal height() const;
         void setHeight(const qreal &h);
 
-        [[nodiscard]] qreal deltaX() const;
+        qreal deltaX() const;
 
         void setMargin(const qreal &margin);
-        [[nodiscard]] qreal margin() const;
+        qreal margin() const;
 
     Q_SIGNALS:
         void selectAll() const;
@@ -35,8 +35,8 @@ namespace FillLyric
 
         void setQss();
 
-        [[nodiscard]] QRectF boundingRect() const override;
-        [[nodiscard]] QPainterPath shape() const override;
+        QRectF boundingRect() const override;
+        QPainterPath shape() const override;
 
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 

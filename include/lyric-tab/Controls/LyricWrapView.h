@@ -31,7 +31,7 @@ namespace FillLyric
         void clear();
         void init(const QList<QList<LangNote>> &noteLists);
 
-        [[nodiscard]] bool autoWrap() const;
+        bool autoWrap() const;
         void setAutoWrap(const bool &autoWrap);
 
         CellList *createNewList();
@@ -49,9 +49,9 @@ namespace FillLyric
         void selectCells(const QPointF &startPos, const QPointF &scenePos);
         void repaintCellLists();
 
-        [[nodiscard]] QUndoStack *history() const;
+        QUndoStack *history() const;
 
-        [[nodiscard]] QList<CellList *> cellLists() const;
+        QList<CellList *> cellLists() const;
 
     Q_SIGNALS:
         void fontSizeChanged();
@@ -92,10 +92,10 @@ namespace FillLyric
         void setSpliterPen(const QStringList &spliterPen);
 
     private:
-        [[nodiscard]] qreal maxListWidth() const;
-        [[nodiscard]] qreal height();
+        qreal maxListWidth() const;
+        qreal height();
         void connectCellList(CellList *cellList);
-        [[nodiscard]] qreal cellBaseY(const int &index) const;
+        qreal cellBaseY(const int &index) const;
 
         bool m_autoWrap = false;
 

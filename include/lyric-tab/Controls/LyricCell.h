@@ -32,22 +32,22 @@ namespace FillLyric
                            QGraphicsItem *parent = nullptr);
         ~LyricCell() override;
 
-        [[nodiscard]] qreal width() const;
-        [[nodiscard]] qreal height() const;
+        qreal width() const;
+        qreal height() const;
 
-        [[nodiscard]] QPainterPath shape() const override;
-        [[nodiscard]] QRectF boundingRect() const override;
+        QPainterPath shape() const override;
+        QRectF boundingRect() const override;
 
-        [[nodiscard]] QRectF lyricRect() const;
-        [[nodiscard]] QRectF syllableRect() const;
+        QRectF lyricRect() const;
+        QRectF syllableRect() const;
 
-        [[nodiscard]] LangNote *note() const;
+        LangNote *note() const;
         void setNote(LangNote *note);
 
-        [[nodiscard]] QString lyric() const;
+        QString lyric() const;
         void setLyric(const QString &lyric);
 
-        [[nodiscard]] QString syllable() const;
+        QString syllable() const;
         void setSyllable(const QString &syllable);
 
         void setFont(const QFont &font);
@@ -76,12 +76,12 @@ namespace FillLyric
         void updateLyricRect();
         void setQss(CellQss *qss);
 
-        [[nodiscard]] qreal lyricWidth() const;
-        [[nodiscard]] qreal syllableWidth() const;
+        qreal lyricWidth() const;
+        qreal syllableWidth() const;
 
-        [[nodiscard]] QPointF lyricPos() const;
-        [[nodiscard]] QPointF rectPos() const;
-        [[nodiscard]] QPointF syllablePos() const;
+        QPointF lyricPos() const;
+        QPointF rectPos() const;
+        QPointF syllablePos() const;
 
         void changePhonicMenu(QMenu *menu);
         void changeSyllableMenu(QMenu *menu);

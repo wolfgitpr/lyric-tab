@@ -24,11 +24,11 @@ namespace FillLyric
 
         void setLangNotes();
 
-        [[nodiscard]] QList<QList<LangNote>> exportLangNotes() const;
-        [[nodiscard]] QList<QList<LangNote>> modelExport() const;
+         QList<QList<LangNote>> exportLangNotes() const;
+         QList<QList<LangNote>> modelExport() const;
 
-        [[nodiscard]] bool exportSkipSlur() const;
-        [[nodiscard]] bool exportLanguage() const;
+         bool exportSkipSlur() const;
+         bool exportLanguage() const;
 
         LyricBaseWidget *m_lyricBaseWidget;
         LyricExtWidget *m_lyricExtWidget;

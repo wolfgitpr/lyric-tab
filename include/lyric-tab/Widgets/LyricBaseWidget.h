@@ -33,7 +33,7 @@ namespace FillLyric
         explicit LyricBaseWidget(LyricTabConfig config, QWidget *parent = nullptr);
         ~LyricBaseWidget() override;
 
-        [[nodiscard]] QList<QList<LangNote>> splitLyric(const QString &lyric) const;
+        QList<QList<LangNote>> splitLyric(const QString &lyric) const;
 
     Q_SIGNALS:
         void modifyOption() const;

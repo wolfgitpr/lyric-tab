@@ -14,23 +14,23 @@ namespace FillLyric
                               QGraphicsItem *parent = nullptr);
         ~SplitterItem() override;
 
-        [[nodiscard]] qreal width() const;
+        qreal width() const;
         void setWidth(const qreal &w);
 
-        [[nodiscard]] qreal height() const;
+        qreal height() const;
 
-        [[nodiscard]] qreal deltaY() const;
+        qreal deltaY() const;
         void setLineHeight(const qreal &lh);
 
-        [[nodiscard]] QPen pen() const;
+        QPen pen() const;
         void setPen(const QPen &pen);
 
         void setMargin(const qreal &margin);
-        [[nodiscard]] qreal margin() const;
+        qreal margin() const;
 
     protected:
-        [[nodiscard]] QRectF boundingRect() const override;
-        [[nodiscard]] QPainterPath shape() const override;
+        QRectF boundingRect() const override;
+        QPainterPath shape() const override;
 
         void setQss();
 

@@ -15,7 +15,7 @@ namespace LrcTools
         QString lyric;
         qint64 pts = 0;
 
-        [[nodiscard]] bool isEmpty() const { return lyric.isEmpty() && pts == 0; }
+        bool isEmpty() const { return lyric.isEmpty() && pts == 0; }
     };
 
     class LrcDecoderPrivate;
@@ -32,10 +32,10 @@ namespace LrcTools
         QString get(const QString &meta);
         LyricPacket readPacket();
         bool seek(const qint64 &timestamp, const SeekFlag &flag = SeekForward);
-        [[nodiscard]] qint64 duration() const;
+        qint64 duration() const;
         QStringList dumpMetadata();
         QStringList dumpLyrics();
-        [[nodiscard]] QString lastError() const;
+        QString lastError() const;
 
     protected:
         explicit LrcDecoder(LrcDecoderPrivate &d, QObject *parent = nullptr);
