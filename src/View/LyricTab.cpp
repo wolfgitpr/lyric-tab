@@ -34,7 +34,6 @@ namespace FillLyric
         connect(m_lyricExtWidget, &LyricExtWidget::modifyOption, this, &LyricTab::modifyOption);
 
         connect(m_lyricBaseWidget->btnReReadNote, &QAbstractButton::clicked, this, &LyricTab::setLangNotes);
-        connect(m_lyricBaseWidget->skipSlur, &QCheckBox::stateChanged, this, &LyricTab::setLangNotes);
 
         // phonicWidget signals
         connect(m_lyricExtWidget->m_btnInsertText, &QAbstractButton::clicked, this,
@@ -83,6 +82,8 @@ namespace FillLyric
         } else {
             m_lyricBaseWidget->btnLyricPrev->setText(tr("Fold Preview"));
         }
+
+        connect(m_lyricBaseWidget->skipSlur, &QCheckBox::stateChanged, this, &LyricTab::setLangNotes);
     }
 
     LyricTab::~LyricTab() = default;
