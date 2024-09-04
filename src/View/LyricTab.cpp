@@ -89,13 +89,19 @@ namespace FillLyric
 
     LyricTab::~LyricTab() = default;
 
-    void LyricTab::setLangNotes() {
+    void LyricTab::setLangNotes(bool warn) {
         const bool skipSlurRes = m_lyricBaseWidget->skipSlur->isChecked();
-        const QMessageBox::StandardButton res =
-            QMessageBox::question(nullptr, tr("Preview Lyric"), tr("Split the lyric into Preview window?"),
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
-        if (res == QMessageBox::Yes) {
+        bool setLangNotes = false;
+        if (warn) {
+            const QMessageBox::StandardButton res =
+                QMessageBox::question(nullptr, tr("Preview Lyric"), tr("Split the lyric into Preview window?"),
+                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+            if (res == QMessageBox::Yes)
+                setLangNotes = true;
+        }
+
+        if (!warn || setLangNotes) {
             QStringList lyrics;
             QList<LangNote> langNotes;
             for (const auto &langNote : m_langNotes) {

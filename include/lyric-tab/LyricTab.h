@@ -22,13 +22,13 @@ namespace FillLyric
         explicit LyricTab(QList<LangNote> langNotes, LyricTabConfig config = {}, QWidget *parent = nullptr);
         ~LyricTab() override;
 
-        void setLangNotes();
+        void setLangNotes(bool warn = true);
 
-         QList<QList<LangNote>> exportLangNotes() const;
-         QList<QList<LangNote>> modelExport() const;
+        QList<QList<LangNote>> exportLangNotes() const;
+        QList<QList<LangNote>> modelExport() const;
 
-         bool exportSkipSlur() const;
-         bool exportLanguage() const;
+        bool exportSkipSlur() const;
+        bool exportLanguage() const;
 
         LyricBaseWidget *m_lyricBaseWidget;
         LyricExtWidget *m_lyricExtWidget;
