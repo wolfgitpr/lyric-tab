@@ -16,6 +16,11 @@ namespace FillLyric
     HandleItem::~HandleItem() = default;
 
     void HandleItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+        if (event->button() == Qt::RightButton && scene()->selectedItems().size() > 1 && this->isSelected()) {
+            event->accept();
+            return;
+        }
+
         if (!(event->modifiers() & Qt::ControlModifier)) {
             for (const auto item : scene()->selectedItems()) {
                 item->setSelected(false);
@@ -26,6 +31,11 @@ namespace FillLyric
     }
 
     void HandleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+        if (event->button() == Qt::RightButton && scene()->selectedItems().size() > 1 && this->isSelected()) {
+            event->accept();
+            return;
+        }
+
         if (!(event->modifiers() & Qt::ControlModifier)) {
             for (const auto item : scene()->selectedItems()) {
                 item->setSelected(false);
