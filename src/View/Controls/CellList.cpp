@@ -14,13 +14,7 @@
 #include "../../Commands/Cell/ClearCellCmd.h"
 #include "../../Commands/Cell/DeleteCellCmd.h"
 
-#include "../../Commands/Line/AddNextLineCmd.h"
-#include "../../Commands/Line/AddPrevLineCmd.h"
 #include "../../Commands/Line/AppendCellCmd.h"
-#include "../../Commands/Line/DeleteLineCmd.h"
-
-#include "../../Commands/View/MoveDownLinesCmd.h"
-#include "../../Commands/View/MoveUpLinesCmd.h"
 
 namespace FillLyric
 {

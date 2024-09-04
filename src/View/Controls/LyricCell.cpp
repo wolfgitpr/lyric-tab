@@ -13,7 +13,7 @@
 namespace FillLyric
 {
     LyricCell::LyricCell(const qreal &x, const qreal &y, LangNote *note, QGraphicsView *view, CellQss *qss,
-                         QGraphicsItem *parent) : QGraphicsObject(parent), m_note(note), m_view(view), m_qss(qss) {
+                         QGraphicsItem *parent) : QGraphicsObject(parent), m_qss(qss), m_note(note), m_view(view) {
         this->setX(x);
         this->setY(y);
         setFlag(ItemIsSelectable);
@@ -242,7 +242,7 @@ namespace FillLyric
         }
     }
 
-    void LyricCell::setQss(CellQss *qss) {
+    void LyricCell::setQss(const CellQss *qss) {
         m_backgroundBrush = qss->cellBackgroundBrush;
         m_borderPen = qss->cellBorderPen;
         m_lyricPen = qss->cellLyricPen;

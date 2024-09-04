@@ -79,7 +79,7 @@ namespace FillLyric
 
     private:
         void updateLyricRect();
-        void setQss(CellQss *qss);
+        void setQss(const CellQss *qss);
 
         qreal lyricWidth() const;
         qreal syllableWidth() const;
