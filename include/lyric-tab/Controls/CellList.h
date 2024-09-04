@@ -38,7 +38,7 @@ namespace FillLyric
 
         QGraphicsView *view() const;
 
-        LyricCell *createNewCell() const;
+        LyricCell *createNewCell();
 
         void highlight();
         void selectCells(const QPointF &startPos, const QPointF &endPos);

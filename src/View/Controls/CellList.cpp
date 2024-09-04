@@ -175,8 +175,9 @@ namespace FillLyric
         }
     }
 
-    LyricCell *CellList::createNewCell() const {
+    LyricCell *CellList::createNewCell() {
         const auto lyricCell = new LyricCell(0, this->y() + deltaY(), new LangNote(), m_view, m_cellQss);
+        this->updateRect(lyricCell);
         this->connectCell(lyricCell);
         return lyricCell;
     }
