@@ -47,7 +47,7 @@ namespace FillLyric
 
         // notesCount
         connect(m_scene, &QGraphicsScene::changed, [this]
-                { Q_EMIT noteCountChanged(static_cast<int>(m_scene->items().size() - m_cellLists.size() * 3 - 1)); });
+                { Q_EMIT noteCountChanged(static_cast<int>(m_scene->items().size() - m_cellLists.size() * 3)); });
     }
 
     LyricWrapView::~LyricWrapView() = default;
