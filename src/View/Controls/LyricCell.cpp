@@ -69,7 +69,7 @@ namespace FillLyric
             return;
         }
 
-        if (!(event->modifiers() & Qt::ControlModifier)) {
+        if (!(event->modifiers() & Qt::ControlModifier || event->modifiers() & Qt::ShiftModifier)) {
             for (const auto item : scene()->selectedItems()) {
                 item->setSelected(false);
             }
@@ -88,7 +88,7 @@ namespace FillLyric
             return;
         }
 
-        if (!(event->modifiers() & Qt::ControlModifier)) {
+        if (!(event->modifiers() & Qt::ControlModifier || event->modifiers() & Qt::ShiftModifier)) {
             for (const auto item : scene()->selectedItems()) {
                 item->setSelected(false);
             }
