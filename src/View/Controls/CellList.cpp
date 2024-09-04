@@ -170,6 +170,10 @@ namespace FillLyric
             m_cells.insert(index, cell);
             m_scene->addItem(cell);
             this->updateCellPos();
+        } else if (index == m_cells.size()) {
+            m_cells.append(cell);
+            m_scene->addItem(cell);
+            this->updateCellPos();
         }
     }
 
