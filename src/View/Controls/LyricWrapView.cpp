@@ -115,44 +115,8 @@ namespace FillLyric
         }
     }
 
-    void LyricWrapView::mousePressEvent(QMouseEvent *event) {
-        const auto scenePos = mapToScene(event->pos()).toPoint();
-
-        if (event->button() == Qt::LeftButton) {
-            // 如果按下了shift
-            if (event->modifiers() & Qt::ShiftModifier) {
-                int cellCount = 0;
-                QPointF shiftStartPos{};
-                for (const auto item : scene()->selectedItems()) {
-                    if (const auto cell = dynamic_cast<LyricCell *>(item)) {
-                        shiftStartPos.setX(cell->mapToScene(cell->boundingRect().center()).x());
-                        shiftStartPos.setY(cell->mapToScene(cell->boundingRect().center()).y());
-                        cellCount++;
-                    }
-                }
-                if (cellCount > 1) {
-                    for (const auto item : scene()->selectedItems()) {
-                        item->setSelected(false);
-                    }
-                    this->selectCells(lastClickPos, scenePos);
-                } else if (shiftStartPos.x() != 0 && (event->pos() - shiftStartPos).manhattanLength() > 10) {
-                    this->selectCells(shiftStartPos, scenePos);
-                }
-                event->accept();
-                return;
-            }
-
-            if (const auto cellList = mapToList(scenePos)) {
-                cellList->setSelected(false);
-            }
-            rubberBandOrigin = scenePos;
-        }
-
-        QGraphicsView::mousePressEvent(event);
-    }
-
     void LyricWrapView::mouseMoveEvent(QMouseEvent *event) {
-        if (event->buttons() & Qt::LeftButton) {
+        if (event->buttons() & Qt::LeftButton && !(event->modifiers() & Qt::ShiftModifier)) {
             const auto scenePos = mapToScene(event->pos()).toPoint();
 
             if ((event->pos() - rubberBandOrigin).manhattanLength() > 10) {
@@ -171,6 +135,20 @@ namespace FillLyric
     void LyricWrapView::mouseReleaseEvent(QMouseEvent *event) {
         if (event->button() == Qt::LeftButton && !(event->modifiers() & Qt::ShiftModifier))
             lastClickPos = mapToScene(event->pos()).toPoint();
+
+        // 如果按下了shift
+        if (event->button() == Qt::LeftButton && event->modifiers() & Qt::ShiftModifier) {
+            const auto scenePos = mapToScene(event->pos()).toPoint();
+
+            for (const auto item : scene()->selectedItems()) {
+                if (!item->contains(lastClickPos))
+                    item->setSelected(false);
+            }
+
+            this->selectCells(lastClickPos, scenePos);
+            event->accept();
+            return;
+        }
         QGraphicsView::mouseReleaseEvent(event);
     }
 
@@ -199,7 +177,7 @@ namespace FillLyric
                 }
             }
 
-            if ((enableMenu && !m_selectedCells.isEmpty())) {
+            if (enableMenu && !m_selectedCells.isEmpty()) {
                 menu->addAction(tr("clear cells"),
                                 [this] { m_history->push(new ClearCellsCmd(this, m_selectedCells)); });
                 menu->addAction(tr("delete cells"),
@@ -460,7 +438,7 @@ namespace FillLyric
         for (const auto &cell : cellList->m_cells) {
             // 获取boundingRect的上下两个y坐标
             const qreal topY = cell->mapToScene(cell->boundingRect()).boundingRect().top();
-            const qreal bottomY = cell->mapToScene(cell->boundingRect()).boundingRect().bottom();
+            const qreal bottomY = topY + cell->height();
             if (topY <= pos.y() && bottomY >= pos.y()) {
                 return {topY, bottomY};
             }

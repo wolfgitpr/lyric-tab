@@ -53,6 +53,10 @@ namespace FillLyric
 
     void LyricCell::setSyllable(const QString &syllable) { Q_EMIT this->changeSyllable(this, syllable); }
 
+    qreal LyricCell::margin() const { return m_rectPadding; }
+
+    void LyricCell::setMargin(const qreal &margin) { m_rectPadding = margin; }
+
     void LyricCell::setFont(const QFont &font) { m_font = font; }
 
     void LyricCell::setLyricRect(const QRect &rect) { m_lRect = rect; }
@@ -66,6 +70,11 @@ namespace FillLyric
             for (const auto item : scene()->selectedItems()) {
                 item->setSelected(false);
             }
+        } else {
+            for (const auto item : scene()->selectedItems()) {
+                if (!dynamic_cast<LyricCell *>(item))
+                    item->setSelected(false);
+            }
         }
         this->setSelected(true);
     }
@@ -76,6 +85,11 @@ namespace FillLyric
         if (!(event->modifiers() & Qt::ControlModifier)) {
             for (const auto item : scene()->selectedItems()) {
                 item->setSelected(false);
+            }
+        } else {
+            for (const auto item : scene()->selectedItems()) {
+                if (!dynamic_cast<LyricCell *>(item))
+                    item->setSelected(false);
             }
         }
         this->setSelected(true);

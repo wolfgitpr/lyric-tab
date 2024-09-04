@@ -50,6 +50,9 @@ namespace FillLyric
         QString syllable() const;
         void setSyllable(const QString &syllable);
 
+        qreal margin() const;
+        void setMargin(const qreal &margin);
+
         void setFont(const QFont &font);
         void setLyricRect(const QRect &rect);
         void setSyllableRect(const QRect &rect);
