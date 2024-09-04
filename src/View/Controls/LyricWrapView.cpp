@@ -281,9 +281,15 @@ namespace FillLyric
     }
 
     void LyricWrapView::insertList(const int &index, CellList *cellList) {
-        m_cellLists.insert(index, cellList);
-        cellList->addToScene();
-        this->repaintCellLists();
+        if (index >= 0 && index < m_cellLists.size()) {
+            m_cellLists.insert(index, cellList);
+            cellList->addToScene();
+            this->repaintCellLists();
+        } else if (index == m_cellLists.size()) {
+            m_cellLists.append(cellList);
+            cellList->addToScene();
+            this->repaintCellLists();
+        }
     }
 
     void LyricWrapView::removeList(const int &index) {
