@@ -83,6 +83,7 @@ namespace FillLyric
             m_lyricBaseWidget->btnLyricPrev->setText(tr("Fold Preview"));
         }
 
+        m_lyricBaseWidget->skipSlur->setChecked(config.baseSkipSlur);
         connect(m_lyricBaseWidget->skipSlur, &QCheckBox::stateChanged, this, &LyricTab::setLangNotes);
     }
 

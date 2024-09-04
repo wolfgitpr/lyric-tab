@@ -85,7 +85,6 @@ namespace FillLyric
         auto font = m_textEdit->font();
         font.setPointSizeF(std::max(9.0, config.lyricBaseFontSize));
         m_textEdit->setFont(font);
-        skipSlur->setChecked(config.baseSkipSlur);
         m_splitComboBox->setCurrentIndex(config.splitMode);
         m_splitters->setVisible(config.splitMode == Custom);
 
