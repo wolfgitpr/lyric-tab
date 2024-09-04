@@ -62,8 +62,6 @@ namespace FillLyric
     }
 
     void CellList::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
-        const auto clickPos = event->scenePos();
-
         QMenu menu(m_view);
         menu.setAttribute(Qt::WA_TranslucentBackground);
         menu.setWindowFlags(menu.windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
@@ -77,7 +75,7 @@ namespace FillLyric
         menu.addSeparator();
         menu.addAction(tr("move up"), [this] { Q_EMIT moveUpLine(); });
         menu.addAction(tr("move down"), [this] { Q_EMIT moveDownLine(); });
-        menu.exec(m_view->mapToGlobal(clickPos.toPoint()));
+        menu.exec(event->screenPos());
     }
 
     void CellList::clear() {
