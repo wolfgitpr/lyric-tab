@@ -89,18 +89,28 @@ namespace FillLyric
 
     void LyricTab::setLangNotes() {
         const bool skipSlurRes = m_lyricBaseWidget->skipSlur->isChecked();
+        const QMessageBox::StandardButton res =
+            QMessageBox::question(nullptr, tr("Preview Lyric"), tr("Split the lyric into Preview window?"),
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
-        QStringList lyrics;
-        QList<LangNote> langNotes;
-        for (const auto &langNote : m_langNotes) {
-            if (skipSlurRes && (langNote.language == "slur" || langNote.lyric == "-"))
-                continue;
-            langNotes.append(langNote);
-            lyrics.append(langNote.lyric);
+        if (res == QMessageBox::Yes) {
+            QStringList lyrics;
+            QList<LangNote> langNotes;
+            for (const auto &langNote : m_langNotes) {
+                if (skipSlurRes && (langNote.language == "slur" || langNote.lyric == "-"))
+                    continue;
+                langNotes.append(langNote);
+                lyrics.append(langNote.lyric);
+            }
+            notesCount = static_cast<int>(langNotes.size());
+            m_lyricBaseWidget->m_textEdit->setPlainText(lyrics.join(" "));
+            m_lyricExtWidget->m_wrapView->init({langNotes});
+        } else {
+            disconnect(m_lyricBaseWidget->skipSlur, &QCheckBox::stateChanged, this, &LyricTab::setLangNotes);
+            m_lyricBaseWidget->skipSlur->setCheckState(!skipSlurRes ? Qt::Checked : Qt::Unchecked);
+            connect(m_lyricBaseWidget->skipSlur, &QCheckBox::stateChanged, this, &LyricTab::setLangNotes);
+            modifyOption();
         }
-        notesCount = static_cast<int>(langNotes.size());
-        m_lyricBaseWidget->m_textEdit->setPlainText(lyrics.join(" "));
-        m_lyricExtWidget->m_wrapView->init({langNotes});
     }
 
     QList<QList<LangNote>> LyricTab::exportLangNotes() const {
