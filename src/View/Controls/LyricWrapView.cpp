@@ -11,7 +11,6 @@
 
 #include "../../Commands/Line/AddNextLineCmd.h"
 #include "../../Commands/Line/AddPrevLineCmd.h"
-#include "../../Commands/Line/AppendCellCmd.h"
 #include "../../Commands/Line/DeleteLineCmd.h"
 #include "../../Commands/Line/LinebreakCmd.h"
 
@@ -174,9 +173,9 @@ namespace FillLyric
     }
 
     void LyricWrapView::contextMenuEvent(QContextMenuEvent *event) {
-        auto *menu = new QMenu(this);
-        menu->setAttribute(Qt::WA_TranslucentBackground);
-        menu->setWindowFlags(menu->windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+        QMenu menu(this);
+        menu.setAttribute(Qt::WA_TranslucentBackground);
+        menu.setWindowFlags(menu.windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
 
         const auto clickPos = event->pos();
         const auto scenePos = mapToScene(clickPos).toPoint();
@@ -199,13 +198,12 @@ namespace FillLyric
             }
 
             if (enableMenu && !m_selectedCells.isEmpty()) {
-                menu->addAction(tr("clear cells"),
-                                [this] { m_history->push(new ClearCellsCmd(this, m_selectedCells)); });
-                menu->addAction(tr("delete cells"),
-                                [this] { m_history->push(new DeleteCellsCmd(this, m_selectedCells)); });
-                menu->exec(mapToGlobal(clickPos));
+                menu.addAction(tr("clear cells"),
+                               [this] { m_history->push(new ClearCellsCmd(this, m_selectedCells)); });
+                menu.addAction(tr("delete cells"),
+                               [this] { m_history->push(new DeleteCellsCmd(this, m_selectedCells)); });
+                menu.exec(mapToGlobal(clickPos));
                 event->accept();
-                delete menu;
                 return;
             }
         }
@@ -223,48 +221,19 @@ namespace FillLyric
                     selectedSet.insert(cellList);
                 }
             }
-            menu->addSeparator();
-            menu->addAction(tr("delete lines"), [this, selectedSet]
-                            { m_history->push(new DeleteLinesCmd(this, QList(selectedSet.values()))); });
-            menu->addAction(tr("move up"), [this, selectedSet]
-                            { m_history->push(new MoveUpLinesCmd(this, QList(selectedSet.values()))); });
-            menu->addAction(tr("move down"), [this, selectedSet]
-                            { m_history->push(new MoveDownLinesCmd(this, QList(selectedSet.values()))); });
+            menu.addSeparator();
+            menu.addAction(tr("delete lines"), [this, selectedSet]
+                           { m_history->push(new DeleteLinesCmd(this, QList(selectedSet.values()))); });
+            menu.addAction(tr("move up"), [this, selectedSet]
+                           { m_history->push(new MoveUpLinesCmd(this, QList(selectedSet.values()))); });
+            menu.addAction(tr("move down"), [this, selectedSet]
+                           { m_history->push(new MoveDownLinesCmd(this, QList(selectedSet.values()))); });
             if (selectedSet.contains(m_cellLists.first()))
-                menu->actions().at(2)->setEnabled(false);
+                menu.actions().at(2)->setEnabled(false);
             if (selectedSet.contains(m_cellLists.last()))
-                menu->actions().at(3)->setEnabled(false);
-            menu->exec(mapToGlobal(clickPos));
+                menu.actions().at(3)->setEnabled(false);
+            menu.exec(mapToGlobal(clickPos));
             event->accept();
-            delete menu;
-            return;
-        }
-
-        // selected handle or space
-        if (!dynamic_cast<LyricCell *>(itemAtPos)) {
-            if (const auto cellList = mapToList(scenePos)) {
-                cellList->highlight();
-                menu->addAction(tr("append cell"), [this, cellList] { m_history->push(new AppendCellCmd(cellList)); });
-                menu->addSeparator();
-                menu->addAction(tr("delete line"),
-                                [this, cellList] { m_history->push(new DeleteLineCmd(this, cellList)); });
-                menu->addAction(tr("add prev line"),
-                                [this, cellList] { m_history->push(new AddPrevLineCmd(this, cellList)); });
-                menu->addAction(tr("add next line"),
-                                [this, cellList] { m_history->push(new AddNextLineCmd(this, cellList)); });
-                menu->addSeparator();
-                menu->addAction(tr("move up"),
-                                [this, cellList] { m_history->push(new MoveUpLinesCmd(this, {cellList})); });
-                menu->addAction(tr("move down"),
-                                [this, cellList] { m_history->push(new MoveDownLinesCmd(this, {cellList})); });
-                if (cellList == m_cellLists.first())
-                    menu->actions().at(6)->setEnabled(false);
-                if (cellList == m_cellLists.last())
-                    menu->actions().at(7)->setEnabled(false);
-                menu->exec(mapToGlobal(clickPos));
-            }
-            event->accept();
-            delete menu;
             return;
         }
         return QGraphicsView::contextMenuEvent(event);
@@ -438,6 +407,10 @@ namespace FillLyric
                 [this, cellList] { m_history->push(new AddPrevLineCmd(this, cellList)); });
         connect(cellList, &CellList::addNextLine,
                 [this, cellList] { m_history->push(new AddNextLineCmd(this, cellList)); });
+        connect(cellList, &CellList::moveUpLine,
+                [this, cellList] { m_history->push(new MoveUpLinesCmd(this, {cellList})); });
+        connect(cellList, &CellList::moveDownLine,
+                [this, cellList] { m_history->push(new MoveDownLinesCmd(this, {cellList})); });
     }
 
     qreal LyricWrapView::cellBaseY(const int &index) const {

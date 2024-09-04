@@ -2,7 +2,9 @@
 #include <lyric-tab/Controls/LyricCell.h>
 
 #include <QGraphicsOpacityEffect>
+#include <QMenu>
 #include <QStyleOptionGraphicsItem>
+#include <qgraphicssceneevent.h>
 
 #include "../../Commands/Cell/ChangeSyllableCmd.h"
 #include "../../Commands/Cell/EditCellCmd.h"
@@ -12,8 +14,18 @@
 #include "../../Commands/Cell/ClearCellCmd.h"
 #include "../../Commands/Cell/DeleteCellCmd.h"
 
+#include "../../Commands/Line/AddNextLineCmd.h"
+#include "../../Commands/Line/AddPrevLineCmd.h"
+#include "../../Commands/Line/AppendCellCmd.h"
+#include "../../Commands/Line/DeleteLineCmd.h"
+
+#include "../../Commands/View/MoveDownLinesCmd.h"
+#include "../../Commands/View/MoveUpLinesCmd.h"
+
 namespace FillLyric
 {
+    class LyricWrapView;
+
     CellList::CellList(const qreal &x, const qreal &y, const QList<LangNote *> &noteList, QGraphicsScene *scene,
                        QGraphicsView *view, QUndoStack *undoStack) :
         m_view(view), m_scene(scene), m_history(undoStack), m_cellQss(new CellQss()) {
@@ -53,6 +65,25 @@ namespace FillLyric
             painter->setBrush(Qt::NoBrush);
         }
         painter->drawRect(boundingRect());
+    }
+
+    void CellList::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
+        const auto clickPos = event->scenePos();
+
+        QMenu menu(m_view);
+        menu.setAttribute(Qt::WA_TranslucentBackground);
+        menu.setWindowFlags(menu.windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+
+        this->highlight();
+        menu.addAction(tr("append cell"), [this] { m_history->push(new AppendCellCmd(this)); });
+        menu.addSeparator();
+        menu.addAction(tr("delete line"), [this] { Q_EMIT deleteLine(); });
+        menu.addAction(tr("add prev line"), [this] { Q_EMIT addPrevLine(); });
+        menu.addAction(tr("add next line"), [this] { Q_EMIT addNextLine(); });
+        menu.addSeparator();
+        menu.addAction(tr("move up"), [this] { Q_EMIT moveUpLine(); });
+        menu.addAction(tr("move down"), [this] { Q_EMIT moveDownLine(); });
+        menu.exec(m_view->mapToGlobal(clickPos.toPoint()));
     }
 
     void CellList::clear() {

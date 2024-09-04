@@ -69,6 +69,9 @@ namespace FillLyric
         void deleteLine() const;
         void addPrevLine() const;
         void addNextLine() const;
+        void moveUpLine() const;
+        void moveDownLine() const;
+
         void linebreakSignal(const int &cellIndex) const;
 
     public Q_SLOTS:
@@ -77,6 +80,8 @@ namespace FillLyric
     protected:
         QRectF boundingRect() const override;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
+        void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
     private:
         void setCellQss() const;
