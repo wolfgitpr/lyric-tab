@@ -20,6 +20,7 @@ namespace FillLyric
         LyricWrapView *m_view;
         QMap<CellList *, QMap<int, LyricCell *>> m_cellsMap;
         QList<LyricCell *> m_cells;
+        QList<QPair<int, CellList *>> m_cellLists;
     };
 
 } // namespace FillLyric

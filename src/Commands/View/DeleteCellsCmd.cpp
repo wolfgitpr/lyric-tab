@@ -13,9 +13,19 @@ namespace FillLyric
                 m_cellsMap[cellList][static_cast<int>(cellList->m_cells.indexOf(cell))] = cell;
             }
         }
+
+        for (const auto &cellList : m_cellsMap.keys()) {
+            if (cellList->m_cells.size() == m_cellsMap[cellList].size())
+                m_cellLists.append({m_view->cellLists().indexOf(cellList), cellList});
+        }
     }
 
     void DeleteCellsCmd::undo() {
+        for (const auto &cellList : m_cellLists) {
+            if (!m_view->cellLists().contains(cellList.second))
+                m_view->insertList(cellList.first, cellList.second);
+        }
+
         const auto cellLists = m_cellsMap.keys();
         for (const auto &cellList : cellLists) {
             const auto indexes = m_cellsMap[cellList].keys();
@@ -34,6 +44,10 @@ namespace FillLyric
                 cellList->removeCell(m_cellsMap[cellList][index]);
             }
         }
+
+        for (const auto &cellList : m_cellLists)
+            m_view->removeList(cellList.second);
+
         m_view->repaintCellLists();
     }
 } // namespace FillLyric
