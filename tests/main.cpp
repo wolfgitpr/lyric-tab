@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     const auto langMgr = LangMgr::ILanguageManager::instance();
 
     QString errorMsg;
-    g2pMgr->initialize(errorMsg);
+    g2pMgr->initialize(qApp->applicationDirPath() + "/dict", errorMsg);
 
     if (!g2pMgr->initialized())
         qDebug() << "G2pMgr: errorMsg" << errorMsg << "initialized:" << g2pMgr->initialized();
