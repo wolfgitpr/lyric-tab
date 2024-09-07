@@ -62,6 +62,8 @@ namespace FillLyric
     }
 
     void CellList::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
+        if (!m_scene->selectedItems().empty())
+            return;
         QMenu menu(m_view);
         menu.setAttribute(Qt::WA_TranslucentBackground);
         menu.setWindowFlags(menu.windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
