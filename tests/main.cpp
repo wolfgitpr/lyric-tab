@@ -40,11 +40,16 @@ int main(int argc, char *argv[]) {
     if (!langMgr->initialized())
         qDebug() << "LangMgr: errorMsg" << errorMsg << "initialized:" << langMgr->initialized();
 
-    auto *lyricTab = new LyricTab({});
+    auto *lyricTab =
+        new LyricTab({LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
+                      LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
+                      LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好")},
+                     {true, true});
 
     window.setCentralWidget(lyricTab);
     window.show();
     window.resize(800, 600);
+    lyricTab->setLangNotes(false);
 
     return QApplication::exec();
 }
