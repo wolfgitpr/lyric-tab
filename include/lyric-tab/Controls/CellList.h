@@ -84,6 +84,7 @@ namespace FillLyric
         void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
     private:
+        void showContextMenu(const QPointF &pos);
         void setCellQss() const;
         QVector<QPen> qssPens(const QString &property) const;
 

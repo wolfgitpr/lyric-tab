@@ -45,6 +45,10 @@ namespace FillLyric
         this->setSelected(true);
     }
 
+    void HandleItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
+        Q_EMIT contextMenuRequested(event->screenPos());
+    }
+
     QRectF HandleItem::boundingRect() const { return {0, 0, width(), height()}; }
 
     QPainterPath HandleItem::shape() const {

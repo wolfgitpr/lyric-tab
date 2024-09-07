@@ -46,6 +46,8 @@ namespace FillLyric
         }
         this->updateCellPos();
         m_handle->setHeight(m_height);
+
+        connect(m_handle, &HandleItem::contextMenuRequested, this, &CellList::showContextMenu);
         connect(m_handle, &HandleItem::selectAll, this, &CellList::selectList);
     }
 
@@ -64,20 +66,7 @@ namespace FillLyric
     void CellList::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
         if (!m_scene->selectedItems().empty())
             return;
-        QMenu menu(m_view);
-        menu.setAttribute(Qt::WA_TranslucentBackground);
-        menu.setWindowFlags(menu.windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
-
-        this->highlight();
-        menu.addAction(tr("append cell"), [this] { m_history->push(new AppendCellCmd(this)); });
-        menu.addSeparator();
-        menu.addAction(tr("delete line"), [this] { Q_EMIT deleteLine(); });
-        menu.addAction(tr("add prev line"), [this] { Q_EMIT addPrevLine(); });
-        menu.addAction(tr("add next line"), [this] { Q_EMIT addNextLine(); });
-        menu.addSeparator();
-        menu.addAction(tr("move up"), [this] { Q_EMIT moveUpLine(); });
-        menu.addAction(tr("move down"), [this] { Q_EMIT moveDownLine(); });
-        menu.exec(event->screenPos());
+        this->showContextMenu(event->screenPos());
     }
 
     void CellList::clear() {
@@ -374,6 +363,23 @@ namespace FillLyric
             }
         }
         return penList;
+    }
+
+    void CellList::showContextMenu(const QPointF &pos) {
+        QMenu menu(m_view);
+        menu.setAttribute(Qt::WA_TranslucentBackground);
+        menu.setWindowFlags(menu.windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+
+        this->highlight();
+        menu.addAction(tr("append cell"), [this] { m_history->push(new AppendCellCmd(this)); });
+        menu.addSeparator();
+        menu.addAction(tr("delete line"), [this] { Q_EMIT deleteLine(); });
+        menu.addAction(tr("add prev line"), [this] { Q_EMIT addPrevLine(); });
+        menu.addAction(tr("add next line"), [this] { Q_EMIT addNextLine(); });
+        menu.addSeparator();
+        menu.addAction(tr("move up"), [this] { Q_EMIT moveUpLine(); });
+        menu.addAction(tr("move down"), [this] { Q_EMIT moveDownLine(); });
+        menu.exec(pos.toPoint());
     }
 
     void CellList::setCellQss() const {

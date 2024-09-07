@@ -28,10 +28,13 @@ namespace FillLyric
 
     Q_SIGNALS:
         void selectAll() const;
+        void contextMenuRequested(const QPointF &pos) const;
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
         void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+
+        void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
         void setQss();
 
