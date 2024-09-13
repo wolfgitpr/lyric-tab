@@ -109,8 +109,7 @@ namespace FillLyric
             const auto editRect =
                 QRectF(lRect.x() - horizontalOffset, lRect.y() - verticalOffset, lRect.width(), lRect.height());
             EditDialog dlg(lyric(), editRect, m_font, m_view);
-            dlg.show();
-            dlg.activateWindow();
+            dlg.setModal(true);
             dlg.exec();
             if (dlg.text != lyric()) {
                 this->setLyric(dlg.text);

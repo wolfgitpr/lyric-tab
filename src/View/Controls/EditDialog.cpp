@@ -9,7 +9,8 @@ namespace FillLyric
     EditDialog::EditDialog(const QString &lyric, const QRectF &rect, const QFont &font, QWidget *parent) :
         QDialog(parent) {
         setObjectName("section-edit-popup");
-        setWindowFlags(Qt::Popup);
+        setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+        setAttribute(Qt::WA_TranslucentBackground);
 
         const auto lineEdit = new QLineEdit();
         lineEdit->setObjectName("tempo-text");
