@@ -241,7 +241,7 @@ namespace FillLyric
 
     CellList *LyricWrapView::createNewList() {
         const auto width = this->width() - this->verticalScrollBar()->width();
-        const auto cellList = new CellList(0, 0, {new LangNote()}, m_scene, this, m_history);
+        const auto cellList = new CellList(0, 0, {}, m_scene, this, m_history);
         cellList->setAutoWrap(m_autoWrap);
         cellList->setFont(this->font());
         cellList->setWidth(width);

@@ -5,6 +5,7 @@
 
 namespace FillLyric
 {
+    class LyricCell;
     class CellList;
     class LyricWrapView;
 
@@ -18,6 +19,7 @@ namespace FillLyric
         LyricWrapView *m_view;
         int m_index;
         CellList *m_newList;
+        LyricCell *m_newCell;
     };
 
 } // namespace FillLyric
