@@ -103,8 +103,18 @@ namespace FillLyric
 
         // undo redo
         m_history = m_wrapView->history();
-        connect(btnUndo, &QPushButton::clicked, m_history, &QUndoStack::undo);
-        connect(btnRedo, &QPushButton::clicked, m_history, &QUndoStack::redo);
+        connect(btnUndo, &QPushButton::clicked,
+                [this]()
+                {
+                    m_wrapView->history()->undo();
+                    m_wrapView->updateCellRect();
+                });
+        connect(btnRedo, &QPushButton::clicked,
+                [this]()
+                {
+                    m_wrapView->history()->redo();
+                    m_wrapView->updateCellRect();
+                });
         connect(m_history, &QUndoStack::canUndoChanged, btnUndo, &QPushButton::setEnabled);
         connect(m_history, &QUndoStack::canRedoChanged, btnRedo, &QPushButton::setEnabled);
 

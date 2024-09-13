@@ -358,6 +358,13 @@ namespace FillLyric
         this->repaintCellLists();
     }
 
+    void LyricWrapView::updateCellRect() {
+        for (const auto &cellList : m_cellLists) {
+            cellList->setFont(this->font());
+        }
+        this->repaintCellLists();
+    }
+
     void LyricWrapView::repaintCellLists() {
         qreal height = 0;
         const auto width = m_autoWrap ? this->width() - this->verticalScrollBar()->width() : this->maxListWidth();
