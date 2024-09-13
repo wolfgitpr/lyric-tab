@@ -102,7 +102,7 @@ namespace FillLyric
     }
 
     void LyricCell::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
-        if (lyricRect().contains(event->scenePos())) {
+        if (event->button() == Qt::LeftButton && lyricRect().contains(event->scenePos())) {
             const auto lRect = lyricRect();
             const int horizontalOffset = m_view->horizontalScrollBar()->value();
             const int verticalOffset = m_view->verticalScrollBar()->value();
