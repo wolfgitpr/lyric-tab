@@ -268,6 +268,7 @@ namespace FillLyric
         cellList->removeFromScene();
         m_cellLists.remove(index);
         this->repaintCellLists();
+        this->repaint();
     }
 
     void LyricWrapView::removeList(CellList *cellList) {
