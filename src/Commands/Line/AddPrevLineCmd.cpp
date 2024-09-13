@@ -10,7 +10,6 @@ namespace FillLyric
         m_index = static_cast<int>(m_view->cellLists().indexOf(cellList));
         m_newList = m_view->createNewList();
         m_newCell = m_newList->createNewCell();
-        m_newList->insertCell(0, m_newCell);
         m_newList->removeFromScene();
     }
 
