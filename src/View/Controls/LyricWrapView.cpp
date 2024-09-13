@@ -61,7 +61,7 @@ namespace FillLyric
                 }
             }
             if (!selectedCells.isEmpty())
-                m_history->push(new ClearCellsCmd(this, selectedCells));
+                m_history->push(new DeleteCellsCmd(this, selectedCells));
             event->accept();
             return;
         }
