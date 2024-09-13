@@ -36,7 +36,7 @@ namespace FillLyric
         m_scene = new QGraphicsScene(parent);
 
         this->setScene(m_scene);
-        this->setDragMode(RubberBandDrag);
+        this->setDragMode(NoDrag);
 
         this->setHorizontalScrollBarPolicy(m_autoWrap ? Qt::ScrollBarAlwaysOff : Qt::ScrollBarAsNeeded);
         this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
