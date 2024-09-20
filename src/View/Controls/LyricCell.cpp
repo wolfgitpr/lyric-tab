@@ -28,6 +28,7 @@ namespace FillLyric
 
     QPainterPath LyricCell::shape() const {
         QPainterPath path;
+        path.addRect({syllablePos().x(), syllablePos().y(), syllableWidth(), static_cast<qreal>(m_sRect.height())});
         path.addRect({rectPos().x(), rectPos().y(), width() - m_padding * 2, m_lRect.height() + m_rectPadding * 2});
         return path;
     }
@@ -130,16 +131,23 @@ namespace FillLyric
         menu->setWindowFlags(menu->windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
         this->changeSyllableMenu(menu);
         this->changePhonicMenu(menu);
-        menu->addSeparator();
-        menu->addAction(tr("clear cell"), [this] { Q_EMIT this->clearCell(this); });
-        if (m_cells->size() == 1)
-            menu->addAction(tr("delete line"), [this] { Q_EMIT this->deleteLine(this); });
-        else if (m_cells->indexOf(this) != 0)
-            menu->addAction(tr("delete cell"), [this] { Q_EMIT this->deleteCell(this); });
-        menu->addAction(tr("add prev cell"), [this] { Q_EMIT this->addPrevCell(this); });
-        menu->addAction(tr("add next cell"), [this] { Q_EMIT this->addNextCell(this); });
-        if (m_cells->indexOf(this) != 0)
-            menu->addAction(tr("linebreak"), [this] { Q_EMIT this->linebreak(this); });
+
+        const auto lRect = QRectF{x() + rectPos().x(), y() + rectPos().y(), width() - m_padding * 2,
+                                  m_lRect.height() + m_rectPadding * 2};
+
+        if (lRect.contains(event->scenePos())) {
+            menu->addSeparator();
+            menu->addAction(tr("clear cell"), [this] { Q_EMIT this->clearCell(this); });
+            if (m_cells->size() == 1)
+                menu->addAction(tr("delete line"), [this] { Q_EMIT this->deleteLine(this); });
+            else if (m_cells->indexOf(this) != 0)
+                menu->addAction(tr("delete cell"), [this] { Q_EMIT this->deleteCell(this); });
+            menu->addAction(tr("add prev cell"), [this] { Q_EMIT this->addPrevCell(this); });
+            menu->addAction(tr("add next cell"), [this] { Q_EMIT this->addNextCell(this); });
+            if (m_cells->indexOf(this) != 0)
+                menu->addAction(tr("linebreak"), [this] { Q_EMIT this->linebreak(this); });
+        }
+
         menu->exec(event->screenPos());
         event->accept();
         delete menu;
