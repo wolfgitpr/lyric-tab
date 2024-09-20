@@ -39,7 +39,7 @@ namespace FillLyric
         m_handle->setPos(0, m_splitter->margin());
 
         for (const auto &note : noteList) {
-            const auto lyricCell = new LyricCell(deltaX(), this->y() + deltaY(), note, m_view, m_cellQss);
+            const auto lyricCell = new LyricCell(deltaX(), this->y() + deltaY(), note, m_view, m_cellQss, &m_cells);
             m_cells.append(lyricCell);
             m_scene->addItem(lyricCell);
             this->connectCell(lyricCell);
@@ -159,7 +159,7 @@ namespace FillLyric
     }
 
     LyricCell *CellList::createNewCell() {
-        const auto lyricCell = new LyricCell(0, this->y() + deltaY(), new LangNote(), m_view, m_cellQss);
+        const auto lyricCell = new LyricCell(0, this->y() + deltaY(), new LangNote(), m_view, m_cellQss, &m_cells);
         this->updateRect(lyricCell);
         this->connectCell(lyricCell);
         return lyricCell;
@@ -301,6 +301,7 @@ namespace FillLyric
 
         // cell option
         connect(cell, &LyricCell::clearCell, this, &CellList::clearCell);
+        connect(cell, &LyricCell::deleteLine, this, &CellList::deleteLine);
         connect(cell, &LyricCell::deleteCell, this, &CellList::deleteCell);
         connect(cell, &LyricCell::addPrevCell, this, &CellList::addPrevCell);
         connect(cell, &LyricCell::addNextCell, this, &CellList::addNextCell);
@@ -314,6 +315,7 @@ namespace FillLyric
         disconnect(cell, &LyricCell::changeSyllable, this, &CellList::changeSyllable);
 
         disconnect(cell, &LyricCell::clearCell, this, &CellList::clearCell);
+        disconnect(cell, &LyricCell::deleteLine, this, &CellList::deleteLine);
         disconnect(cell, &LyricCell::deleteCell, this, &CellList::deleteCell);
         disconnect(cell, &LyricCell::addPrevCell, this, &CellList::addPrevCell);
         disconnect(cell, &LyricCell::addNextCell, this, &CellList::addNextCell);

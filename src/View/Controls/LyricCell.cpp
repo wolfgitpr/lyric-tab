@@ -13,7 +13,8 @@
 namespace FillLyric
 {
     LyricCell::LyricCell(const qreal &x, const qreal &y, LangNote *note, QGraphicsView *view, CellQss *qss,
-                         QGraphicsItem *parent) : QGraphicsObject(parent), m_qss(qss), m_note(note), m_view(view) {
+                         QList<LyricCell *> *cells, QGraphicsItem *parent) :
+        QGraphicsObject(parent), m_qss(qss), m_cells(cells), m_note(note), m_view(view) {
         this->setX(x);
         this->setY(y);
         setFlag(ItemIsSelectable);
@@ -131,11 +132,14 @@ namespace FillLyric
         this->changePhonicMenu(menu);
         menu->addSeparator();
         menu->addAction(tr("clear cell"), [this] { Q_EMIT this->clearCell(this); });
-        if (x() != 0 || y() != 0)
+        if (m_cells->size() == 1)
+            menu->addAction(tr("delete line"), [this] { Q_EMIT this->deleteLine(this); });
+        else if (m_cells->indexOf(this) != 0)
             menu->addAction(tr("delete cell"), [this] { Q_EMIT this->deleteCell(this); });
         menu->addAction(tr("add prev cell"), [this] { Q_EMIT this->addPrevCell(this); });
         menu->addAction(tr("add next cell"), [this] { Q_EMIT this->addNextCell(this); });
-        menu->addAction(tr("linebreak"), [this] { Q_EMIT this->linebreak(this); });
+        if (m_cells->indexOf(this) != 0)
+            menu->addAction(tr("linebreak"), [this] { Q_EMIT this->linebreak(this); });
         menu->exec(event->screenPos());
         event->accept();
         delete menu;

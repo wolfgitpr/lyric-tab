@@ -29,7 +29,7 @@ namespace FillLyric
 
     public:
         explicit LyricCell(const qreal &x, const qreal &y, LangNote *note, QGraphicsView *view, CellQss *qss,
-                           QGraphicsItem *parent = nullptr);
+                           QList<LyricCell *> *cells, QGraphicsItem *parent = nullptr);
         ~LyricCell() override;
 
         qreal width() const;
@@ -63,6 +63,7 @@ namespace FillLyric
 
         void clearCell(FillLyric::LyricCell *cell) const;
         void deleteCell(FillLyric::LyricCell *cell) const;
+        void deleteLine(FillLyric::LyricCell *cell) const;
         void addPrevCell(FillLyric::LyricCell *cell) const;
         void addNextCell(FillLyric::LyricCell *cell) const;
         void linebreak(FillLyric::LyricCell *cell) const;
@@ -94,6 +95,7 @@ namespace FillLyric
         QRect m_lRect;
         QRect m_sRect;
         CellQss *m_qss;
+        QList<LyricCell *> *m_cells;
 
         LangNote *m_note;
         QGraphicsView *m_view;
