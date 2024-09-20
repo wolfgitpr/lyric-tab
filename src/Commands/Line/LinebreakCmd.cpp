@@ -10,7 +10,6 @@ namespace FillLyric
         m_cellListIndex = static_cast<int>(m_view->cellLists().indexOf(m_list));
         m_cells = m_list->m_cells.mid(index);
         m_newList = m_view->createNewList();
-        m_newList->removeCell(m_newList->m_cells.at(0));
     }
 
     void LinebreakCmd::undo() {
