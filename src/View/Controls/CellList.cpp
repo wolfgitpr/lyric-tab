@@ -66,6 +66,13 @@ namespace FillLyric
     void CellList::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
         if (!m_scene->selectedItems().empty())
             return;
+        // 遍历所有cell，如果有cell的y包含event的y，x>=event的x；或者cell的y大于event的y，则return
+        for (const auto &cell : m_cells) {
+            if (cell->y() <= event->scenePos().y() && cell->y() + cell->height() >= event->scenePos().y() &&
+                cell->x() + cell->width() >= event->scenePos().x()) {
+                return;
+            }
+        }
         this->showContextMenu(event->screenPos());
     }
 
