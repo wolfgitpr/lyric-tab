@@ -99,6 +99,8 @@ namespace FillLyric
         void connectCellList(CellList *cellList);
         qreal cellBaseY(const int &index) const;
 
+        bool cellInOneLine(QList<LyricCell *> cells);
+
         bool m_autoWrap = false;
 
         QFont m_font;

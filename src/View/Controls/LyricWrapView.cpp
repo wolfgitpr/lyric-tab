@@ -61,7 +61,22 @@ namespace FillLyric
                 }
             }
             if (!selectedCells.isEmpty())
-                m_history->push(new DeleteCellsCmd(this, selectedCells));
+                if (selectedCells.size() == 1) {
+                    const auto cellList = this->mapToList(selectedCells.first()->scenePos());
+                    if (cellList && cellList->m_cells.size() == 1) {
+                        m_history->push(new DeleteLineCmd(this, cellList));
+                        event->accept();
+                        return;
+                    }
+                } else if (selectedCells.size() > 1) {
+                    const auto cellList = this->mapToList(selectedCells.first()->scenePos());
+                    if (this->cellInOneLine(selectedCells)) {
+                        m_history->push(new DeleteLineCmd(this, cellList));
+                        event->accept();
+                        return;
+                    }
+                }
+            m_history->push(new DeleteCellsCmd(this, selectedCells));
             event->accept();
             return;
         }
@@ -200,8 +215,17 @@ namespace FillLyric
             if (enableMenu && !m_selectedCells.isEmpty()) {
                 menu.addAction(tr("clear cells"),
                                [this] { m_history->push(new ClearCellsCmd(this, m_selectedCells)); });
-                menu.addAction(tr("delete cells"),
-                               [this] { m_history->push(new DeleteCellsCmd(this, m_selectedCells)); });
+
+                if (m_selectedCells.size() > 1) {
+                    const auto cellList = this->mapToList(m_selectedCells.first()->scenePos());
+                    if (this->cellInOneLine(m_selectedCells)) {
+                        menu.addAction(tr("delete line"),
+                                       [this, cellList] { m_history->push(new DeleteLineCmd(this, cellList)); });
+                    } else
+                        menu.addAction(tr("delete cells"),
+                                       [this] { m_history->push(new DeleteCellsCmd(this, m_selectedCells)); });
+                }
+
                 menu.exec(mapToGlobal(clickPos));
                 event->accept();
                 return;
@@ -427,6 +451,19 @@ namespace FillLyric
             height += m_cellLists[i]->height();
         }
         return height;
+    }
+
+    bool LyricWrapView::cellInOneLine(QList<LyricCell *> cells) {
+        bool deleteLine = true;
+        const auto cellList = this->mapToList(cells.first()->scenePos());
+
+        for (const auto cell : cells) {
+            if (!cellList->m_cells.contains(cell)) {
+                deleteLine = false;
+                break;
+            }
+        }
+        return deleteLine;
     }
 
     CellList *LyricWrapView::mapToList(const QPointF &pos) {
