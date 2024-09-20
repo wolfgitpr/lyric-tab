@@ -241,7 +241,7 @@ namespace FillLyric
 
     CellList *LyricWrapView::createNewList() {
         const auto width = this->width() - this->verticalScrollBar()->width();
-        const auto cellList = new CellList(0, 0, {}, m_scene, this, m_history);
+        const auto cellList = new CellList(0, 0, {}, m_scene, this, m_history, &m_cellLists);
         cellList->setAutoWrap(m_autoWrap);
         cellList->setFont(this->font());
         cellList->setWidth(width);
@@ -280,8 +280,8 @@ namespace FillLyric
 
     void LyricWrapView::appendList(const QList<LangNote *> &noteList) {
         const auto width = this->width() - this->verticalScrollBar()->width();
-        const auto cellList =
-            new CellList(0, cellBaseY(static_cast<int>(m_cellLists.size())), noteList, m_scene, this, m_history);
+        const auto cellList = new CellList(0, cellBaseY(static_cast<int>(m_cellLists.size())), noteList, m_scene, this,
+                                           m_history, &m_cellLists);
         cellList->setAutoWrap(m_autoWrap);
         cellList->setFont(this->font());
         cellList->setWidth(width);

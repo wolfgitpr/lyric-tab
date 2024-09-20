@@ -21,8 +21,8 @@ namespace FillLyric
     class LyricWrapView;
 
     CellList::CellList(const qreal &x, const qreal &y, const QList<LangNote *> &noteList, QGraphicsScene *scene,
-                       QGraphicsView *view, QUndoStack *undoStack) :
-        m_view(view), m_scene(scene), m_history(undoStack), m_cellQss(new CellQss()) {
+                       QGraphicsView *view, QUndoStack *undoStack, QList<CellList *> *cellLists) :
+        m_view(view), m_scene(scene), m_history(undoStack), m_cellQss(new CellQss()), m_cellLists(cellLists) {
         this->setPos(x, y);
         m_scene->addItem(this);
         setFlag(ItemIsSelectable);
@@ -386,8 +386,10 @@ namespace FillLyric
         menu.addAction(tr("add prev line"), [this] { Q_EMIT addPrevLine(); });
         menu.addAction(tr("add next line"), [this] { Q_EMIT addNextLine(); });
         menu.addSeparator();
-        menu.addAction(tr("move up"), [this] { Q_EMIT moveUpLine(); });
-        menu.addAction(tr("move down"), [this] { Q_EMIT moveDownLine(); });
+        if (m_cellLists->indexOf(this) != 0)
+            menu.addAction(tr("move up"), [this] { Q_EMIT moveUpLine(); });
+        if (m_cellLists->indexOf(this) != m_cellLists->count() - 1)
+            menu.addAction(tr("move down"), [this] { Q_EMIT moveDownLine(); });
         menu.exec(pos.toPoint());
     }
 
