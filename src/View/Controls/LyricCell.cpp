@@ -140,7 +140,7 @@ namespace FillLyric
             menu->addAction(tr("clear cell"), [this] { Q_EMIT this->clearCell(this); });
             if (m_cells->size() == 1)
                 menu->addAction(tr("delete line"), [this] { Q_EMIT this->deleteLine(this); });
-            else if (m_cells->indexOf(this) != 0)
+            else
                 menu->addAction(tr("delete cell"), [this] { Q_EMIT this->deleteCell(this); });
             menu->addAction(tr("add prev cell"), [this] { Q_EMIT this->addPrevCell(this); });
             menu->addAction(tr("add next cell"), [this] { Q_EMIT this->addNextCell(this); });
