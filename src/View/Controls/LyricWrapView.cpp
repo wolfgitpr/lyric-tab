@@ -70,7 +70,7 @@ namespace FillLyric
                     }
                 } else if (selectedCells.size() > 1) {
                     const auto cellList = this->mapToList(selectedCells.first()->scenePos());
-                    if (this->cellInOneLine(selectedCells)) {
+                    if (this->cellEqualLine(selectedCells)) {
                         m_history->push(new DeleteLineCmd(this, cellList));
                         event->accept();
                         return;
@@ -218,7 +218,7 @@ namespace FillLyric
 
                 if (m_selectedCells.size() > 1) {
                     const auto cellList = this->mapToList(m_selectedCells.first()->scenePos());
-                    if (this->cellInOneLine(m_selectedCells)) {
+                    if (this->cellEqualLine(m_selectedCells)) {
                         menu.addAction(tr("delete line"),
                                        [this, cellList] { m_history->push(new DeleteLineCmd(this, cellList)); });
                     } else
@@ -453,9 +453,15 @@ namespace FillLyric
         return height;
     }
 
-    bool LyricWrapView::cellInOneLine(QList<LyricCell *> cells) {
+    bool LyricWrapView::cellEqualLine(QList<LyricCell *> cells) {
         bool deleteLine = true;
         const auto cellList = this->mapToList(cells.first()->scenePos());
+
+        if (cellList == nullptr)
+            return false;
+
+        if (cellList->m_cells.size() != cells.size())
+            return false;
 
         for (const auto cell : cells) {
             if (!cellList->m_cells.contains(cell)) {
