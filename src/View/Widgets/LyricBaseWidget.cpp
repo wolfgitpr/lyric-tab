@@ -8,7 +8,7 @@
 
 namespace FillLyric
 {
-    LyricBaseWidget::LyricBaseWidget(LyricTabConfig config, QWidget *parent) : QWidget(parent) {
+    LyricBaseWidget::LyricBaseWidget(const LyricTabConfig &config, QWidget *parent) : QWidget(parent) {
         // textEdit top
         m_textTopLayout = new QHBoxLayout();
         btnImportLrc = new Button(tr("Import Lrc"));
@@ -43,7 +43,7 @@ namespace FillLyric
         m_optLabel = new QLabel(tr("Fill-in Options:"));
         m_optButton = new QPushButton();
         m_optButton->setFixedSize(20, 20);
-        m_optButton->setIcon(QIcon(":/svg/icons/chevron_down_16_filled_white.svg"));
+        m_optButton->setIcon(QIcon(":/tests/Resources/svg/icons/chevron_down_16_filled_white.svg"));
 
         m_optLabelLayout->addWidget(m_optLabel);
         m_optLabelLayout->addStretch(1);
@@ -113,7 +113,7 @@ namespace FillLyric
         for (const auto &notes : splitRes) {
             count += static_cast<int>(notes.size());
         }
-        this->m_textCountLabel->setText(QString(tr("Note Count: %1")).arg(count));
+        this->m_textCountLabel->setText(QString(tr("Note Count: ")) + QString::number(count));
     }
 
     void LyricBaseWidget::_on_btnImportLrc_clicked() {

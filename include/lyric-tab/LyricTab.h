@@ -19,7 +19,8 @@ namespace FillLyric
         friend class LyricDialog;
 
     public:
-        explicit LyricTab(QList<LangNote> langNotes, LyricTabConfig config = {}, QWidget *parent = nullptr);
+        explicit LyricTab(QList<LangNote> langNotes, const LyricTabConfig &config = {}, QWidget *parent = nullptr,
+                          const QString& transfile = "");
         ~LyricTab() override;
 
         void setLangNotes(bool warn = true);

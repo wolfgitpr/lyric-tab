@@ -9,13 +9,11 @@
 
 #include <lyric-tab/LyricTab.h>
 
-using namespace FillLyric;
-
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QMainWindow window;
 
-    if (auto qssFile = QFile(":theme/lite-dark.qss"); qssFile.open(QIODevice::ReadOnly)) {
+    if (auto qssFile = QFile(":/tests/Resources/theme/lite-dark.qss"); qssFile.open(QIODevice::ReadOnly)) {
         const auto qssBase = qssFile.readAll();
         qssFile.close();
         if (QSysInfo::productType() == "windows") {
@@ -40,11 +38,11 @@ int main(int argc, char *argv[]) {
     if (!langMgr->initialized())
         qDebug() << "LangMgr: errorMsg" << errorMsg << "initialized:" << langMgr->initialized();
 
-    auto *lyricTab =
-        new LyricTab({LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
-                      LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
-                      LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好")},
-                     {true, true});
+    auto *lyricTab = new FillLyric::LyricTab(
+        {LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
+         LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
+         LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好")},
+        {true, true});
 
     window.setCentralWidget(lyricTab);
     window.show();

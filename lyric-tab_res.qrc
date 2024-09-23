@@ -1,0 +1,16 @@
+<!-- src/lyric-tab_res.qrc -->
+<RCC>
+    <qresource prefix="/">
+        <file>tests/Resources/svg/icons/chevron_down_16_filled.svg</file>
+        <file>tests/Resources/svg/icons/chevron_down_16_filled_white.svg</file>
+
+        <file>tests/Resources/svg/icons/arrow_undo_16_filled.svg</file>
+        <file>tests/Resources/svg/icons/arrow_undo_16_filled_white.svg</file>
+        <file>tests/Resources/svg/icons/arrow_redo_16_filled.svg</file>
+        <file>tests/Resources/svg/icons/arrow_redo_16_filled_white.svg</file>
+
+        <file>tests/Resources/theme/lyricwarpview-dark.qss</file>
+        <file>tests/Resources/theme/lite-dark.qss</file>
+        <file>share/translations/lyric-tab_zh_CN.qm</file>
+    </qresource>
+</RCC>

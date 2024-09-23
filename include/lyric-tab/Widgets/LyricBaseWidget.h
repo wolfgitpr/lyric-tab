@@ -30,7 +30,7 @@ namespace FillLyric
         friend class LyricTab;
 
     public:
-        explicit LyricBaseWidget(LyricTabConfig config, QWidget *parent = nullptr);
+        explicit LyricBaseWidget(const LyricTabConfig &config, QWidget *parent = nullptr);
         ~LyricBaseWidget() override;
 
         QList<QList<LangNote>> splitLyric(const QString &lyric) const;

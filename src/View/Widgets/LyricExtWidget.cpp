@@ -9,7 +9,7 @@ namespace FillLyric
         this->setContentsMargins(0, 0, 0, 0);
 
         // phonicWidget
-        m_wrapView = new LyricWrapView(":theme/lyricwarpview-dark.qss");
+        m_wrapView = new LyricWrapView(":/tests/Resources/theme/lyricwarpview-dark.qss");
         m_wrapView->setContentsMargins(0, 0, 0, 0);
 
         // tableTop layout
@@ -25,14 +25,14 @@ namespace FillLyric
         btnUndo->setEnabled(false);
         btnUndo->setMinimumSize(24, 24);
         btnUndo->setFixedWidth(24);
-        btnUndo->setIcon(QIcon(":svg/icons/arrow_undo_16_filled_white.svg"));
+        btnUndo->setIcon(QIcon(":/tests/Resources/svg/icons/arrow_undo_16_filled_white.svg"));
 
         btnRedo = new QPushButton();
         btnRedo->setShortcut(QKeySequence("Ctrl+Y"));
         btnRedo->setEnabled(false);
         btnRedo->setMinimumSize(24, 24);
         btnRedo->setFixedWidth(24);
-        btnRedo->setIcon(QIcon(":svg/icons/arrow_redo_16_filled_white.svg"));
+        btnRedo->setIcon(QIcon(":/tests/Resources/svg/icons/arrow_redo_16_filled_white.svg"));
 
         m_btnInsertText = new Button(tr("Test"));
         m_tableTopLayout->addWidget(btnFoldLeft);
@@ -54,7 +54,7 @@ namespace FillLyric
         exportOptLabel = new QLabel(tr("Export Option:"));
         exportOptButton = new QPushButton();
         exportOptButton->setFixedSize(20, 20);
-        exportOptButton->setIcon(QIcon(":/svg/icons/chevron_down_16_filled_white.svg"));
+        exportOptButton->setIcon(QIcon(":/tests/Resources/svg/icons/chevron_down_16_filled_white.svg"));
 
         m_epOptLabelLayout->addWidget(exportOptLabel);
         m_epOptLabelLayout->addStretch(1);

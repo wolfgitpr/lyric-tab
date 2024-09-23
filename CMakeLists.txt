@@ -63,7 +63,7 @@ else ()
 endif ()
 target_compile_definitions(${PROJECT_NAME} PRIVATE LYRIC_TAB_LIBRARY)
 
-target_sources(${PROJECT_NAME} PRIVATE ${_src})
+target_sources(${PROJECT_NAME} PRIVATE ${_src} lyric-tab_res.qrc)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 if (LYRIC_TAB_BUILD_TESTS)
@@ -91,10 +91,17 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets)
 
 find_package(language-manager CONFIG REQUIRED)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} PUBLIC language-manager::language-manager)
+target_link_libraries(${PROJECT_NAME} PUBLIC language-manager::language-manager)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND
+        ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/share/translations
+        ${CMAKE_BINARY_DIR}/bin/share/translations
 )
 
 # ----------------------------------
@@ -140,5 +147,10 @@ if (LYRIC_TAB_INSTALL)
             FILE ${PROJECT_NAME}Targets.cmake
             NAMESPACE ${PROJECT_NAME}::
             DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
+    )
+
+    install(
+            DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/share/translations
+            DESTINATION .
     )
 endif ()
