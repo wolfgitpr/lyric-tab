@@ -16,22 +16,22 @@ namespace FillLyric
                        const QString &transfile) : QWidget(parent), m_langNotes(std::move(langNotes)) {
 
         const QString locale = QLocale::system().name();
-        QTranslator translator;
-        if (QFile::exists(transfile) && translator.load(transfile)) {
+        auto *translator = new QTranslator(this);
+        if (QFile::exists(transfile) && translator->load(transfile)) {
             qDebug() << "LyricTab: Loaded translation from file system:" << transfile;
-        } else if (translator.load(QString(":/share/translations/lyric-tab_%1.qm").arg(locale))) {
+        } else if (translator->load(QString(":/share/translations/lyric-tab_%1.qm").arg(locale))) {
             qDebug() << "LyricTab: Loaded translation from resources:"
                      << QString(":/share/translations/lyric-tab_%1.qm").arg(locale);
         } else {
             qWarning() << "LyricTab: Failed to load translation";
         }
-        QCoreApplication::installTranslator(&translator);
+        QCoreApplication::installTranslator(translator);
 
         // textWidget
-        m_lyricBaseWidget = new LyricBaseWidget(config);
+        m_lyricBaseWidget = new LyricBaseWidget(config, this);
 
         // lyricExtWidget
-        m_lyricExtWidget = new LyricExtWidget(&notesCount, config);
+        m_lyricExtWidget = new LyricExtWidget(&notesCount, config, this);
 
         // lyric layout
         m_lyricLayout = new QHBoxLayout();
