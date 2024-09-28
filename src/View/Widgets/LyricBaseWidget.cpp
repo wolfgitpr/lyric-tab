@@ -1,5 +1,6 @@
 #include <lyric-tab/Widgets/LyricBaseWidget.h>
 
+#include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
 

@@ -3,6 +3,7 @@
 #include <lyric-tab/Controls/CellList.h>
 #include <lyric-tab/Controls/LyricCell.h>
 
+#include <QDebug>
 #include <QFileDialog>
 #include <language-manager/ILanguageManager.h>
 #include "../Utils/SplitLyric.h"
