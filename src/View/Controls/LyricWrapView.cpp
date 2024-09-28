@@ -290,7 +290,7 @@ namespace FillLyric
             return;
         const auto cellList = m_cellLists[index];
         cellList->removeFromScene();
-        m_cellLists.remove(index);
+        m_cellLists.removeAt(index);
         this->repaintCellLists();
         this->repaint();
     }

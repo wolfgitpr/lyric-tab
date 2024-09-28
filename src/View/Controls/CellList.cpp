@@ -181,7 +181,7 @@ namespace FillLyric
     void CellList::removeCell(LyricCell *cell) {
         const auto index = m_cells.indexOf(cell);
         if (0 <= index && index < m_cells.size()) {
-            m_cells.remove(index);
+            m_cells.removeAt(index);
             m_scene->removeItem(cell);
             this->updateCellPos();
         }

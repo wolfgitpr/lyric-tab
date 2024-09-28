@@ -57,7 +57,7 @@ namespace LrcTools
             return false;
         }
 
-        d->m_lrcData.remove(0, index);
+        d->m_lrcData.erase(d->m_lrcData.cbegin(), d->m_lrcData.cbegin() + index);
 
         QString line = d->readLine();
         while (!line.isEmpty()) {

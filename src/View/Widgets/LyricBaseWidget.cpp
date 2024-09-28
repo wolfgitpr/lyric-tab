@@ -114,7 +114,6 @@ namespace FillLyric
         for (const auto &notes : splitRes) {
             count += static_cast<int>(notes.size());
         }
-        qDebug() << tr("Note Count: 0");
         this->m_textCountLabel->setText(tr("Note Count: ") + QString::number(count));
     }
 
