@@ -28,6 +28,7 @@ namespace FillLyric
         m_textCountLabel = new QLabel(tr("Note Count: 0"));
 
         m_btnToTable = new Button(">>");
+        m_btnToTable->setToolTip(tr("split lyric to preview dialog"));
         m_btnToTable->setFixedSize(40, 20);
 
         m_textBottomLayout->addWidget(m_textCountLabel);
@@ -43,6 +44,7 @@ namespace FillLyric
         m_optLabelLayout = new QHBoxLayout();
         m_optLabel = new QLabel(tr("Fill-in Options:"));
         m_optButton = new QPushButton();
+        m_optLabel->setBuddy(m_optButton);
         m_optButton->setFixedSize(20, 20);
         m_optButton->setIcon(QIcon(":/tests/Resources/svg/icons/chevron_down_16_filled_white.svg"));
 
@@ -59,6 +61,7 @@ namespace FillLyric
         m_splitLayout->setContentsMargins(0, 0, 0, 0);
         m_splitLabel = new QLabel(tr("Split Mode :"));
         m_splitComboBox = new ComboBox();
+        m_splitLabel->setBuddy(m_splitComboBox);
         m_splitComboBox->addItems({tr("Auto"), tr("By Char"), tr("Custom")});
         m_splitters = new LineEdit();
         m_splitters->setToolTipDuration(0);

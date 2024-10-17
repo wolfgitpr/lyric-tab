@@ -19,8 +19,10 @@ namespace FillLyric
 
         autoWrapLabel = new QLabel(tr("Auto Wrap"));
         autoWrap = new SwitchButton();
+        autoWrapLabel->setBuddy(autoWrap);
 
         btnUndo = new QPushButton();
+        btnUndo->setToolTip(tr("Undo"));
         btnUndo->setShortcut(QKeySequence("Ctrl+Z"));
         btnUndo->setEnabled(false);
         btnUndo->setMinimumSize(24, 24);
@@ -28,6 +30,7 @@ namespace FillLyric
         btnUndo->setIcon(QIcon(":/tests/Resources/svg/icons/arrow_undo_16_filled_white.svg"));
 
         btnRedo = new QPushButton();
+        btnRedo->setToolTip(tr("Redo"));
         btnRedo->setShortcut(QKeySequence("Ctrl+Y"));
         btnRedo->setEnabled(false);
         btnRedo->setMinimumSize(24, 24);
