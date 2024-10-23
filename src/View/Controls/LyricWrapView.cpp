@@ -24,7 +24,8 @@
 
 namespace FillLyric
 {
-    LyricWrapView::LyricWrapView(QString qssPath, QWidget *parent) : m_qssPath(std::move(qssPath)) {
+    LyricWrapView::LyricWrapView(QString qssPath, QWidget *parent) :
+        QGraphicsView(parent), m_qssPath(std::move(qssPath)) {
         setAttribute(Qt::WA_StyledBackground, true);
         auto qssFile = QFile(m_qssPath);
         if (qssFile.open(QIODevice::ReadOnly)) {
@@ -33,7 +34,7 @@ namespace FillLyric
         }
 
         m_font = this->font();
-        m_scene = new QGraphicsScene(parent);
+        m_scene = new QGraphicsScene(this);
 
         this->setScene(m_scene);
         this->setDragMode(NoDrag);
@@ -46,11 +47,12 @@ namespace FillLyric
         this->installEventFilter(this);
 
         // notesCount
-        connect(m_scene, &QGraphicsScene::changed, [this]
-                { Q_EMIT noteCountChanged(static_cast<int>(m_scene->items().size() - m_cellLists.size() * 3)); });
+        m_connection =
+            connect(m_scene, &QGraphicsScene::changed, [this]
+                    { Q_EMIT noteCountChanged(static_cast<int>(m_scene->items().size() - m_cellLists.size() * 3)); });
     }
 
-    LyricWrapView::~LyricWrapView() = default;
+    LyricWrapView::~LyricWrapView() { disconnect(m_connection); };
 
     void LyricWrapView::keyPressEvent(QKeyEvent *event) {
         if (event->key() == Qt::Key_Delete) {

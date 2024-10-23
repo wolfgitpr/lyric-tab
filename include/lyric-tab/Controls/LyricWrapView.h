@@ -115,6 +115,9 @@ namespace FillLyric
 
         QString m_qssPath;
 
+    private:
+        QMetaObject::Connection m_connection;
+
     Q_SIGNALS:
         void cellBackgroundBrushChanged();
 
