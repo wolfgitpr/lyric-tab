@@ -29,10 +29,10 @@ namespace FillLyric
         QCoreApplication::installTranslator(translator);
 
         // textWidget
-        m_lyricBaseWidget = new LyricBaseWidget(config, this);
+        m_lyricBaseWidget = new LyricBaseWidget(config);
 
         // lyricExtWidget
-        m_lyricExtWidget = new LyricExtWidget(&notesCount, config, this);
+        m_lyricExtWidget = new LyricExtWidget(&notesCount, config);
 
         // lyric layout
         m_lyricLayout = new QHBoxLayout();
@@ -56,7 +56,7 @@ namespace FillLyric
         connect(m_lyricBaseWidget->m_btnToTable, &QAbstractButton::clicked, this, &LyricTab::_on_btnToTable_clicked);
 
         // fold right
-        connect(m_lyricBaseWidget->btnLyricPrev, &QPushButton::clicked,
+        connect(m_lyricBaseWidget->btnLyricPrev, &QPushButton::clicked, this,
                 [this]()
                 {
                     m_lyricExtWidget->setVisible(!m_lyricExtWidget->isVisible());
@@ -73,7 +73,7 @@ namespace FillLyric
                 });
 
         // fold left
-        connect(m_lyricExtWidget->btnFoldLeft, &QPushButton::clicked,
+        connect(m_lyricExtWidget->btnFoldLeft, &QPushButton::clicked, this,
                 [this]()
                 {
                     m_lyricBaseWidget->setVisible(!m_lyricBaseWidget->isVisible());

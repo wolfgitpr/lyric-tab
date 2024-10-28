@@ -103,7 +103,8 @@ namespace FillLyric
         connect(m_splitComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
                 &LyricBaseWidget::_on_splitComboBox_currentIndexChanged);
 
-        connect(m_optButton, &QPushButton::clicked, [this]() { m_optWidget->setVisible(!m_optWidget->isVisible()); });
+        connect(m_optButton, &QPushButton::clicked, this,
+                [this]() { m_optWidget->setVisible(!m_optWidget->isVisible()); });
 
         connect(skipSlur, &QCheckBox::stateChanged, this, &LyricBaseWidget::modifyOption);
     }

@@ -380,16 +380,16 @@ namespace FillLyric
         menu.setWindowFlags(menu.windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
 
         this->highlight();
-        menu.addAction(tr("append cell"), [this] { m_history->push(new AppendCellCmd(this)); });
+        menu.addAction(tr("append cell"), this, [this] { m_history->push(new AppendCellCmd(this)); });
         menu.addSeparator();
-        menu.addAction(tr("delete line"), [this] { Q_EMIT deleteLine(); });
-        menu.addAction(tr("add prev line"), [this] { Q_EMIT addPrevLine(); });
-        menu.addAction(tr("add next line"), [this] { Q_EMIT addNextLine(); });
+        menu.addAction(tr("delete line"), this, [this] { Q_EMIT deleteLine(); });
+        menu.addAction(tr("add prev line"), this, [this] { Q_EMIT addPrevLine(); });
+        menu.addAction(tr("add next line"), this, [this] { Q_EMIT addNextLine(); });
         menu.addSeparator();
         if (m_cellLists->indexOf(this) != 0)
-            menu.addAction(tr("move up"), [this] { Q_EMIT moveUpLine(); });
+            menu.addAction(tr("move up"), this, [this] { Q_EMIT moveUpLine(); });
         if (m_cellLists->indexOf(this) != m_cellLists->count() - 1)
-            menu.addAction(tr("move down"), [this] { Q_EMIT moveDownLine(); });
+            menu.addAction(tr("move down"), this, [this] { Q_EMIT moveDownLine(); });
         menu.exec(pos.toPoint());
     }
 

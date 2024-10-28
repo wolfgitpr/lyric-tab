@@ -47,12 +47,11 @@ namespace FillLyric
         this->installEventFilter(this);
 
         // notesCount
-        m_connection =
-            connect(m_scene, &QGraphicsScene::changed, [this]
-                    { Q_EMIT noteCountChanged(static_cast<int>(m_scene->items().size() - m_cellLists.size() * 3)); });
+        connect(m_scene, &QGraphicsScene::changed, this, [this]
+                { Q_EMIT noteCountChanged(static_cast<int>(m_scene->items().size() - m_cellLists.size() * 3)); });
     }
 
-    LyricWrapView::~LyricWrapView() { disconnect(m_connection); };
+    LyricWrapView::~LyricWrapView() = default;
 
     void LyricWrapView::keyPressEvent(QKeyEvent *event) {
         if (event->key() == Qt::Key_Delete) {

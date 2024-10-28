@@ -137,15 +137,15 @@ namespace FillLyric
 
         if (lRect.contains(event->scenePos())) {
             menu->addSeparator();
-            menu->addAction(tr("clear cell"), [this] { Q_EMIT this->clearCell(this); });
+            menu->addAction(tr("clear cell"), this, [this] { Q_EMIT this->clearCell(this); });
             if (m_cells->size() == 1)
-                menu->addAction(tr("delete line"), [this] { Q_EMIT this->deleteLine(this); });
+                menu->addAction(tr("delete line"), this, [this] { Q_EMIT this->deleteLine(this); });
             else
-                menu->addAction(tr("delete cell"), [this] { Q_EMIT this->deleteCell(this); });
-            menu->addAction(tr("add prev cell"), [this] { Q_EMIT this->addPrevCell(this); });
-            menu->addAction(tr("add next cell"), [this] { Q_EMIT this->addNextCell(this); });
+                menu->addAction(tr("delete cell"), this, [this] { Q_EMIT this->deleteCell(this); });
+            menu->addAction(tr("add prev cell"), this, [this] { Q_EMIT this->addPrevCell(this); });
+            menu->addAction(tr("add next cell"), this, [this] { Q_EMIT this->addNextCell(this); });
             if (m_cells->indexOf(this) != 0)
-                menu->addAction(tr("linebreak"), [this] { Q_EMIT this->linebreak(this); });
+                menu->addAction(tr("linebreak"), this, [this] { Q_EMIT this->linebreak(this); });
         }
 
         menu->exec(event->screenPos());

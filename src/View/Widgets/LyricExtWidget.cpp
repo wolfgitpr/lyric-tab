@@ -106,13 +106,13 @@ namespace FillLyric
 
         // undo redo
         m_history = m_wrapView->history();
-        connect(btnUndo, &QPushButton::clicked,
+        connect(btnUndo, &QPushButton::clicked, this,
                 [this]()
                 {
                     m_wrapView->history()->undo();
                     m_wrapView->updateCellRect();
                 });
-        connect(btnRedo, &QPushButton::clicked,
+        connect(btnRedo, &QPushButton::clicked, this,
                 [this]()
                 {
                     m_wrapView->history()->redo();
@@ -127,7 +127,7 @@ namespace FillLyric
         connect(m_wrapView, &LyricWrapView::noteCountChanged, this, &LyricExtWidget::_on_notesCountChanged);
 
         // exportOptButton
-        connect(exportOptButton, &QPushButton::clicked,
+        connect(exportOptButton, &QPushButton::clicked, this,
                 [this]() { m_epOptWidget->setVisible(!m_epOptWidget->isVisible()); });
 
         // view font size
