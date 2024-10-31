@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QMainWindow window;
 
-    if (auto qssFile = QFile(":/tests/Resources/theme/lite-dark.qss"); qssFile.open(QIODevice::ReadOnly)) {
+    if (auto qssFile = QFile(":/tests/lyric-tab/Resources/theme/lite-dark.qss"); qssFile.open(QIODevice::ReadOnly)) {
         const auto qssBase = qssFile.readAll();
         qssFile.close();
         if (QSysInfo::productType() == "windows") {

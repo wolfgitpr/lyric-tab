@@ -46,7 +46,7 @@ namespace FillLyric
         m_optButton = new QPushButton();
         m_optLabel->setBuddy(m_optButton);
         m_optButton->setFixedSize(20, 20);
-        m_optButton->setIcon(QIcon(":/tests/Resources/svg/icons/chevron_down_16_filled_white.svg"));
+        m_optButton->setIcon(QIcon(":/tests/lyric-tab/Resources/svg/icons/chevron_down_16_filled_white.svg"));
 
         m_optLabelLayout->addWidget(m_optLabel);
         m_optLabelLayout->addStretch(1);
