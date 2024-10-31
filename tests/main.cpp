@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
         {LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
          LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
          LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好")},
-        {true, true});
+        {}, {true, true});
 
     window.setCentralWidget(lyricTab);
     window.show();

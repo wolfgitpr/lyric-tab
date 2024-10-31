@@ -10,11 +10,21 @@
 
 #include <QMessageBox>
 #include <QTranslator>
+#include <utility>
 
 namespace FillLyric
 {
-    LyricTab::LyricTab(QList<LangNote> langNotes, const LyricTabConfig &config, QWidget *parent,
-                       const QString &transfile) : QWidget(parent), m_langNotes(std::move(langNotes)) {
+    LyricTab::LyricTab(const QList<LangNote> &langNotes, QStringList priorityG2pIds, const LyricTabConfig &config,
+                       QWidget *parent, const QString &transfile) :
+        QWidget(parent), m_priorityG2pIds(std::move(priorityG2pIds)) {
+
+        for (const auto &langNote : langNotes) {
+            auto *note = new LangNote(langNote.lyric);
+            note->language = note->language;
+            note->category = note->category;
+            note->g2pId = langNote.g2pId;
+            m_langNotes.append(note);
+        }
 
         const QString locale = QLocale::system().name();
         auto *translator = new QTranslator(this);
@@ -27,6 +37,9 @@ namespace FillLyric
             qWarning() << "LyricTab: Failed to load translation";
         }
         QCoreApplication::installTranslator(translator);
+
+        const auto langMgr = LangMgr::ILanguageManager::instance();
+        langMgr->correct(m_langNotes);
 
         // textWidget
         m_lyricBaseWidget = new LyricBaseWidget(config);
@@ -120,10 +133,10 @@ namespace FillLyric
             QStringList lyrics;
             QList<LangNote> langNotes;
             for (const auto &langNote : m_langNotes) {
-                if (skipSlurRes && (langNote.language == "slur" || langNote.lyric == "-"))
+                if (skipSlurRes && (langNote->language == "slur" || langNote->lyric == "-"))
                     continue;
-                langNotes.append(langNote);
-                lyrics.append(langNote.lyric);
+                langNotes.append(*langNote);
+                lyrics.append(langNote->lyric);
             }
             notesCount = static_cast<int>(langNotes.size());
             m_lyricBaseWidget->m_textEdit->setPlainText(lyrics.join(" "));
@@ -151,8 +164,8 @@ namespace FillLyric
             for (auto &note : notes) {
                 inputNotes.append(&note);
             }
-            langMgr->correct(inputNotes);
-            langMgr->convert(inputNotes);
+            langMgr->correct(inputNotes, m_priorityG2pIds);
+            LangMgr::ILanguageManager::convert(inputNotes);
             for (const auto &note : inputNotes) {
                 lineRes.append(*note);
             }

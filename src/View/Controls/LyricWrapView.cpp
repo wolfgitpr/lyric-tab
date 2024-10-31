@@ -360,7 +360,7 @@ namespace FillLyric
             for (const auto &note : notes) {
                 tempNotes.append(new LangNote(note));
             }
-            langMgr->convert(tempNotes);
+            LangMgr::ILanguageManager::convert(tempNotes);
             if (!tempNotes.isEmpty())
                 this->appendList(tempNotes);
         }

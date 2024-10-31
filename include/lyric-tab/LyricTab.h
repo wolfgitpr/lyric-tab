@@ -13,14 +13,13 @@
 
 namespace FillLyric
 {
-    class LYRIC_TAB_EXPORT LyricTab : public QWidget {
+    class LYRIC_TAB_EXPORT LyricTab final : public QWidget {
         Q_OBJECT
-
         friend class LyricDialog;
 
     public:
-        explicit LyricTab(QList<LangNote> langNotes, const LyricTabConfig &config = {}, QWidget *parent = nullptr,
-                          const QString& transfile = "");
+        explicit LyricTab(const QList<LangNote>& langNotes, QStringList priorityG2pIds = {}, const LyricTabConfig &config = {},
+                          QWidget *parent = nullptr, const QString &transfile = "");
         ~LyricTab() override;
 
         void setLangNotes(bool warn = true);
@@ -47,7 +46,9 @@ namespace FillLyric
     private:
         void modifyOption();
 
-        QList<LangNote> m_langNotes;
+        QStringList m_priorityG2pIds;
+
+        QList<LangNote *> m_langNotes;
 
         // Variables
         int notesCount = 0;
