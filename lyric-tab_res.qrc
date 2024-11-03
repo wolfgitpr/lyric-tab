@@ -12,5 +12,7 @@
         <file>tests/lyric-tab/Resources/theme/lyricwarpview-dark.qss</file>
         <file>tests/lyric-tab/Resources/theme/lite-dark.qss</file>
         <file>share/translations/lyric-tab_zh_CN.qm</file>
+
+        <file>tests/qml/lyricWrapView.qml</file>
     </qresource>
 </RCC>
