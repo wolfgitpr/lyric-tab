@@ -1,11 +1,13 @@
 #include <lyric-tab/Widgets/LyricExtWidget.h>
 
 #include <QFile>
+#include <utility>
 
 namespace FillLyric
 {
-    LyricExtWidget::LyricExtWidget(int *notesCount, LyricTabConfig config, QWidget *parent) :
-        QWidget(parent), notesCount(notesCount) {
+    LyricExtWidget::LyricExtWidget(int *notesCount, LyricTabConfig config, QStringList priorityG2pIds,
+                                   QWidget *parent) :
+        QWidget(parent), notesCount(notesCount), m_priorityG2pIds(std::move(priorityG2pIds)) {
         this->setContentsMargins(0, 0, 0, 0);
 
         // phonicWidget
@@ -52,38 +54,12 @@ namespace FillLyric
         m_tableCountLayout->addStretch(1);
         m_tableCountLayout->addWidget(noteCountLabel);
 
-        // export option
-        m_epOptLabelLayout = new QHBoxLayout();
-        exportOptLabel = new QLabel(tr("Export Option:"));
-        exportOptButton = new QPushButton();
-        exportOptButton->setFixedSize(20, 20);
-        exportOptButton->setIcon(QIcon(":/tests/lyric-tab/Resources/svg/icons/chevron_down_16_filled_white.svg"));
-
-        m_epOptLabelLayout->addWidget(exportOptLabel);
-        m_epOptLabelLayout->addStretch(1);
-        m_epOptLabelLayout->addWidget(exportOptButton);
-
-        // export option layout
-        m_epOptWidget = new QWidget();
-        m_epOptLayout = new QVBoxLayout();
-        m_epOptLayout->setContentsMargins(0, 0, 0, 0);
-        exportLanguage = new QCheckBox(tr("Automatically mark languages"));
-
-        m_epOptLayout->addWidget(exportLanguage);
-        m_epOptLayout->addStretch(1);
-
-        m_epOptWidget->setVisible(false);
-        m_epOptWidget->setContentsMargins(0, 0, 0, 0);
-        m_epOptWidget->setLayout(m_epOptLayout);
-
         // table layout
         m_tableLayout = new QVBoxLayout();
         m_tableLayout->setContentsMargins(0, 0, 0, 0);
         m_tableLayout->addLayout(m_tableTopLayout);
         m_tableLayout->addWidget(m_wrapView);
         m_tableLayout->addLayout(m_tableCountLayout);
-        m_tableLayout->addLayout(m_epOptLabelLayout);
-        m_tableLayout->addWidget(m_epOptWidget);
 
         m_mainLayout = new QHBoxLayout();
         m_mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -101,8 +77,6 @@ namespace FillLyric
         QFont font = m_wrapView->font();
         font.setPointSizeF(std::max(9.0, config.lyricExtFontSize));
         m_wrapView->setFont(font);
-
-        exportLanguage->setChecked(config.exportLanguage);
 
         // undo redo
         m_history = m_wrapView->history();
@@ -125,16 +99,10 @@ namespace FillLyric
 
         // notes Count
         connect(m_wrapView, &LyricWrapView::noteCountChanged, this, &LyricExtWidget::_on_notesCountChanged);
-
-        // exportOptButton
-        connect(exportOptButton, &QPushButton::clicked, this,
-                [this]() { m_epOptWidget->setVisible(!m_epOptWidget->isVisible()); });
-
         // view font size
         connect(m_wrapView, &LyricWrapView::fontSizeChanged, this, &LyricExtWidget::modifyOption);
 
         connect(autoWrap, &SwitchButton::clicked, this, &LyricExtWidget::modifyOption);
-        connect(exportLanguage, &QCheckBox::stateChanged, this, &LyricExtWidget::modifyOption);
     }
 
     LyricExtWidget::~LyricExtWidget() = default;

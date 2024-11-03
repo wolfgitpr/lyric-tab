@@ -24,7 +24,8 @@ namespace FillLyric
         friend class LyricTab;
 
     public:
-        explicit LyricExtWidget(int *notesCount, LyricTabConfig config, QWidget *parent = nullptr);
+        explicit LyricExtWidget(int *notesCount, LyricTabConfig config, QStringList priorityG2pIds,
+                                QWidget *parent = nullptr);
         ~LyricExtWidget() override;
 
     Q_SIGNALS:
@@ -43,10 +44,6 @@ namespace FillLyric
         QHBoxLayout *m_mainLayout;
         QVBoxLayout *m_tableLayout;
         QHBoxLayout *m_tableCountLayout;
-        QHBoxLayout *m_epOptLabelLayout;
-
-        QWidget *m_epOptWidget;
-        QVBoxLayout *m_epOptLayout;
 
         // Widgets
         LyricWrapView *m_wrapView;
@@ -61,10 +58,7 @@ namespace FillLyric
         QPushButton *btnRedo;
         Button *m_btnInsertText;
 
-        QLabel *exportOptLabel;
-        QPushButton *exportOptButton;
-
-        QCheckBox *exportLanguage;
+        QStringList m_priorityG2pIds;
     };
 
 } // namespace FillLyric

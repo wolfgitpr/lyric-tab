@@ -9,15 +9,17 @@ namespace FillLyric
 {
     class LyricCell;
     class CellList;
+    class LyricWrapView;
 
     class EditCellCmdfinal final : public QUndoCommand {
     public:
-        explicit EditCellCmdfinal(CellList *cellList, LyricCell *cell, const QString &lyric,
+        explicit EditCellCmdfinal(LyricWrapView *view, CellList *cellList, LyricCell *cell, const QString &lyric,
                                   QUndoCommand *parent = nullptr);
         void undo() override;
         void redo() override;
 
     private:
+        LyricWrapView *m_view;
         CellList *m_list;
         LyricCell *m_cell;
         qlonglong m_index;

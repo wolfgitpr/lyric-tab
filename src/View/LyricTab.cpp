@@ -20,8 +20,6 @@ namespace FillLyric
 
         for (const auto &langNote : langNotes) {
             auto *note = new LangNote(langNote.lyric);
-            note->language = note->language;
-            note->category = note->category;
             note->g2pId = langNote.g2pId;
             m_langNotes.append(note);
         }
@@ -39,13 +37,14 @@ namespace FillLyric
         QCoreApplication::installTranslator(translator);
 
         const auto langMgr = LangMgr::ILanguageManager::instance();
-        langMgr->correct(m_langNotes);
+        langMgr->correct(m_langNotes, m_priorityG2pIds);
+        langMgr->convert(m_langNotes);
 
         // textWidget
-        m_lyricBaseWidget = new LyricBaseWidget(config);
+        m_lyricBaseWidget = new LyricBaseWidget(config, m_priorityG2pIds);
 
         // lyricExtWidget
-        m_lyricExtWidget = new LyricExtWidget(&notesCount, config);
+        m_lyricExtWidget = new LyricExtWidget(&notesCount, config, m_priorityG2pIds);
 
         // lyric layout
         m_lyricLayout = new QHBoxLayout();
@@ -133,7 +132,7 @@ namespace FillLyric
             QStringList lyrics;
             QList<LangNote> langNotes;
             for (const auto &langNote : m_langNotes) {
-                if (skipSlurRes && (langNote->language == "slur" || langNote->lyric == "-"))
+                if (skipSlurRes && (langNote->g2pId == "slur" || langNote->lyric == "-"))
                     continue;
                 langNotes.append(*langNote);
                 lyrics.append(langNote->lyric);
@@ -165,7 +164,7 @@ namespace FillLyric
                 inputNotes.append(&note);
             }
             langMgr->correct(inputNotes, m_priorityG2pIds);
-            LangMgr::ILanguageManager::convert(inputNotes);
+            langMgr->convert(inputNotes);
             for (const auto &note : inputNotes) {
                 lineRes.append(*note);
             }
@@ -175,8 +174,6 @@ namespace FillLyric
     }
 
     bool LyricTab::exportSkipSlur() const { return m_lyricBaseWidget->skipSlur->isChecked(); }
-
-    bool LyricTab::exportLanguage() const { return m_lyricExtWidget->exportLanguage->isChecked(); }
 
     QList<QList<LangNote>> LyricTab::modelExport() const {
         const auto cellLists = m_lyricExtWidget->m_wrapView->cellLists();
@@ -197,7 +194,7 @@ namespace FillLyric
         const QString text = "Halloween蝉声--陪かな伴着qwe行云流浪---\nka回-忆-开始132后安静遥望远方"
                              "\n荒草覆没的古井--枯塘\n匀-散asdaw一缕过往\n";
         m_lyricBaseWidget->m_textEdit->setPlainText(text);
-        m_lyricExtWidget->m_wrapView->init(CleanLyric::splitAuto(text));
+        m_lyricExtWidget->m_wrapView->init(CleanLyric::splitAuto(text, m_priorityG2pIds));
     }
 
     void LyricTab::_on_btnToTable_clicked() const {
@@ -207,7 +204,7 @@ namespace FillLyric
 
         QList<QList<LangNote>> splitRes;
         if (splitType == Auto) {
-            splitRes = CleanLyric::splitAuto(text);
+            splitRes = CleanLyric::splitAuto(text, m_priorityG2pIds);
         } else if (splitType == ByChar) {
             splitRes = CleanLyric::splitByChar(text);
         } else if (splitType == Custom) {
@@ -227,6 +224,6 @@ namespace FillLyric
             {m_lyricBaseWidget->isVisible(), m_lyricExtWidget->isVisible(),
              m_lyricBaseWidget->m_textEdit->font().pointSizeF(), m_lyricBaseWidget->skipSlur->isChecked(),
              m_lyricBaseWidget->m_splitComboBox->currentIndex(), m_lyricExtWidget->m_wrapView->font().pointSizeF(),
-             m_lyricExtWidget->m_wrapView->autoWrap(), m_lyricExtWidget->exportLanguage->isChecked()});
+             m_lyricExtWidget->m_wrapView->autoWrap()});
     }
 } // FillLyric

@@ -336,7 +336,7 @@ namespace FillLyric
     }
 
     void CellList::editCell(LyricCell *cell, const QString &lyric) {
-        m_history->push(new EditCellCmdfinal(this, cell, lyric));
+        m_history->push(new EditCellCmdfinal(reinterpret_cast<LyricWrapView *>(m_view), this, cell, lyric));
     }
 
     void CellList::changeSyllable(LyricCell *cell, const QString &syllable) {

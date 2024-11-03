@@ -9,7 +9,8 @@
 
 namespace FillLyric
 {
-    LyricBaseWidget::LyricBaseWidget(const LyricTabConfig &config, QWidget *parent) : QWidget(parent) {
+    LyricBaseWidget::LyricBaseWidget(const LyricTabConfig &config, QStringList priorityG2pIds, QWidget *parent) :
+        QWidget(parent), m_priorityG2pIds(std::move(priorityG2pIds)) {
         // textEdit top
         m_textTopLayout = new QHBoxLayout();
         btnImportLrc = new Button(tr("Import Lrc"));
@@ -145,7 +146,7 @@ namespace FillLyric
 
         QList<QList<LangNote>> splitNotes;
         if (splitType == Auto) {
-            splitNotes = CleanLyric::splitAuto(lyric);
+            splitNotes = CleanLyric::splitAuto(lyric, m_priorityG2pIds);
         } else if (splitType == ByChar) {
             splitNotes = CleanLyric::splitByChar(lyric);
         } else if (splitType == Custom) {

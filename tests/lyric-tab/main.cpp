@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QSysInfo>
 
-#include <language-manager/IG2pManager.h>
 #include <language-manager/ILanguageManager.h>
 
 #include <lyric-tab/LyricTab.h>
@@ -25,18 +24,14 @@ int main(int argc, char *argv[]) {
             window.setStyleSheet(QString("QMainWindow { background: #232425; }") + qssBase);
     }
 
-    const auto g2pMgr = LangMgr::IG2pManager::instance();
     const auto langMgr = LangMgr::ILanguageManager::instance();
 
     QString errorMsg;
-    g2pMgr->initialize(qApp->applicationDirPath() + "/dict", errorMsg);
+    auto args = QJsonObject();
+    args.insert("pinyinDictPath", qApp->applicationDirPath() + "/dict");
 
-    if (!g2pMgr->initialized())
-        qDebug() << "G2pMgr: errorMsg" << errorMsg << "initialized:" << g2pMgr->initialized();
-
-    langMgr->initialize(errorMsg);
-    if (!langMgr->initialized())
-        qDebug() << "LangMgr: errorMsg" << errorMsg << "initialized:" << langMgr->initialized();
+    langMgr->initialize(args, errorMsg);
+    qDebug() << "LangMgr: errorMsg" << errorMsg << "initialized:" << langMgr->initialized();
 
     auto *lyricTab = new FillLyric::LyricTab(
         {LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),

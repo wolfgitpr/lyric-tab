@@ -30,7 +30,7 @@ namespace FillLyric
         friend class LyricTab;
 
     public:
-        explicit LyricBaseWidget(const LyricTabConfig &config, QWidget *parent = nullptr);
+        explicit LyricBaseWidget(const LyricTabConfig &config, QStringList priorityG2pIds, QWidget *parent = nullptr);
         ~LyricBaseWidget() override;
 
         QList<QList<LangNote>> splitLyric(const QString &lyric) const;
@@ -73,6 +73,8 @@ namespace FillLyric
         LineEdit *m_splitters;
 
         Button *m_btnToTable;
+
+        QStringList m_priorityG2pIds;
     };
 
 

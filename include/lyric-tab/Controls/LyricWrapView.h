@@ -25,7 +25,7 @@ namespace FillLyric
         Q_PROPERTY(QStringList spliterPen READ spliterPen WRITE setSpliterPen)
 
     public:
-        explicit LyricWrapView(QString qssPath = "", QWidget *parent = nullptr);
+        explicit LyricWrapView(QString qssPath = "", const QStringList &priorityG2pIds = {}, QWidget *parent = nullptr);
         ~LyricWrapView() override;
 
         void clear();
@@ -54,6 +54,7 @@ namespace FillLyric
         QUndoStack *history() const;
 
         QList<CellList *> cellLists() const;
+        QStringList priorityG2pIds() const;
 
     Q_SIGNALS:
         void fontSizeChanged();
@@ -114,9 +115,7 @@ namespace FillLyric
         QPoint lastClickPos;
 
         QString m_qssPath;
-
-    private:
-        QMetaObject::Connection m_connection;
+        QStringList m_priorityG2pIds;
 
     Q_SIGNALS:
         void cellBackgroundBrushChanged();

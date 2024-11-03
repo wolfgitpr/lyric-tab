@@ -1,18 +1,16 @@
 #include "SplitLyric.h"
 #include <language-manager/ILanguageManager.h>
 
-#include <QDebug>
-
 namespace FillLyric
 {
-    QList<QList<LangNote>> CleanLyric::splitAuto(const QString &input) {
+    QList<QList<LangNote>> CleanLyric::splitAuto(const QString &input, const QStringList &priorityG2pIds) {
         QList<QList<LangNote>> result;
         QList<LangNote> notes;
         const auto langMgr = LangMgr::ILanguageManager::instance();
-        const auto res = langMgr->split(input);
+        const auto res = langMgr->split(input, priorityG2pIds);
 
         for (const auto &note : res) {
-            if (note.language == "linebreak") {
+            if (note.g2pId == "linebreak") {
                 if (!notes.isEmpty())
                     result.append(notes);
                 notes.clear();
@@ -26,9 +24,18 @@ namespace FillLyric
         return result;
     }
 
+    static bool containLinebreak(const QChar &c) {
+        return c == QChar::LineFeed || c == QChar::LineSeparator || c == QChar::ParagraphSeparator;
+    }
+
+    static bool containLinebreak(const QString &input) {
+        if (input.size() == 1)
+            return containLinebreak(input.at(0));
+        return false;
+    }
+
     QList<QList<LangNote>> CleanLyric::splitByChar(const QString &input) {
         const auto langMgr = LangMgr::ILanguageManager::instance();
-        const auto linebreakFactory = langMgr->language("linebreak");
 
         QList<QList<LangNote>> result;
         QList<LangNote> notes;
@@ -37,7 +44,7 @@ namespace FillLyric
             if (currentChar == ' ') {
                 continue;
             }
-            if (linebreakFactory->contains(currentChar)) {
+            if (containLinebreak(currentChar)) {
                 if (!notes.isEmpty())
                     result.append(notes);
                 notes.clear();
@@ -45,8 +52,7 @@ namespace FillLyric
             }
             LangNote note;
             note.lyric = currentChar;
-            note.language = langMgr->analysis(currentChar);
-            note.category = langMgr->language(note.language)->category();
+            note.g2pId = langMgr->analysis(currentChar);
             notes.append(note);
         }
 
@@ -57,7 +63,6 @@ namespace FillLyric
 
     QList<QList<LangNote>> CleanLyric::splitCustom(const QString &input, const QStringList &splitter) {
         const auto langMgr = LangMgr::ILanguageManager::instance();
-        const auto linebreakFactory = langMgr->language("linebreak");
 
         QList<QList<LangNote>> result;
         QList<LangNote> notes;
@@ -65,7 +70,7 @@ namespace FillLyric
         while (pos < input.length()) {
             const int start = pos;
             while (pos < input.length() && !splitter.contains(input[pos]) && input[pos] != ' ' &&
-                   !linebreakFactory->contains(input[pos])) {
+                   !containLinebreak(input[pos])) {
                 pos++;
             }
 
@@ -73,12 +78,11 @@ namespace FillLyric
             if (!lyric.isEmpty() && !splitter.contains(lyric) && lyric != ' ') {
                 LangNote note;
                 note.lyric = lyric;
-                note.language = langMgr->analysis(lyric);
-                note.category = langMgr->language(note.language)->category();
+                note.g2pId = langMgr->analysis(lyric);
                 notes.append(note);
             }
 
-            if (linebreakFactory->contains(lyric)) {
+            if (containLinebreak(lyric)) {
                 if (!notes.isEmpty())
                     result.append(notes);
                 notes.clear();

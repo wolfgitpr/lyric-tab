@@ -24,8 +24,8 @@
 
 namespace FillLyric
 {
-    LyricWrapView::LyricWrapView(QString qssPath, QWidget *parent) :
-        QGraphicsView(parent), m_qssPath(std::move(qssPath)) {
+    LyricWrapView::LyricWrapView(QString qssPath, const QStringList &priorityG2pIds, QWidget *parent) :
+        QGraphicsView(parent), m_qssPath(std::move(qssPath)), m_priorityG2pIds(priorityG2pIds) {
         setAttribute(Qt::WA_StyledBackground, true);
         auto qssFile = QFile(m_qssPath);
         if (qssFile.open(QIODevice::ReadOnly)) {
@@ -339,6 +339,7 @@ namespace FillLyric
     QUndoStack *LyricWrapView::history() const { return m_history; }
 
     QList<CellList *> LyricWrapView::cellLists() const { return m_cellLists; }
+    QStringList LyricWrapView::priorityG2pIds() const { return m_priorityG2pIds; }
 
     void LyricWrapView::clear() {
         for (auto &m_cellList : m_cellLists) {
@@ -360,7 +361,7 @@ namespace FillLyric
             for (const auto &note : notes) {
                 tempNotes.append(new LangNote(note));
             }
-            LangMgr::ILanguageManager::convert(tempNotes);
+            langMgr->convert(tempNotes);
             if (!tempNotes.isEmpty())
                 this->appendList(tempNotes);
         }

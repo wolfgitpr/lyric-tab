@@ -5,10 +5,13 @@
 #include <lyric-tab/Controls/CellList.h>
 #include <lyric-tab/Controls/LyricCell.h>
 
+#include "lyric-tab/Controls/LyricWrapView.h"
+
 namespace FillLyric
 {
-    EditCellCmdfinal::EditCellCmdfinal(CellList *cellList, LyricCell *cell, const QString &lyric,
-                                       QUndoCommand *parent) : QUndoCommand(parent), m_list(cellList), m_cell(cell) {
+    EditCellCmdfinal::EditCellCmdfinal(LyricWrapView *view, CellList *cellList, LyricCell *cell, const QString &lyric,
+                                       QUndoCommand *parent) :
+        QUndoCommand(parent), m_view(view), m_list(cellList), m_cell(cell) {
         m_oldNote = cell->note();
         m_index = m_list->m_cells.indexOf(cell);
         const auto langMgr = LangMgr::ILanguageManager::instance();
@@ -19,8 +22,7 @@ namespace FillLyric
             tempNotes.append(new LangNote(*lyricCell->note()));
         }
         tempNotes[m_index]->lyric = lyric;
-        tempNotes[m_index]->language = langMgr->analysis(lyric);
-        tempNotes[m_index]->category = langMgr->language(tempNotes[m_index]->language)->category();
+        tempNotes[m_index]->g2pId = langMgr->analysis(lyric, view->priorityG2pIds());
 
         langMgr->convert(tempNotes);
 
