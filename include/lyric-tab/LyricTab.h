@@ -1,8 +1,6 @@
 #ifndef DS_EDITOR_LITE_LYRICWIDGET_H
 #define DS_EDITOR_LITE_LYRICWIDGET_H
 
-#include <QVBoxLayout>
-
 #include <language-manager/LangCommon.h>
 
 #include <lyric-tab/LyricTabConfig.h>
@@ -18,8 +16,8 @@ namespace FillLyric
         friend class LyricDialog;
 
     public:
-        explicit LyricTab(const QList<LangNote>& langNotes, QStringList priorityG2pIds = {}, const LyricTabConfig &config = {},
-                          QWidget *parent = nullptr, const QString &transfile = "");
+        explicit LyricTab(const QList<LangNote> &langNotes, QStringList priorityG2pIds = {},
+                          const LyricTabConfig &config = {}, QWidget *parent = nullptr, const QString &transfile = "");
         ~LyricTab() override;
 
         void setLangNotes(bool warn = true);
@@ -28,11 +26,9 @@ namespace FillLyric
         QList<QList<LangNote>> modelExport() const;
 
         bool exportSkipSlur() const;
-        bool exportLanguage() const;
 
         LyricBaseWidget *m_lyricBaseWidget;
         LyricExtWidget *m_lyricExtWidget;
-
 
     Q_SIGNALS:
         void shrinkWindowRight(int newWidth);
