@@ -21,6 +21,7 @@ namespace FillLyric
         for (const auto &langNote : langNotes) {
             auto *note = new LangNote(langNote.lyric);
             note->g2pId = langNote.g2pId;
+            note->language = langNote.language;
             m_langNotes.append(note);
         }
 

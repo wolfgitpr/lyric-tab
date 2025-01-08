@@ -34,9 +34,9 @@ int main(int argc, char *argv[]) {
     qDebug() << "LangMgr: errorMsg" << errorMsg << "initialized:" << langMgr->initialized();
 
     auto *lyricTab = new FillLyric::LyricTab(
-        {LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
+        {LangNote("好"), LangNote("好的"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
          LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
-         LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好")},
+         LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好")},
         {}, {true, true});
 
     window.setCentralWidget(lyricTab);
