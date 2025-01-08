@@ -52,7 +52,9 @@ namespace FillLyric
             }
             LangNote note;
             note.lyric = currentChar;
-            note.g2pId = langMgr->analysis(currentChar);
+            const auto [language, g2pId] = langMgr->analysis(currentChar, {});
+            note.g2pId = g2pId;
+            note.language = language;
             notes.append(note);
         }
 
@@ -78,7 +80,9 @@ namespace FillLyric
             if (!lyric.isEmpty() && !splitter.contains(lyric) && lyric != ' ') {
                 LangNote note;
                 note.lyric = lyric;
-                note.g2pId = langMgr->analysis(lyric);
+                const auto [language, g2pId] = langMgr->analysis(lyric, {});
+                note.g2pId = g2pId;
+                note.language = language;
                 notes.append(note);
             }
 

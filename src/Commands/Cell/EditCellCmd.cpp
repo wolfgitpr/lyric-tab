@@ -22,7 +22,9 @@ namespace FillLyric
             tempNotes.append(new LangNote(*lyricCell->note()));
         }
         tempNotes[m_index]->lyric = lyric;
-        tempNotes[m_index]->g2pId = langMgr->analysis(lyric, view->priorityG2pIds());
+        const auto [language, g2pId] = langMgr->analysis(lyric, view->priorityG2pIds());
+        tempNotes[m_index]->g2pId = g2pId;
+        tempNotes[m_index]->language = language;
 
         langMgr->convert(tempNotes);
 
