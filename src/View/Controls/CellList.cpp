@@ -237,7 +237,7 @@ namespace FillLyric
         m_font = font;
         const auto lMetric = QFontMetrics(m_font);
         QFont syllableFont(m_font);
-        if (syllableFont.pointSize() >= 9)
+        if (syllableFont.pointSize() >= 3)
             syllableFont.setPointSize(syllableFont.pointSize() - 3);
         const auto sMetric = QFontMetrics(syllableFont);
 
@@ -258,7 +258,8 @@ namespace FillLyric
     void CellList::updateRect(LyricCell *cell) {
         const auto lMetric = QFontMetrics(m_font);
         QFont syllableFont(m_font);
-        syllableFont.setPointSize(syllableFont.pointSize() - 3);
+        if (syllableFont.pointSize() >= 3)
+            syllableFont.setPointSize(syllableFont.pointSize() - 3);
         const auto sMetric = QFontMetrics(syllableFont);
 
         const auto lyric = cell->lyric().isEmpty() ? " " : cell->lyric();

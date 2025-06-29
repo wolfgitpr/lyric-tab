@@ -161,7 +161,8 @@ namespace FillLyric
         m_lRect = QFontMetrics(m_font).boundingRect(lyric);
 
         QFont syllableFont(m_font);
-        syllableFont.setPointSize(syllableFont.pointSize() - 3);
+        if (syllableFont.pointSize() >= 3)
+            syllableFont.setPointSize(syllableFont.pointSize() - 3);
         m_sRect = QFontMetrics(syllableFont).boundingRect(syllable);
     }
 
@@ -208,7 +209,8 @@ namespace FillLyric
         QFont syllableFont(m_font);
         if (lyricFlag != 0)
             syllableFont.setWeight(QFont::Bold);
-        syllableFont.setPointSize(syllableFont.pointSize() - 3);
+        if (syllableFont.pointSize() - 3 >= 0)
+            syllableFont.setPointSize(syllableFont.pointSize() - 3);
 
         const auto sPos = syllablePos();
         painter->setFont(syllableFont);
