@@ -237,7 +237,8 @@ namespace FillLyric
         m_font = font;
         const auto lMetric = QFontMetrics(m_font);
         QFont syllableFont(m_font);
-        syllableFont.setPointSize(syllableFont.pointSize() - 3);
+        if (syllableFont.pointSize() >= 9)
+            syllableFont.setPointSize(syllableFont.pointSize() - 3);
         const auto sMetric = QFontMetrics(syllableFont);
 
         const auto minLRect = lMetric.boundingRect("0");
@@ -427,4 +428,4 @@ namespace FillLyric
         if (borderPen.size() == 4)
             m_cellQss->cellBorderPen = {borderPen[0], borderPen[1], borderPen[2], borderPen[3]};
     }
-}
+} // namespace FillLyric
