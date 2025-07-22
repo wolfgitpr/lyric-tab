@@ -36,8 +36,6 @@ namespace FillLyric
         void _on_notesCountChanged(const int &count) const;
 
     private:
-        QUndoStack *m_history;
-
         int *notesCount = nullptr;
         QHBoxLayout *m_tableTopLayout;
 
@@ -54,8 +52,6 @@ namespace FillLyric
         Button *btnFoldLeft;
         QLabel *autoWrapLabel;
         SwitchButton *autoWrap;
-        QPushButton *btnUndo;
-        QPushButton *btnRedo;
         Button *m_btnInsertText;
 
         QStringList m_priorityG2pIds;

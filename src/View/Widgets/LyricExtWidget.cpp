@@ -23,26 +23,8 @@ namespace FillLyric
         autoWrap = new SwitchButton();
         autoWrapLabel->setBuddy(autoWrap);
 
-        btnUndo = new QPushButton();
-        btnUndo->setToolTip(tr("Undo"));
-        btnUndo->setShortcut(QKeySequence("Ctrl+Z"));
-        btnUndo->setEnabled(false);
-        btnUndo->setMinimumSize(24, 24);
-        btnUndo->setFixedWidth(24);
-        btnUndo->setIcon(QIcon(":/tests/lyric-tab/Resources/svg/icons/arrow_undo_16_filled_white.svg"));
-
-        btnRedo = new QPushButton();
-        btnRedo->setToolTip(tr("Redo"));
-        btnRedo->setShortcut(QKeySequence("Ctrl+Y"));
-        btnRedo->setEnabled(false);
-        btnRedo->setMinimumSize(24, 24);
-        btnRedo->setFixedWidth(24);
-        btnRedo->setIcon(QIcon(":/tests/lyric-tab/Resources/svg/icons/arrow_redo_16_filled_white.svg"));
-
         m_btnInsertText = new Button(tr("Test"));
         m_tableTopLayout->addWidget(btnFoldLeft);
-        m_tableTopLayout->addWidget(btnUndo);
-        m_tableTopLayout->addWidget(btnRedo);
         m_tableTopLayout->addWidget(m_btnInsertText);
         m_tableTopLayout->addStretch(1);
         m_tableTopLayout->addWidget(autoWrapLabel);
@@ -77,23 +59,6 @@ namespace FillLyric
         QFont font = m_wrapView->font();
         font.setPointSizeF(std::max(9.0, config.lyricExtFontSize));
         m_wrapView->setFont(font);
-
-        // undo redo
-        m_history = m_wrapView->history();
-        connect(btnUndo, &QPushButton::clicked, this,
-                [this]()
-                {
-                    m_wrapView->history()->undo();
-                    m_wrapView->updateCellRect();
-                });
-        connect(btnRedo, &QPushButton::clicked, this,
-                [this]()
-                {
-                    m_wrapView->history()->redo();
-                    m_wrapView->updateCellRect();
-                });
-        connect(m_history, &QUndoStack::canUndoChanged, btnUndo, &QPushButton::setEnabled);
-        connect(m_history, &QUndoStack::canRedoChanged, btnRedo, &QPushButton::setEnabled);
 
         connect(autoWrap, &QCheckBox::clicked, m_wrapView, &LyricWrapView::setAutoWrap);
 

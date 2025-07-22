@@ -4,25 +4,18 @@
 #include <QGraphicsOpacityEffect>
 #include <QMenu>
 #include <QStyleOptionGraphicsItem>
+#include <language-manager/ILanguageManager.h>
 #include <qgraphicssceneevent.h>
 
-#include "../../Commands/Cell/ChangeSyllableCmd.h"
-#include "../../Commands/Cell/EditCellCmd.h"
-
-#include "../../Commands/Cell/AddNextCellCmd.h"
-#include "../../Commands/Cell/AddPrevCellCmd.h"
-#include "../../Commands/Cell/ClearCellCmd.h"
-#include "../../Commands/Cell/DeleteCellCmd.h"
-
-#include "../../Commands/Line/AppendCellCmd.h"
+#include "lyric-tab/Controls/LyricWrapView.h"
 
 namespace FillLyric
 {
     class LyricWrapView;
 
     CellList::CellList(const qreal &x, const qreal &y, const QList<LangNote *> &noteList, QGraphicsScene *scene,
-                       QGraphicsView *view, QUndoStack *undoStack, QList<CellList *> *cellLists) :
-        m_view(view), m_scene(scene), m_history(undoStack), m_cellQss(new CellQss()), m_cellLists(cellLists) {
+                       QGraphicsView *view, QList<CellList *> *cellLists) :
+        m_view(view), m_scene(scene), m_cellQss(new CellQss()), m_cellLists(cellLists) {
         this->setPos(x, y);
         m_scene->addItem(this);
         setFlag(ItemIsSelectable);
@@ -173,6 +166,7 @@ namespace FillLyric
     }
 
     void CellList::appendCell(LyricCell *cell) {
+        this->connectCell(cell);
         m_cells.append(cell);
         m_scene->addItem(cell);
         this->updateCellPos();
@@ -181,6 +175,7 @@ namespace FillLyric
     void CellList::removeCell(LyricCell *cell) {
         const auto index = m_cells.indexOf(cell);
         if (0 <= index && index < m_cells.size()) {
+            this->disconnectCell(cell);
             m_cells.removeAt(index);
             m_scene->removeItem(cell);
             this->updateCellPos();
@@ -309,7 +304,6 @@ namespace FillLyric
         connect(cell, &LyricCell::changeSyllable, this, &CellList::changeSyllable);
 
         // cell option
-        connect(cell, &LyricCell::clearCell, this, &CellList::clearCell);
         connect(cell, &LyricCell::deleteLine, this, &CellList::deleteLine);
         connect(cell, &LyricCell::deleteCell, this, &CellList::deleteCell);
         connect(cell, &LyricCell::addPrevCell, this, &CellList::addPrevCell);
@@ -323,7 +317,6 @@ namespace FillLyric
 
         disconnect(cell, &LyricCell::changeSyllable, this, &CellList::changeSyllable);
 
-        disconnect(cell, &LyricCell::clearCell, this, &CellList::clearCell);
         disconnect(cell, &LyricCell::deleteLine, this, &CellList::deleteLine);
         disconnect(cell, &LyricCell::deleteCell, this, &CellList::deleteCell);
         disconnect(cell, &LyricCell::addPrevCell, this, &CellList::addPrevCell);
@@ -338,20 +331,44 @@ namespace FillLyric
     }
 
     void CellList::editCell(LyricCell *cell, const QString &lyric) {
-        m_history->push(new EditCellCmdfinal(reinterpret_cast<LyricWrapView *>(m_view), this, cell, lyric));
+        const auto cellIndex = m_cells.indexOf(cell);
+        const auto langMgr = LangMgr::ILanguageManager::instance();
+
+        QList<LangNote *> tempNotes;
+        for (const auto &lyricCell : m_cells) {
+            tempNotes.append(new LangNote(*lyricCell->note()));
+        }
+        tempNotes[cellIndex]->lyric = lyric;
+        const auto [language, g2pId] = langMgr->analysis(lyric, static_cast<LyricWrapView *>(m_view)->priorityG2pIds());
+        tempNotes[cellIndex]->g2pId = g2pId;
+        tempNotes[cellIndex]->language = language;
+
+        langMgr->convert(tempNotes);
+        for (int i = 0; i < m_cells.size(); i++) {
+            m_cells[i]->setNote(tempNotes[i]);
+        }
+        this->updateCellPos();
     }
 
     void CellList::changeSyllable(LyricCell *cell, const QString &syllable) {
-        m_history->push(new ChangeSyllableCmd(this, cell, syllable));
+        cell->note()->syllableRevised = syllable;
+        cell->note()->revised = true;
+        this->updateRect(cell);
     }
 
-    void CellList::clearCell(LyricCell *cell) { m_history->push(new ClearCellCmd(this, cell)); }
+    void CellList::clearCell(LyricCell *cell) { cell->clear(); }
 
-    void CellList::deleteCell(LyricCell *cell) { m_history->push(new DeleteCellCmd(this, cell)); }
+    void CellList::deleteCell(LyricCell *cell) { this->removeCell(cell); }
 
-    void CellList::addPrevCell(LyricCell *cell) { m_history->push(new AddPrevCellCmd(this, cell)); }
+    void CellList::addPrevCell(LyricCell *cell) {
+        this->insertCell(m_cells.indexOf(cell), createNewCell());
+        this->updateCellPos();
+    }
 
-    void CellList::addNextCell(LyricCell *cell) { m_history->push(new AddNextCellCmd(this, cell)); }
+    void CellList::addNextCell(LyricCell *cell) {
+        this->insertCell(m_cells.indexOf(cell) + 1, createNewCell());
+        this->updateCellPos();
+    }
 
     void CellList::linebreak(LyricCell *cell) const {
         Q_EMIT this->linebreakSignal(static_cast<int>(m_cells.indexOf(cell)));
@@ -382,7 +399,7 @@ namespace FillLyric
         menu.setWindowFlags(menu.windowFlags() | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
 
         this->highlight();
-        menu.addAction(tr("append cell"), this, [this] { m_history->push(new AppendCellCmd(this)); });
+        menu.addAction(tr("append cell"), this, [this] { this->appendCell(this->createNewCell()); });
         menu.addSeparator();
         menu.addAction(tr("delete line"), this, [this] { Q_EMIT deleteLine(); });
         menu.addAction(tr("add prev line"), this, [this] { Q_EMIT addPrevLine(); });

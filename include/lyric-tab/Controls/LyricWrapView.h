@@ -3,7 +3,6 @@
 
 #include <QFont>
 #include <QGraphicsView>
-#include <QUndoStack>
 
 #include <language-manager/LangCommon.h>
 
@@ -50,8 +49,6 @@ namespace FillLyric
 
         void updateCellRect();
         void repaintCellLists();
-
-        QUndoStack *history() const;
 
         QList<CellList *> cellLists() const;
         QStringList priorityG2pIds() const;
@@ -102,10 +99,12 @@ namespace FillLyric
 
         bool cellEqualLine(QList<LyricCell *> cells);
 
+        void lineBreak(CellList *cellList, const int &index);
+        void deleteCells(QList<LyricCell *> selectedCells);
+
         bool m_autoWrap = false;
 
         QFont m_font;
-        QUndoStack *m_history = new QUndoStack();
         QGraphicsScene *m_scene;
 
         QList<CellList *> m_cellLists;

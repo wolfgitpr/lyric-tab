@@ -22,7 +22,7 @@ namespace FillLyric
 
     public:
         explicit CellList(const qreal &x, const qreal &y, const QList<LangNote *> &noteList, QGraphicsScene *scene,
-                          QGraphicsView *view, QUndoStack *undoStack, QList<CellList *> *cellLists);
+                          QGraphicsView *view, QList<CellList *> *cellLists);
 
         void clear();
         void setAutoWrap(const bool &autoWrap);
@@ -106,13 +106,13 @@ namespace FillLyric
         QList<CellList *> *m_cellLists;
 
     private Q_SLOTS:
-        void editCell(FillLyric::LyricCell *cell, const QString &lyric);
-        void changeSyllable(FillLyric::LyricCell *cell, const QString &syllable);
-        void clearCell(FillLyric::LyricCell *cell);
-        void deleteCell(FillLyric::LyricCell *cell);
-        void addPrevCell(FillLyric::LyricCell *cell);
-        void addNextCell(FillLyric::LyricCell *cell);
-        void linebreak(FillLyric::LyricCell *cell) const;
+        void editCell(LyricCell *cell, const QString &lyric);
+        void changeSyllable(LyricCell *cell, const QString &syllable);
+        static void clearCell(LyricCell *cell);
+        void deleteCell(LyricCell *cell);
+        void addPrevCell(LyricCell *cell);
+        void addNextCell(LyricCell *cell);
+        void linebreak(LyricCell *cell) const;
     };
 } // namespace FillLyric
 

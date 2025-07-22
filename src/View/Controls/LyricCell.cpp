@@ -26,6 +26,11 @@ namespace FillLyric
 
     LyricCell::~LyricCell() = default;
 
+    void LyricCell::clear() {
+        delete m_note;
+        m_note = new LangNote();
+    }
+
     QPainterPath LyricCell::shape() const {
         QPainterPath path;
         path.addRect({syllablePos().x(), syllablePos().y(), syllableWidth(), static_cast<qreal>(m_sRect.height())});
@@ -45,7 +50,10 @@ namespace FillLyric
 
     LangNote *LyricCell::note() const { return m_note; }
 
-    void LyricCell::setNote(LangNote *note) { m_note = note; }
+    void LyricCell::setNote(LangNote *note) {
+        delete m_note;
+        m_note = note;
+    }
 
     QString LyricCell::lyric() const { return m_note->lyric; }
 
@@ -137,7 +145,7 @@ namespace FillLyric
 
         if (lRect.contains(event->scenePos())) {
             menu->addSeparator();
-            menu->addAction(tr("clear cell"), this, [this] { Q_EMIT this->clearCell(this); });
+            menu->addAction(tr("clear cell"), this, [this] { this->clear(); });
             if (m_cells->size() == 1)
                 menu->addAction(tr("delete line"), this, [this] { Q_EMIT this->deleteLine(this); });
             else
