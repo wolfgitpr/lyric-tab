@@ -25,7 +25,6 @@ namespace FillLyric
                           QGraphicsView *view, QList<CellList *> *cellLists);
 
         void clear();
-        void setAutoWrap(const bool &autoWrap);
 
         qreal deltaX() const;
 
@@ -87,8 +86,6 @@ namespace FillLyric
         void showContextMenu(const QPointF &pos);
         void setCellQss() const;
         QVector<QPen> qssPens(const QString &property) const;
-
-        bool m_autoWarp = false;
 
         qreal m_curWidth = 0;
         qreal m_height = 0;

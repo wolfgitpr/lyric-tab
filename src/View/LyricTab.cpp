@@ -224,7 +224,6 @@ namespace FillLyric
         Q_EMIT this->modifyOptionSignal(
             {m_lyricBaseWidget->isVisible(), m_lyricExtWidget->isVisible(),
              m_lyricBaseWidget->m_textEdit->font().pointSizeF(), m_lyricBaseWidget->skipSlur->isChecked(),
-             m_lyricBaseWidget->m_splitComboBox->currentIndex(), m_lyricExtWidget->m_wrapView->font().pointSizeF(),
-             m_lyricExtWidget->m_wrapView->autoWrap()});
+             m_lyricBaseWidget->m_splitComboBox->currentIndex(), m_lyricExtWidget->m_wrapView->font().pointSizeF()});
     }
-} // FillLyric
+} // namespace FillLyric

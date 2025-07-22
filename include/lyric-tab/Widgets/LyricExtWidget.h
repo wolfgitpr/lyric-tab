@@ -1,8 +1,6 @@
 #ifndef LYRICEXTWIDGET_H
 #define LYRICEXTWIDGET_H
 
-#include <QWidget>
-
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -50,8 +48,6 @@ namespace FillLyric
         QLabel *noteCountLabel;
 
         Button *btnFoldLeft;
-        QLabel *autoWrapLabel;
-        SwitchButton *autoWrap;
         Button *m_btnInsertText;
 
         QStringList m_priorityG2pIds;

@@ -19,16 +19,10 @@ namespace FillLyric
         m_tableTopLayout->setContentsMargins(0, 0, 0, 0);
         btnFoldLeft = new Button(tr("Fold Left"));
 
-        autoWrapLabel = new QLabel(tr("Auto Wrap"));
-        autoWrap = new SwitchButton();
-        autoWrapLabel->setBuddy(autoWrap);
-
         m_btnInsertText = new Button(tr("Test"));
         m_tableTopLayout->addWidget(btnFoldLeft);
         m_tableTopLayout->addWidget(m_btnInsertText);
         m_tableTopLayout->addStretch(1);
-        m_tableTopLayout->addWidget(autoWrapLabel);
-        m_tableTopLayout->addWidget(autoWrap);
 
         m_tableCountLayout = new QHBoxLayout();
         noteCountLabel = new QLabel("0/0");
@@ -48,26 +42,14 @@ namespace FillLyric
         m_mainLayout->addLayout(m_tableLayout);
         this->setLayout(m_mainLayout);
 
-#ifdef LITE_CONTROLS
-        autoWrap->setValue(config.autoWrap);
-        m_wrapView->setAutoWrap(config.autoWrap);
-#else
-        autoWrap->setChecked(config.autoWrap);
-        m_wrapView->setAutoWrap(config.autoWrap);
-#endif
-
         QFont font = m_wrapView->font();
         font.setPointSizeF(std::max(9.0, config.lyricExtFontSize));
         m_wrapView->setFont(font);
-
-        connect(autoWrap, &QCheckBox::clicked, m_wrapView, &LyricWrapView::setAutoWrap);
 
         // notes Count
         connect(m_wrapView, &LyricWrapView::noteCountChanged, this, &LyricExtWidget::_on_notesCountChanged);
         // view font size
         connect(m_wrapView, &LyricWrapView::fontSizeChanged, this, &LyricExtWidget::modifyOption);
-
-        connect(autoWrap, &SwitchButton::clicked, this, &LyricExtWidget::modifyOption);
     }
 
     LyricExtWidget::~LyricExtWidget() = default;

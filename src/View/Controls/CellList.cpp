@@ -80,8 +80,6 @@ namespace FillLyric
         m_splitter = nullptr;
     }
 
-    void CellList::setAutoWrap(const bool &autoWrap) { m_autoWarp = autoWrap; }
-
     qreal CellList::deltaX() const { return m_handle->width() + 3; }
 
     qreal CellList::deltaY() const { return m_splitter->deltaY(); }
@@ -99,16 +97,7 @@ namespace FillLyric
 
     qreal CellList::height() const { return m_height; }
 
-    qreal CellList::cellWidth() const {
-        if (m_autoWarp) {
-            return m_curWidth;
-        }
-        qreal width = 0;
-        for (const auto &cell : m_cells) {
-            width += cell->width();
-        }
-        return width + deltaX();
-    }
+    qreal CellList::cellWidth() const { return m_curWidth; }
 
     QGraphicsView *CellList::view() const { return m_view; }
 
@@ -120,7 +109,7 @@ namespace FillLyric
 
         for (const auto cell : m_cells) {
             const auto cellWidth = cell->width();
-            if (x + cellWidth > m_curWidth && m_autoWarp) {
+            if (x + cellWidth > m_curWidth) {
                 // Move to the next row
                 x = deltaX();
                 y += cell->height();
@@ -276,7 +265,7 @@ namespace FillLyric
 
         for (const auto cell : m_cells) {
             const auto cellWidth = cell->width();
-            if (x + cellWidth > m_curWidth && m_autoWarp) {
+            if (x + cellWidth > m_curWidth) {
                 // Move to the next row
                 x = deltaX();
                 y += cell->height();

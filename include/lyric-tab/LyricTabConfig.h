@@ -17,7 +17,6 @@ namespace FillLyric
 
         // lyricExt
         double lyricExtFontSize = 12;
-        bool autoWrap = true;
         bool exportLanguage = false;
     };
 } // namespace FillLyric

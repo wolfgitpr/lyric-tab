@@ -30,7 +30,6 @@ namespace FillLyric
         void clear();
         void init(const QList<QList<LangNote>> &noteLists);
 
-        bool autoWrap() const;
         void setAutoWrap(const bool &autoWrap);
 
         CellList *createNewList();
@@ -101,8 +100,6 @@ namespace FillLyric
 
         void lineBreak(CellList *cellList, const int &index);
         void deleteCells(QList<LyricCell *> selectedCells);
-
-        bool m_autoWrap = false;
 
         QFont m_font;
         QGraphicsScene *m_scene;
