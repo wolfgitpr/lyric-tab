@@ -172,16 +172,16 @@ namespace FillLyric
                 this->selectCells(lastClickPos, scenePos);
                 event->accept();
                 return;
-            } else {
-                if ((event->pos() - rubberBandOrigin).manhattanLength() > 10) {
-                    if (const auto cellList = mapToList(rubberBandOrigin))
-                        cellList->setSelected(false);
-
-                    this->selectCells(rubberBandOrigin, scenePos);
-                }
-                event->accept();
-                return;
             }
+
+            if ((event->pos() - rubberBandOrigin).manhattanLength() > 10) {
+                if (const auto cellList = mapToList(rubberBandOrigin))
+                    cellList->setSelected(false);
+
+                this->selectCells(rubberBandOrigin, scenePos);
+            }
+            event->accept();
+            return;
         }
         QGraphicsView::mouseReleaseEvent(event);
     }

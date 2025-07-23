@@ -1,8 +1,8 @@
 #include "LrcDecoder.h"
 #include "LrcDecoder_p.h"
 
-#include <QDebug>
 #include <QFile>
+#include <QTextStream>
 
 namespace LrcTools
 {

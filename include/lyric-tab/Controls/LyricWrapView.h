@@ -15,7 +15,6 @@ namespace FillLyric
 
     class LYRIC_TAB_EXPORT LyricWrapView final : public QGraphicsView {
         Q_OBJECT
-
         Q_PROPERTY(QStringList cellBackgroundBrush READ cellBackgroundBrush WRITE setCellBackgroundBrush)
         Q_PROPERTY(QStringList cellBorderPen READ cellBorderPen WRITE setCellBorderPen)
         Q_PROPERTY(QStringList cellLyricPen READ cellLyricPen WRITE setCellLyricPen)
@@ -29,8 +28,6 @@ namespace FillLyric
 
         void clear();
         void init(const QList<QList<LangNote>> &noteLists);
-
-        void setAutoWrap(const bool &autoWrap);
 
         CellList *createNewList();
 

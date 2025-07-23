@@ -9,7 +9,6 @@ namespace FillLyric
     HandleItem::HandleItem(QGraphicsView *view, QGraphicsItem *parent) : QGraphicsItem(parent), m_view(view) {
         setFlag(ItemIsSelectable);
         this->setAcceptHoverEvents(true);
-
         this->setQss();
     }
 

@@ -1,6 +1,5 @@
 #include <lyric-tab/Widgets/LyricBaseWidget.h>
 
-#include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -105,9 +104,9 @@ namespace FillLyric
                 &LyricBaseWidget::_on_splitComboBox_currentIndexChanged);
 
         connect(m_optButton, &QPushButton::clicked, this,
-                [this]() { m_optWidget->setVisible(!m_optWidget->isVisible()); });
+                [this] { m_optWidget->setVisible(!m_optWidget->isVisible()); });
 
-        connect(skipSlur, &QCheckBox::stateChanged, this, &LyricBaseWidget::modifyOption);
+        connect(skipSlur, &QCheckBox::checkStateChanged, this, &LyricBaseWidget::modifyOption);
     }
 
     LyricBaseWidget::~LyricBaseWidget() = default;
@@ -135,7 +134,6 @@ namespace FillLyric
         }
 
         const auto metadata = decoder.dumpMetadata();
-        qDebug() << "metadata: " << metadata;
 
         const auto lyrics = decoder.dumpLyrics();
         this->m_textEdit->setPlainText(lyrics.join("\n"));

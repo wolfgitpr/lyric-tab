@@ -328,7 +328,8 @@ namespace FillLyric
             tempNotes.append(new LangNote(*lyricCell->note()));
         }
         tempNotes[cellIndex]->lyric = lyric;
-        const auto [language, g2pId] = langMgr->analysis(lyric, static_cast<LyricWrapView *>(m_view)->priorityG2pIds());
+        const auto [language, g2pId] =
+            langMgr->analysis(lyric, dynamic_cast<LyricWrapView *>(m_view)->priorityG2pIds());
         tempNotes[cellIndex]->g2pId = g2pId;
         tempNotes[cellIndex]->language = language;
 
@@ -350,12 +351,12 @@ namespace FillLyric
     void CellList::deleteCell(LyricCell *cell) { this->removeCell(cell); }
 
     void CellList::addPrevCell(LyricCell *cell) {
-        this->insertCell(m_cells.indexOf(cell), createNewCell());
+        this->insertCell(static_cast<int>(m_cells.indexOf(cell)), createNewCell());
         this->updateCellPos();
     }
 
     void CellList::addNextCell(LyricCell *cell) {
-        this->insertCell(m_cells.indexOf(cell) + 1, createNewCell());
+        this->insertCell(static_cast<int>(m_cells.indexOf(cell)) + 1, createNewCell());
         this->updateCellPos();
     }
 

@@ -5,7 +5,7 @@
 
 namespace FillLyric
 {
-    LyricExtWidget::LyricExtWidget(int *notesCount, LyricTabConfig config, QStringList priorityG2pIds,
+    LyricExtWidget::LyricExtWidget(int *notesCount, const LyricTabConfig &config, QStringList priorityG2pIds,
                                    QWidget *parent) :
         QWidget(parent), notesCount(notesCount), m_priorityG2pIds(std::move(priorityG2pIds)) {
         this->setContentsMargins(0, 0, 0, 0);

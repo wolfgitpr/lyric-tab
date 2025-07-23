@@ -200,18 +200,18 @@ namespace FillLyric
     void LyricCell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
         int flag = 0;
         if (option->state & QStyle::State_MouseOver)
-            flag = LyricCell::Hovered;
+            flag = Hovered;
         if (option->state & QStyle::State_Selected)
-            flag = LyricCell::Selected;
+            flag = Selected;
 
         int lyricFlag = 0;
         const auto syllable = m_note->revised ? m_note->syllableRevised : m_note->syllable;
         if (m_note->revised) {
-            lyricFlag = PenType::Revised;
+            lyricFlag = Revised;
         } else if (m_note->error) {
-            lyricFlag = PenType::G2pError;
+            lyricFlag = G2pError;
         } else if (m_note->candidates.size() > 1) {
-            lyricFlag = PenType::MultiTone;
+            lyricFlag = MultiTone;
         }
 
         QFont syllableFont(m_font);
@@ -243,7 +243,7 @@ namespace FillLyric
         auto *inputAction = new QAction(tr("Custom Syllables"), this);
         menu->addAction(inputAction);
         connect(inputAction, &QAction::triggered, this,
-                [this]()
+                [this]
                 {
                     bool ok;
                     const QString syllable = QInputDialog::getText(
@@ -259,7 +259,7 @@ namespace FillLyric
 
         for (const auto &syllable : candidateSyllables) {
             if (candidateSyllables.size() > 1) {
-                menu->addAction(syllable, [this, syllable]() { this->setSyllable(syllable); });
+                menu->addAction(syllable, [this, syllable] { this->setSyllable(syllable); });
             }
         }
     }

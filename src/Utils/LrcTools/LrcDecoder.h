@@ -1,7 +1,6 @@
 #ifndef DS_EDITOR_LITE_LRCDECODER_H
 #define DS_EDITOR_LITE_LRCDECODER_H
 
-#include <QMap>
 #include <QObject>
 #include <QSharedPointer>
 #include <QString>

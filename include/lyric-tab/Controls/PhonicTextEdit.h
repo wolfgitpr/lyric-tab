@@ -1,7 +1,6 @@
 #ifndef DS_EDITOR_LITE_PHONICTEXTEDIT_H
 #define DS_EDITOR_LITE_PHONICTEXTEDIT_H
 
-#include <QObject>
 #include <QPlainTextEdit>
 
 #include <lyric-tab/LyricTabGlobal.h>

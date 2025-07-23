@@ -3,6 +3,8 @@
 
 #include "LrcDecoder.h"
 
+#include <QMap>
+
 namespace LrcTools
 {
     class LrcDecoderPrivate {

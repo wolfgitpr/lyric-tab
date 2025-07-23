@@ -22,7 +22,7 @@ namespace FillLyric
         friend class LyricTab;
 
     public:
-        explicit LyricExtWidget(int *notesCount, LyricTabConfig config, QStringList priorityG2pIds,
+        explicit LyricExtWidget(int *notesCount, const LyricTabConfig &config, QStringList priorityG2pIds,
                                 QWidget *parent = nullptr);
         ~LyricExtWidget() override;
 

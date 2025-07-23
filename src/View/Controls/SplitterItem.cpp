@@ -9,7 +9,6 @@ namespace FillLyric
         this->setX(x);
         this->setY(y);
         this->setWidth(w);
-
         this->setQss();
     }
 
@@ -18,8 +17,7 @@ namespace FillLyric
     QRectF SplitterItem::boundingRect() const {
         if (this->isVisible())
             return {0, 0, width(), height()};
-        else
-            return {0, 0, 0, m_margin / 2};
+        return {0, 0, 0, m_margin / 2};
     }
 
     QPainterPath SplitterItem::shape() const {
@@ -41,15 +39,13 @@ namespace FillLyric
     qreal SplitterItem::height() const {
         if (this->isVisible())
             return m_lineHeight + m_margin * 2;
-        else
-            return m_margin / 2;
+        return m_margin / 2;
     }
 
     qreal SplitterItem::deltaY() const {
         if (this->isVisible())
             return m_lineHeight + m_margin + 1;
-        else
-            return m_margin / 2;
+        return m_margin / 2;
     }
 
     void SplitterItem::setLineHeight(const qreal &lh) {

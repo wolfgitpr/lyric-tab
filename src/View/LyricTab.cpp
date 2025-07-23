@@ -3,7 +3,6 @@
 #include <lyric-tab/Controls/CellList.h>
 #include <lyric-tab/Controls/LyricCell.h>
 
-#include <QDebug>
 #include <QFileDialog>
 #include <language-manager/ILanguageManager.h>
 #include "../Utils/SplitLyric.h"
@@ -70,7 +69,7 @@ namespace FillLyric
 
         // fold right
         connect(m_lyricBaseWidget->btnLyricPrev, &QPushButton::clicked, this,
-                [this]()
+                [this]
                 {
                     m_lyricExtWidget->setVisible(!m_lyricExtWidget->isVisible());
                     m_lyricBaseWidget->btnLyricPrev->setText(m_lyricExtWidget->isVisible() ? tr("Fold Preview")
@@ -87,7 +86,7 @@ namespace FillLyric
 
         // fold left
         connect(m_lyricExtWidget->btnFoldLeft, &QPushButton::clicked, this,
-                [this]()
+                [this]
                 {
                     m_lyricBaseWidget->setVisible(!m_lyricBaseWidget->isVisible());
                     m_lyricExtWidget->btnFoldLeft->setText(m_lyricBaseWidget->isVisible() ? tr("Fold Left")
@@ -112,12 +111,12 @@ namespace FillLyric
         }
 
         m_lyricBaseWidget->skipSlur->setChecked(config.baseSkipSlur);
-        connect(m_lyricBaseWidget->skipSlur, &QCheckBox::stateChanged, this, &LyricTab::setLangNotes);
+        connect(m_lyricBaseWidget->skipSlur, &QCheckBox::checkStateChanged, this, &LyricTab::setLangNotes);
     }
 
     LyricTab::~LyricTab() = default;
 
-    void LyricTab::setLangNotes(bool warn) {
+    void LyricTab::setLangNotes(const bool warn) {
         const bool skipSlurRes = m_lyricBaseWidget->skipSlur->isChecked();
 
         bool setLangNotes = false;
@@ -142,9 +141,9 @@ namespace FillLyric
             m_lyricBaseWidget->m_textEdit->setPlainText(lyrics.join(" "));
             m_lyricExtWidget->m_wrapView->init({langNotes});
         } else {
-            disconnect(m_lyricBaseWidget->skipSlur, &QCheckBox::stateChanged, this, &LyricTab::setLangNotes);
+            disconnect(m_lyricBaseWidget->skipSlur, &QCheckBox::checkStateChanged, this, &LyricTab::setLangNotes);
             m_lyricBaseWidget->skipSlur->setCheckState(!skipSlurRes ? Qt::Checked : Qt::Unchecked);
-            connect(m_lyricBaseWidget->skipSlur, &QCheckBox::stateChanged, this, &LyricTab::setLangNotes);
+            connect(m_lyricBaseWidget->skipSlur, &QCheckBox::checkStateChanged, this, &LyricTab::setLangNotes);
             modifyOption();
         }
     }

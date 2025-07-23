@@ -3,7 +3,6 @@
 
 #include <QApplication>
 #include <QTimer>
-#include <QUndoStack>
 
 #include <language-manager/LangCommon.h>
 
@@ -94,7 +93,6 @@ namespace FillLyric
         QFont m_font = QApplication::font();
         QGraphicsView *m_view;
         QGraphicsScene *m_scene;
-        QUndoStack *m_history;
 
         SplitterItem *m_splitter;
         HandleItem *m_handle;
@@ -103,13 +101,13 @@ namespace FillLyric
         QList<CellList *> *m_cellLists;
 
     private Q_SLOTS:
-        void editCell(LyricCell *cell, const QString &lyric);
-        void changeSyllable(LyricCell *cell, const QString &syllable);
-        static void clearCell(LyricCell *cell);
-        void deleteCell(LyricCell *cell);
-        void addPrevCell(LyricCell *cell);
-        void addNextCell(LyricCell *cell);
-        void linebreak(LyricCell *cell) const;
+        void editCell(FillLyric::LyricCell *cell, const QString &lyric);
+        void changeSyllable(FillLyric::LyricCell *cell, const QString &syllable);
+        static void clearCell(FillLyric::LyricCell *cell);
+        void deleteCell(FillLyric::LyricCell *cell);
+        void addPrevCell(FillLyric::LyricCell *cell);
+        void addNextCell(FillLyric::LyricCell *cell);
+        void linebreak(FillLyric::LyricCell *cell) const;
     };
 } // namespace FillLyric
 

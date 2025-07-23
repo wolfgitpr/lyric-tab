@@ -1,7 +1,6 @@
 #ifndef DS_EDITOR_LITE_CLEANLYRIC_H
 #define DS_EDITOR_LITE_CLEANLYRIC_H
 
-#include <QList>
 #include <language-manager/LangCommon.h>
 
 namespace FillLyric
