@@ -337,6 +337,8 @@ namespace FillLyric
         for (int i = 0; i < m_cells.size(); i++) {
             m_cells[i]->setNote(tempNotes[i]);
         }
+
+        this->updateRect(cell);
         this->updateCellPos();
     }
 
