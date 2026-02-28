@@ -7,7 +7,7 @@
 #include <QScrollBar>
 #include <utility>
 
-#include <language-manager/ILanguageManager.h>
+#include <LangCore/Core/Manager.h>
 
 #include <QFile>
 
@@ -359,14 +359,23 @@ namespace FillLyric
     void LyricWrapView::init(const QList<QList<LangNote>> &noteLists) {
         this->clear();
 
-        const auto langMgr = LangMgr::ILanguageManager::instance();
+        const auto langMgr = LangCore::Manager::instance();
 
         for (const auto &notes : noteLists) {
+            std::vector<LangCore::G2pInput *> g2pInputs;
             QList<LangNote *> tempNotes;
             for (const auto &note : notes) {
+                g2pInputs.push_back(new LangCore::G2pInput(note.lyric.toStdString(), note.g2pId.toStdString()));
                 tempNotes.append(new LangNote(note));
             }
-            langMgr->convert(tempNotes);
+            const auto g2pRes = langMgr->convert(g2pInputs);
+            for (int i = 0; i < g2pRes.size(); i++) {
+                tempNotes[i]->syllable = g2pRes[i].pronunciation.c_str();
+                QStringList candidates;
+                for (const auto &it : g2pRes[i].candidates)
+                    candidates.push_back(it.c_str());
+                tempNotes[i]->candidates = candidates;
+            }
             if (!tempNotes.isEmpty())
                 this->appendList(tempNotes);
         }

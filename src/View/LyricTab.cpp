@@ -3,8 +3,8 @@
 #include <lyric-tab/Controls/CellList.h>
 #include <lyric-tab/Controls/LyricCell.h>
 
+#include <LangCore/Core/Manager.h>
 #include <QFileDialog>
-#include <language-manager/ILanguageManager.h>
 #include "../Utils/SplitLyric.h"
 
 #include <QMessageBox>
@@ -14,20 +14,16 @@
 namespace FillLyric
 {
     LyricTab::LyricTab(const QList<LangNote> &langNotes, QStringList priorityG2pIds, const LyricTabConfig &config,
-                       QWidget *parent, const QString &transfile) :
+                       QWidget *parent, const QString &transFile) :
         QWidget(parent), m_priorityG2pIds(std::move(priorityG2pIds)) {
 
-        for (const auto &langNote : langNotes) {
-            auto *note = new LangNote(langNote.lyric);
-            note->g2pId = langNote.g2pId;
-            note->language = langNote.language;
-            m_langNotes.append(note);
-        }
+        for (const auto &langNote : langNotes)
+            m_langNotes.append(new LangNote(langNote.lyric));
 
         const QString locale = QLocale::system().name();
         auto *translator = new QTranslator(this);
-        if (QFile::exists(transfile) && translator->load(transfile)) {
-            qDebug() << "LyricTab: Loaded translation from file system:" << transfile;
+        if (QFile::exists(transFile) && translator->load(transFile)) {
+            qDebug() << "LyricTab: Loaded translation from file system:" << transFile;
         } else if (translator->load(QString(":/share/translations/lyric-tab_%1.qm").arg(locale))) {
             qDebug() << "LyricTab: Loaded translation from resources:"
                      << QString(":/share/translations/lyric-tab_%1.qm").arg(locale);
@@ -36,9 +32,23 @@ namespace FillLyric
         }
         QCoreApplication::installTranslator(translator);
 
-        const auto langMgr = LangMgr::ILanguageManager::instance();
-        langMgr->correct(m_langNotes, m_priorityG2pIds);
-        langMgr->convert(m_langNotes);
+        const auto langMgr = LangCore::Manager::instance();
+        std::vector<std::string> taggerInput;
+        for (const auto &note : m_langNotes)
+            taggerInput.push_back(note->lyric.toStdString());
+        const auto splitRes = langMgr->tag(taggerInput, false, {});
+
+        std::vector<LangCore::G2pInput *> g2pInputs;
+        for (const auto &taggerRes : splitRes)
+            g2pInputs.push_back(new LangCore::G2pInput(taggerRes.lyric, taggerRes.language));
+
+        const auto g2pRes = langMgr->convert(g2pInputs);
+        for (int i = 0; i < g2pRes.size(); i++) {
+            m_langNotes[i]->language = splitRes[i].language.c_str();
+            m_langNotes[i]->g2pId = splitRes[i].language.c_str();
+            m_langNotes[i]->syllable = g2pRes[i].pronunciation.c_str();
+            m_langNotes[i]->candidates = QStringList({g2pRes[i].pronunciation.begin(), g2pRes[i].pronunciation.end()});
+        }
 
         // textWidget
         m_lyricBaseWidget = new LyricBaseWidget(config, m_priorityG2pIds);
@@ -155,16 +165,30 @@ namespace FillLyric
         auto langNotes = m_lyricBaseWidget->splitLyric(m_lyricBaseWidget->m_textEdit->toPlainText());
 
         QList<QList<LangNote>> result;
-        const auto langMgr = LangMgr::ILanguageManager::instance();
+        const auto langMgr = LangCore::Manager::instance();
         for (auto &notes : langNotes) {
             QList<LangNote *> inputNotes;
             QList<LangNote> lineRes;
 
-            for (auto &note : notes) {
+            for (auto &note : notes)
                 inputNotes.append(&note);
+
+            std::vector<std::string> taggerInput;
+            for (const auto &note : inputNotes)
+                taggerInput.push_back(note->lyric.toStdString());
+            const auto splitRes = langMgr->tag(taggerInput, false, {});
+
+            std::vector<LangCore::G2pInput *> g2pInputs;
+            for (const auto &note : splitRes)
+                g2pInputs.push_back(new LangCore::G2pInput(note.lyric, note.language));
+
+            const auto g2pRes = langMgr->convert(g2pInputs);
+            for (int i = 0; i < g2pRes.size(); i++) {
+                inputNotes[i]->language = splitRes[i].language.c_str();
+                inputNotes[i]->syllable = g2pRes[i].pronunciation.c_str();
+                inputNotes[i]->candidates = {g2pRes[i].pronunciation.begin(), g2pRes[i].pronunciation.end()};
             }
-            langMgr->correct(inputNotes, m_priorityG2pIds);
-            langMgr->convert(inputNotes);
+
             for (const auto &note : inputNotes) {
                 lineRes.append(*note);
             }
@@ -191,7 +215,7 @@ namespace FillLyric
     }
 
     void LyricTab::_on_btnInsertText_clicked() const {
-        const QString text = "Halloween蝉声--陪かな伴着qwe行云流浪---\nka回-忆-开始132后安静遥望远方"
+        const QString text = "halloween蝉 声--陪かな伴着qwe行云流浪---\nka回-忆-开始132后安静遥望远方"
                              "\n荒草覆没的古井--枯塘\n匀-散asdaw一缕过往\n";
         m_lyricBaseWidget->m_textEdit->setPlainText(text);
         m_lyricExtWidget->m_wrapView->init(CleanLyric::splitAuto(text, m_priorityG2pIds));

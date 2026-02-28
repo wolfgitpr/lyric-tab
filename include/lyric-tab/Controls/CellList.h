@@ -4,11 +4,9 @@
 #include <QApplication>
 #include <QTimer>
 
-#include <language-manager/LangCommon.h>
-
 #include <lyric-tab/Controls/HandleItem.h>
 #include <lyric-tab/Controls/SplitterItem.h>
-
+#include <lyric-tab/LangCommon.h>
 #include <lyric-tab/LyricTabGlobal.h>
 
 namespace FillLyric

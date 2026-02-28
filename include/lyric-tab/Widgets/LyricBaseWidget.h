@@ -9,10 +9,9 @@
 #include <QPushButton>
 #include <QWidget>
 
-#include <language-manager/LangCommon.h>
-#include <lyric-tab/LyricTabConfig.h>
-
 #include <lyric-tab/Controls/PhonicTextEdit.h>
+#include <lyric-tab/LangCommon.h>
+#include <lyric-tab/LyricTabConfig.h>
 #include <lyric-tab/LyricTabGlobal.h>
 
 

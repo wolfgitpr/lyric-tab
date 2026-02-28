@@ -4,8 +4,7 @@
 #include <QFont>
 #include <QGraphicsView>
 
-#include <language-manager/LangCommon.h>
-
+#include <lyric-tab/LangCommon.h>
 #include <lyric-tab/LyricTabGlobal.h>
 
 namespace FillLyric

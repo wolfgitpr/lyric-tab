@@ -1,7 +1,7 @@
 #ifndef DS_EDITOR_LITE_LYRICWIDGET_H
 #define DS_EDITOR_LITE_LYRICWIDGET_H
 
-#include <language-manager/LangCommon.h>
+#include <lyric-tab/LangCommon.h>
 
 #include <lyric-tab/LyricTabConfig.h>
 #include <lyric-tab/LyricTabGlobal.h>
@@ -17,7 +17,7 @@ namespace FillLyric
 
     public:
         explicit LyricTab(const QList<LangNote> &langNotes, QStringList priorityG2pIds = {},
-                          const LyricTabConfig &config = {}, QWidget *parent = nullptr, const QString &transfile = "");
+                          const LyricTabConfig &config = {}, QWidget *parent = nullptr, const QString &transFile = "");
         ~LyricTab() override;
 
         void setLangNotes(bool warn = true);

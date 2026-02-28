@@ -90,8 +90,8 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets)
 
-find_package(language-manager CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PUBLIC language-manager::language-manager)
+find_package(LangCore CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC LangCore::LangCore)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

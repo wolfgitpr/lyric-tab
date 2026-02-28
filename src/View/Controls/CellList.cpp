@@ -4,8 +4,9 @@
 #include <QGraphicsOpacityEffect>
 #include <QMenu>
 #include <QStyleOptionGraphicsItem>
-#include <language-manager/ILanguageManager.h>
 #include <qgraphicssceneevent.h>
+
+#include <LangCore/Core/Manager.h>
 
 #include "lyric-tab/Controls/LyricWrapView.h"
 
@@ -321,21 +322,31 @@ namespace FillLyric
 
     void CellList::editCell(LyricCell *cell, const QString &lyric) {
         const auto cellIndex = m_cells.indexOf(cell);
-        const auto langMgr = LangMgr::ILanguageManager::instance();
+        const auto langMgr = LangCore::Manager::instance();
 
         QList<LangNote *> tempNotes;
         for (const auto &lyricCell : m_cells) {
             tempNotes.append(new LangNote(*lyricCell->note()));
         }
         tempNotes[cellIndex]->lyric = lyric;
-        const auto [language, g2pId] =
-            langMgr->analysis(lyric, dynamic_cast<LyricWrapView *>(m_view)->priorityG2pIds());
-        tempNotes[cellIndex]->g2pId = g2pId;
-        tempNotes[cellIndex]->language = language;
+        const auto taggerRes = langMgr->tag({lyric.toStdString()}, false, {}).front();
+        tempNotes[cellIndex]->g2pId = taggerRes.language.c_str();
+        tempNotes[cellIndex]->language = taggerRes.language.c_str();
 
-        langMgr->convert(tempNotes);
+        std::vector<LangCore::G2pInput *> g2pInput;
+        for (const auto &note : tempNotes) {
+            g2pInput.emplace_back(new LangCore::G2pInput(note->lyric.toStdString(), note->g2pId.toStdString()));
+        }
+
+        const auto g2pRes = langMgr->convert(g2pInput);
         for (int i = 0; i < m_cells.size(); i++) {
-            m_cells[i]->setNote(tempNotes[i]);
+            const auto note = tempNotes[i];
+            note->syllable = g2pRes[i].pronunciation.c_str();
+            QStringList candidates;
+            for (const auto &it : g2pRes[i].candidates)
+                candidates.push_back(it.c_str());
+            note->candidates = candidates;
+            m_cells[i]->setNote(note);
         }
 
         this->updateRect(cell);

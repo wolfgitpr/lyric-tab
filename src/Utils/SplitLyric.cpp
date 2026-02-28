@@ -1,22 +1,31 @@
 #include "SplitLyric.h"
-#include <language-manager/ILanguageManager.h>
+
+#include <LangCore/Core/Manager.h>
+
+#include <lyric-tab/LangCommon.h>
 
 namespace FillLyric
 {
     QList<QList<LangNote>> CleanLyric::splitAuto(const QString &input, const QStringList &priorityG2pIds) {
         QList<QList<LangNote>> result;
         QList<LangNote> notes;
-        const auto langMgr = LangMgr::ILanguageManager::instance();
-        const auto res = langMgr->split(input, priorityG2pIds);
+        std::vector<std::string> g2pIds;
+        for (const QString &g2pId : priorityG2pIds)
+            g2pIds.push_back(g2pId.toUtf8().constData());
+        const auto langMgr = LangCore::Manager::instance();
+        const auto res = langMgr->tag({input.toStdString()}, true, g2pIds);
 
-        for (const auto &note : res) {
-            if (note.g2pId == "linebreak") {
+        for (const auto &tagger_res : res) {
+            if (tagger_res.tag == "linebreak") {
                 if (!notes.isEmpty())
                     result.append(notes);
                 notes.clear();
                 continue;
             }
-            notes.append(note);
+            auto tempNote = LangNote(tagger_res.lyric.c_str());
+            tempNote.language = tagger_res.language.c_str();
+            tempNote.g2pId = tagger_res.language.c_str();
+            notes.append(tempNote);
         }
 
         if (!notes.isEmpty())
@@ -35,7 +44,7 @@ namespace FillLyric
     }
 
     QList<QList<LangNote>> CleanLyric::splitByChar(const QString &input) {
-        const auto langMgr = LangMgr::ILanguageManager::instance();
+        const auto langMgr = LangCore::Manager::instance();
 
         QList<QList<LangNote>> result;
         QList<LangNote> notes;
@@ -52,9 +61,9 @@ namespace FillLyric
             }
             LangNote note;
             note.lyric = currentChar;
-            const auto [language, g2pId] = langMgr->analysis(currentChar, {});
-            note.g2pId = g2pId;
-            note.language = language;
+            const auto taggerRes = langMgr->tag({QString(currentChar).toStdString()}, false, {});
+            note.g2pId = taggerRes.front().language.c_str();
+            note.language = taggerRes.front().language.c_str();
             notes.append(note);
         }
 
@@ -64,7 +73,7 @@ namespace FillLyric
     }
 
     QList<QList<LangNote>> CleanLyric::splitCustom(const QString &input, const QStringList &splitter) {
-        const auto langMgr = LangMgr::ILanguageManager::instance();
+        const auto langMgr = LangCore::Manager::instance();
 
         QList<QList<LangNote>> result;
         QList<LangNote> notes;
@@ -80,9 +89,9 @@ namespace FillLyric
             if (!lyric.isEmpty() && !splitter.contains(lyric) && lyric != ' ') {
                 LangNote note;
                 note.lyric = lyric;
-                const auto [language, g2pId] = langMgr->analysis(lyric, {});
-                note.g2pId = g2pId;
-                note.language = language;
+                const auto taggerRes = langMgr->tag({lyric.toStdString()}, false, {});
+                note.g2pId = taggerRes.front().language.c_str();
+                note.language = taggerRes.front().language.c_str();
                 notes.append(note);
             }
 
