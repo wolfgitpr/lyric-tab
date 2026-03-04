@@ -16,8 +16,9 @@ namespace FillLyric
         friend class LyricDialog;
 
     public:
-        explicit LyricTab(const QList<LangNote> &langNotes, QStringList priorityG2pIds = {},
-                          const LyricTabConfig &config = {}, QWidget *parent = nullptr, const QString &transFile = "");
+        explicit LyricTab(const QList<LangNote> &langNotes, const QStringList &priorityG2pIds = {},
+                          QMap<QString, QString> langToG2pId = {}, const LyricTabConfig &config = {},
+                          QWidget *parent = nullptr, const QString &transFile = "");
         ~LyricTab() override;
 
         void setLangNotes(bool warn = true);
@@ -33,7 +34,7 @@ namespace FillLyric
     Q_SIGNALS:
         void shrinkWindowRight(int newWidth);
         void expandWindowRight();
-        void modifyOptionSignal(LyricTabConfig config);
+        void modifyOptionSignal(FillLyric::LyricTabConfig config);
 
     public Q_SLOTS:
         void _on_btnInsertText_clicked() const;
@@ -42,7 +43,8 @@ namespace FillLyric
     private:
         void modifyOption();
 
-        QStringList m_priorityG2pIds;
+        std::vector<std::string> m_priorityG2pIds;
+        QMap<std::string, std::string> m_langToG2pId;
 
         QList<LangNote *> m_langNotes;
 

@@ -8,8 +8,9 @@
 
 namespace FillLyric
 {
-    LyricBaseWidget::LyricBaseWidget(const LyricTabConfig &config, QStringList priorityG2pIds, QWidget *parent) :
-        QWidget(parent), m_priorityG2pIds(std::move(priorityG2pIds)) {
+    LyricBaseWidget::LyricBaseWidget(const LyricTabConfig &config, std::vector<std::string> priorityG2pIds,
+                                     QMap<std::string, std::string> m_langToG2pId, QWidget *parent) :
+        QWidget(parent), m_priorityG2pIds(std::move(priorityG2pIds)),m_langToG2pId(std::move(m_langToG2pId)) {
         // textEdit top
         m_textTopLayout = new QHBoxLayout();
         btnImportLrc = new Button(tr("Import Lrc"));

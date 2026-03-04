@@ -5,9 +5,11 @@
 
 namespace FillLyric
 {
-    LyricExtWidget::LyricExtWidget(int *notesCount, const LyricTabConfig &config, QStringList priorityG2pIds,
-                                   QWidget *parent) :
-        QWidget(parent), notesCount(notesCount), m_priorityG2pIds(std::move(priorityG2pIds)) {
+    LyricExtWidget::LyricExtWidget(int *notesCount, const LyricTabConfig &config,
+                                   const std::vector<std::string> &priorityG2pIds,
+                                   QMap<std::string, std::string> m_langToG2pId, QWidget *parent) :
+        QWidget(parent), notesCount(notesCount), m_priorityG2pIds(priorityG2pIds),
+        m_langToG2pId(std::move(m_langToG2pId)) {
         this->setContentsMargins(0, 0, 0, 0);
 
         // phonicWidget

@@ -6,14 +6,11 @@
 
 namespace FillLyric
 {
-    QList<QList<LangNote>> CleanLyric::splitAuto(const QString &input, const QStringList &priorityG2pIds) {
+    QList<QList<LangNote>> CleanLyric::splitAuto(const QString &input, const std::vector<std::string> &priorityG2pIds) {
         QList<QList<LangNote>> result;
         QList<LangNote> notes;
-        std::vector<std::string> g2pIds;
-        for (const QString &g2pId : priorityG2pIds)
-            g2pIds.push_back(g2pId.toUtf8().constData());
         const auto langMgr = LangCore::Manager::instance();
-        const auto res = langMgr->tag({input.toStdString()}, true, g2pIds);
+        const auto res = langMgr->tag({input.toStdString()}, true, true, priorityG2pIds);
 
         for (const auto &tagger_res : res) {
             if (tagger_res.tag == "linebreak") {
@@ -61,7 +58,7 @@ namespace FillLyric
             }
             LangNote note;
             note.lyric = currentChar;
-            const auto taggerRes = langMgr->tag({QString(currentChar).toStdString()}, false, {});
+            const auto taggerRes = langMgr->tag({QString(currentChar).toStdString()}, false, false, {});
             note.g2pId = taggerRes.front().language.c_str();
             note.language = taggerRes.front().language.c_str();
             notes.append(note);
@@ -89,7 +86,7 @@ namespace FillLyric
             if (!lyric.isEmpty() && !splitter.contains(lyric) && lyric != ' ') {
                 LangNote note;
                 note.lyric = lyric;
-                const auto taggerRes = langMgr->tag({lyric.toStdString()}, false, {});
+                const auto taggerRes = langMgr->tag({lyric.toStdString()}, false, false, {});
                 note.g2pId = taggerRes.front().language.c_str();
                 note.language = taggerRes.front().language.c_str();
                 notes.append(note);

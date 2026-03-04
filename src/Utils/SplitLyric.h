@@ -7,7 +7,7 @@ namespace FillLyric
 {
     class CleanLyric {
     public:
-        static QList<QList<LangNote>> splitAuto(const QString &input, const QStringList &priorityG2pIds);
+        static QList<QList<LangNote>> splitAuto(const QString &input, const std::vector<std::string> &priorityG2pIds);
 
         static QList<QList<LangNote>> splitByChar(const QString &input);
 

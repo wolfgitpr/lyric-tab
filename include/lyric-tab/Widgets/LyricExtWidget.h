@@ -22,8 +22,9 @@ namespace FillLyric
         friend class LyricTab;
 
     public:
-        explicit LyricExtWidget(int *notesCount, const LyricTabConfig &config, QStringList priorityG2pIds,
-                                QWidget *parent = nullptr);
+        explicit LyricExtWidget(int *notesCount, const LyricTabConfig &config,
+                                const std::vector<std::string> &priorityG2pIds,
+                                QMap<std::string, std::string> m_langToG2pId, QWidget *parent = nullptr);
         ~LyricExtWidget() override;
 
     Q_SIGNALS:
@@ -50,7 +51,8 @@ namespace FillLyric
         Button *btnFoldLeft;
         Button *m_btnInsertText;
 
-        QStringList m_priorityG2pIds;
+        std::vector<std::string> m_priorityG2pIds;
+        QMap<std::string, std::string> m_langToG2pId;
     };
 
 } // namespace FillLyric

@@ -29,7 +29,8 @@ namespace FillLyric
         friend class LyricTab;
 
     public:
-        explicit LyricBaseWidget(const LyricTabConfig &config, QStringList priorityG2pIds, QWidget *parent = nullptr);
+        explicit LyricBaseWidget(const LyricTabConfig &config, std::vector<std::string> priorityG2pIds,
+                                 QMap<std::string, std::string> m_langToG2pId, QWidget *parent = nullptr);
         ~LyricBaseWidget() override;
 
         QList<QList<LangNote>> splitLyric(const QString &lyric) const;
@@ -73,7 +74,8 @@ namespace FillLyric
 
         Button *m_btnToTable;
 
-        QStringList m_priorityG2pIds;
+        std::vector<std::string> m_priorityG2pIds;
+        QMap<std::string, std::string> m_langToG2pId;
     };
 
 

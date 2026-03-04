@@ -22,7 +22,7 @@ namespace FillLyric
         Q_PROPERTY(QStringList spliterPen READ spliterPen WRITE setSpliterPen)
 
     public:
-        explicit LyricWrapView(QString qssPath = "", const QStringList &priorityG2pIds = {}, QWidget *parent = nullptr);
+        explicit LyricWrapView(QString qssPath = "", QStringList priorityG2pIds = {}, QWidget *parent = nullptr);
         ~LyricWrapView() override;
 
         void clear();
@@ -95,7 +95,7 @@ namespace FillLyric
         bool cellEqualLine(QList<LyricCell *> cells);
 
         void lineBreak(CellList *cellList, const int &index);
-        void deleteCells(QList<LyricCell *> selectedCells);
+        void deleteCells(const QList<LyricCell *>& selectedCells);
 
         QFont m_font;
         QGraphicsScene *m_scene;

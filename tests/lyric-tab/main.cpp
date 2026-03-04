@@ -97,8 +97,9 @@ int main(int argc, char *argv[]) {
     langMgr->addPluginPath("org.openvpi.DriverFactory", defaultPluginDir / _TSTR("Drivers"));
     langMgr->addPluginPath("org.openvpi.TaskFactory", defaultPluginDir / _TSTR("G2ps"));
     langMgr->addPluginPath("org.openvpi.TaskFactory", defaultPluginDir / _TSTR("Taggers"));
+    langMgr->addPluginPath("org.openvpi.TaskFactory", defaultPluginDir / _TSTR("Splitters"));
 
-    const std::filesystem::path packagesRootDir = R"(D:\projects\language-manager\tst_package)";
+    const std::filesystem::path packagesRootDir = stdc::system::application_directory() / _TSTR("G2pPackages");
     langMgr->addPackagePath(packagesRootDir);
 
     if (const auto onnxDriverInitialized = initializeOnnxDriver(langMgr, "cpu", 0, false); !onnxDriverInitialized)
@@ -111,10 +112,10 @@ int main(int argc, char *argv[]) {
     qDebug() << "LangMgr: errorMsg" << errorMessage << "initialized:" << langMgr->initialized();
 
     auto *lyricTab = new FillLyric::LyricTab(
-        {LangNote("好"), LangNote("好的"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
-         LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
-         LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好")},
-        {}, {true, true});
+        {LangNote("hao"), LangNote("好的"), LangNote("hello", "eng", "eng"), LangNote("好"), LangNote("好"),
+         LangNote("好"), LangNote("ce"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
+         LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好")},
+        {"cmn", "jpn", "eng", "yue"}, {}, {true, true});
 
     window.setCentralWidget(lyricTab);
     window.show();

@@ -3,22 +3,26 @@
 #include <lyric-tab/Controls/CellList.h>
 #include <lyric-tab/Controls/LyricCell.h>
 
-#include <LangCore/Core/Manager.h>
 #include <QFileDialog>
-#include "../Utils/SplitLyric.h"
-
 #include <QMessageBox>
 #include <QTranslator>
-#include <utility>
+
+#include <LangCore/Core/Manager.h>
+
+#include "../Utils/SplitLyric.h"
 
 namespace FillLyric
 {
-    LyricTab::LyricTab(const QList<LangNote> &langNotes, QStringList priorityG2pIds, const LyricTabConfig &config,
-                       QWidget *parent, const QString &transFile) :
-        QWidget(parent), m_priorityG2pIds(std::move(priorityG2pIds)) {
+    LyricTab::LyricTab(const QList<LangNote> &langNotes, const QStringList &priorityG2pIds,
+                       QMap<QString, QString> langToG2pId, const LyricTabConfig &config, QWidget *parent,
+                       const QString &transFile) : QWidget(parent) {
 
+        for (const auto &g2pId : priorityG2pIds)
+            m_priorityG2pIds.push_back(g2pId.toStdString());
+        for (auto it = langToG2pId.begin(); it != langToG2pId.end(); ++it)
+            m_langToG2pId.insert(it.key().toStdString(), it.value().toStdString());
         for (const auto &langNote : langNotes)
-            m_langNotes.append(new LangNote(langNote.lyric));
+            m_langNotes.append(new LangNote(langNote));
 
         const QString locale = QLocale::system().name();
         auto *translator = new QTranslator(this);
@@ -36,25 +40,29 @@ namespace FillLyric
         std::vector<std::string> taggerInput;
         for (const auto &note : m_langNotes)
             taggerInput.push_back(note->lyric.toStdString());
-        const auto splitRes = langMgr->tag(taggerInput, false, {});
+        const auto taggerRes = langMgr->tag(taggerInput, false, false, m_priorityG2pIds);
 
         std::vector<LangCore::G2pInput *> g2pInputs;
-        for (const auto &taggerRes : splitRes)
-            g2pInputs.push_back(new LangCore::G2pInput(taggerRes.lyric, taggerRes.language));
+        for (int i = 0; i < m_langNotes.size(); i++) {
+            const auto language = m_langNotes[i]->language == QStringLiteral("unknown")
+                ? taggerRes[i].language
+                : m_langNotes[i]->language.toStdString();
+            g2pInputs.push_back(new LangCore::G2pInput(taggerRes[i].lyric, m_langToG2pId.value(language, language)));
+        }
 
         const auto g2pRes = langMgr->convert(g2pInputs);
         for (int i = 0; i < g2pRes.size(); i++) {
-            m_langNotes[i]->language = splitRes[i].language.c_str();
-            m_langNotes[i]->g2pId = splitRes[i].language.c_str();
+            m_langNotes[i]->language = taggerRes[i].language.c_str();
+            m_langNotes[i]->g2pId = m_langToG2pId.value(taggerRes[i].language, taggerRes[i].language).c_str();
             m_langNotes[i]->syllable = g2pRes[i].pronunciation.c_str();
             m_langNotes[i]->candidates = QStringList({g2pRes[i].pronunciation.begin(), g2pRes[i].pronunciation.end()});
         }
 
         // textWidget
-        m_lyricBaseWidget = new LyricBaseWidget(config, m_priorityG2pIds);
+        m_lyricBaseWidget = new LyricBaseWidget(config, m_priorityG2pIds, m_langToG2pId);
 
         // lyricExtWidget
-        m_lyricExtWidget = new LyricExtWidget(&notesCount, config, m_priorityG2pIds);
+        m_lyricExtWidget = new LyricExtWidget(&notesCount, config, m_priorityG2pIds, m_langToG2pId);
 
         // lyric layout
         m_lyricLayout = new QHBoxLayout();
@@ -197,8 +205,6 @@ namespace FillLyric
         return langNotes;
     }
 
-    bool LyricTab::exportSkipSlur() const { return m_lyricBaseWidget->skipSlur->isChecked(); }
-
     QList<QList<LangNote>> LyricTab::modelExport() const {
         const auto cellLists = m_lyricExtWidget->m_wrapView->cellLists();
 
@@ -213,6 +219,8 @@ namespace FillLyric
         }
         return noteList;
     }
+
+    bool LyricTab::exportSkipSlur() const { return m_lyricBaseWidget->skipSlur->isChecked(); }
 
     void LyricTab::_on_btnInsertText_clicked() const {
         const QString text = "halloween蝉 声--陪かな伴着qwe行云流浪---\nka回-忆-开始132后安静遥望远方"

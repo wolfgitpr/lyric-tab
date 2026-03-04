@@ -13,8 +13,8 @@
 
 namespace FillLyric
 {
-    LyricWrapView::LyricWrapView(QString qssPath, const QStringList &priorityG2pIds, QWidget *parent) :
-        QGraphicsView(parent), m_qssPath(std::move(qssPath)), m_priorityG2pIds(priorityG2pIds) {
+    LyricWrapView::LyricWrapView(QString qssPath, QStringList priorityG2pIds, QWidget *parent) :
+        QGraphicsView(parent), m_qssPath(std::move(qssPath)), m_priorityG2pIds(std::move(priorityG2pIds)) {
         setAttribute(Qt::WA_StyledBackground, true);
         auto qssFile = QFile(m_qssPath);
         if (qssFile.open(QIODevice::ReadOnly)) {
@@ -50,7 +50,7 @@ namespace FillLyric
                     selectedCells.append(cell);
                 }
             }
-            if (!selectedCells.isEmpty())
+            if (!selectedCells.isEmpty()) {
                 if (selectedCells.size() == 1) {
                     const auto cellList = this->mapToList(selectedCells.first()->scenePos());
                     if (cellList && cellList->m_cells.size() == 1) {
@@ -58,7 +58,8 @@ namespace FillLyric
                         event->accept();
                         return;
                     }
-                } else if (selectedCells.size() > 1) {
+                }
+                if (selectedCells.size() > 1) {
                     const auto cellList = this->mapToList(selectedCells.first()->scenePos());
                     if (this->cellEqualLine(selectedCells)) {
                         this->removeList(cellList);
@@ -66,6 +67,7 @@ namespace FillLyric
                         return;
                     }
                 }
+            }
 
             this->deleteCells(selectedCells);
             event->accept();
@@ -368,6 +370,7 @@ namespace FillLyric
                 g2pInputs.push_back(new LangCore::G2pInput(note.lyric.toStdString(), note.g2pId.toStdString()));
                 tempNotes.append(new LangNote(note));
             }
+
             const auto g2pRes = langMgr->convert(g2pInputs);
             for (int i = 0; i < g2pRes.size(); i++) {
                 tempNotes[i]->syllable = g2pRes[i].pronunciation.c_str();
@@ -502,7 +505,7 @@ namespace FillLyric
         }
         this->repaintCellLists();
     }
-    void LyricWrapView::deleteCells(QList<LyricCell *> selectedCells) {
+    void LyricWrapView::deleteCells(const QList<LyricCell *> &selectedCells) {
         // delete selected cells
         QMap<CellList *, QMap<int, LyricCell *>> cellsMap;
         QList<QPair<int, CellList *>> temp_cellLists;
