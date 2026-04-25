@@ -15,11 +15,11 @@
 
 #include <LangCore/Core/Manager.h>
 #include <LangCore/Module/Module.h>
-#include <LangCore/Task/TaskFactoryPlugin.h>
 
-#include <LangPlugins/Api/Drivers/Onnx/1/OnnxDriverApiL1.h>
+#include <LangCore/Task/SessionTask.h>
+#include <LangCore/Task/TaskPlugin.h>
 
-using EP = LangPlugins::Api::Onnx::L1::ExecutionProvider;
+using EP = LangCore::ExecutionProvider;
 
 std::filesystem::path getPluginRootDirectory() {
 #if defined(Q_OS_MAC)
@@ -47,23 +47,30 @@ EP parseExecutionProvider(const std::string &provider) {
 
 bool initializeOnnxDriver(const LangCore::Manager *mgr, const std::string &ep, const int deviceIndex,
                           const bool loadFromProgress) {
-    const auto onnxDriverPlugin = mgr->plugin<LangCore::DriverFactoryPlugin>("onnx");
+    const auto onnxDriverPlugin = mgr->plugin<LangCore::DriverPlugin>("onnx");
     if (!onnxDriverPlugin) {
         std::cerr << "Failed to load ONNX inference driver" << std::endl;
         return false;
     }
 
-    const auto onnxDriver = onnxDriverPlugin->create();
-    const auto onnxArgs = LangCore::NO<LangPlugins::Api::Onnx::L1::DriverInitArgs>::create();
+    auto expOnnxDriver = onnxDriverPlugin->create();
+    if (!expOnnxDriver) {
+        std::cerr << "Failed to load ONNX inference driver" << std::endl;
+        return false;
+    }
+
+    const auto onnxArgs = LangCore::NO<LangCore::DriverInitArgs>::create();
 
     const auto ep_ = parseExecutionProvider(ep);
     onnxArgs->ep = ep_;
     const auto ortParentPath = onnxDriverPlugin->path().parent_path() / _TSTR("runtimes") / _TSTR("onnx");
-    onnxArgs->runtimePath = ep_ == LangPlugins::Api::Onnx::L1::CUDAExecutionProvider ? ortParentPath / _TSTR("cuda")
-                                                                                     : ortParentPath / _TSTR("default");
+    onnxArgs->runtimePath =
+        ep_ == EP::CUDAExecutionProvider ? ortParentPath / _TSTR("cuda") : ortParentPath / _TSTR("default");
 
-    onnxArgs->loadFromProgress = loadFromProgress;
+    onnxArgs->loadFromProcess = loadFromProgress;
     onnxArgs->deviceIndex = deviceIndex;
+
+    const auto onnxDriver = expOnnxDriver.take();
 
     if (const auto exp = onnxDriver->initialize(onnxArgs); !exp) {
         std::cerr << "Failed to initialize ONNX driver: " << exp.error().message() << std::endl;
@@ -94,10 +101,8 @@ int main(int argc, char *argv[]) {
     const auto langMgr = LangCore::Manager::instance();
 
     const auto defaultPluginDir = getPluginRootDirectory() / _TSTR("LangPlugins");
-    langMgr->addPluginPath("org.openvpi.DriverFactory", defaultPluginDir / _TSTR("Drivers"));
-    langMgr->addPluginPath("org.openvpi.TaskFactory", defaultPluginDir / _TSTR("G2ps"));
-    langMgr->addPluginPath("org.openvpi.TaskFactory", defaultPluginDir / _TSTR("Taggers"));
-    langMgr->addPluginPath("org.openvpi.TaskFactory", defaultPluginDir / _TSTR("Splitters"));
+    langMgr->addPluginPath("org.openvpi.Driver", defaultPluginDir / _TSTR("Drivers"));
+    langMgr->addPluginPath("org.openvpi.Task", defaultPluginDir / _TSTR("G2ps"));
 
     const std::filesystem::path packagesRootDir = stdc::system::application_directory() / _TSTR("G2pPackages");
     langMgr->addPackagePath(packagesRootDir);
@@ -112,9 +117,30 @@ int main(int argc, char *argv[]) {
     qDebug() << "LangMgr: errorMsg" << errorMessage << "initialized:" << langMgr->initialized();
 
     auto *lyricTab = new FillLyric::LyricTab(
-        {LangNote("hao"), LangNote("好的"), LangNote("hello", "eng", "eng"), LangNote("好"), LangNote("好"),
-         LangNote("好"), LangNote("ce"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"),
-         LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好"), LangNote("好")},
+        {
+            // Chinese
+            LangNote("春"), LangNote("眠"), LangNote("不"), LangNote("觉"), LangNote("晓"),
+            // Punctuation
+            LangNote("，"),
+            // Chinese continued
+            LangNote("处"), LangNote("处"), LangNote("闻"), LangNote("啼"), LangNote("鸟"),
+            LangNote("。"),
+            // Japanese
+            LangNote("桜"), LangNote("が"), LangNote("咲"), LangNote("く"),
+            // Slur
+            LangNote("-"),
+            // English
+            LangNote("hello", "eng", "eng"), LangNote("world", "eng", "eng"),
+            // Mixed: Chinese with English
+            LangNote("这"), LangNote("是"), LangNote("test"),
+            // Cantonese
+            LangNote("你"), LangNote("好"),
+            // Numbers and punctuation
+            LangNote("123"), LangNote("！"),
+            // More Chinese polyphones
+            LangNote("重"), LangNote("量"), LangNote("重"), LangNote("新"),
+            LangNote("了"), LangNote("了"), LangNote("乐"),
+        },
         {"cmn", "jpn", "eng", "yue"}, {}, {true, true});
 
     window.setCentralWidget(lyricTab);

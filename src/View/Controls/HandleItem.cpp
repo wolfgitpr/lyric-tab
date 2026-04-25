@@ -4,6 +4,8 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+#include <lyric-tab/Utils/QssParser.h>
+
 namespace FillLyric
 {
     HandleItem::HandleItem(QGraphicsView *view, QGraphicsItem *parent) : QGraphicsItem(parent), m_view(view) {
@@ -70,13 +72,13 @@ namespace FillLyric
         painter->drawRoundedRect(boxRect, m_margin * 0.5, m_margin * 0.5);
     }
 
-    void HandleItem::setWidth(const qreal &w) { mW = w; }
+    void HandleItem::setWidth(const qreal &w) { m_width = w; }
 
-    qreal HandleItem::width() const { return mW; }
+qreal HandleItem::width() const { return m_width; }
 
-    void HandleItem::setHeight(const qreal &h) { mH = h; }
+void HandleItem::setHeight(const qreal &h) { m_height = h; }
 
-    qreal HandleItem::height() const { return mH; }
+qreal HandleItem::height() const { return m_height; }
 
     qreal HandleItem::deltaX() const { return width() - margin(); }
 
@@ -85,25 +87,11 @@ namespace FillLyric
     qreal HandleItem::margin() const { return m_margin; }
 
     void HandleItem::setQss() {
-        const auto cellBackBrush = m_view->property("handleBackgroundBrush").toStringList()[1];
-        if (!cellBackBrush.isEmpty()) {
-            const auto brushList = cellBackBrush.split('|');
-            if (brushList.size() == 3) {
-                for (int i = 0; i < 3; i++) {
-                    if (brushList[i] == "NoBrush")
-                        m_backgroundBrush[i] = QBrush(Qt::NoBrush);
-                    else {
-                        const auto colorStr = brushList[i].split(',');
-                        const QVector<int> colorValue = {colorStr[0].toInt(), colorStr[1].toInt(), colorStr[2].toInt(),
-                                                         colorStr[3].toInt()};
-
-                        if (colorValue.size() == 4) {
-                            m_backgroundBrush[i] = QBrush(QColor(colorStr[0].toInt(), colorStr[1].toInt(),
-                                                                 colorStr[2].toInt(), colorStr[3].toInt()));
-                        }
-                    }
-                }
-            }
+        const auto brushValue = QssParser::propertyValue(m_view, "handleBackgroundBrush");
+        const auto brushes = QssParser::parseBrushes(brushValue, 3);
+        if (brushes.size() == 3) {
+            for (int i = 0; i < 3; i++)
+                m_backgroundBrush[i] = brushes[i];
         }
     }
 } // namespace FillLyric

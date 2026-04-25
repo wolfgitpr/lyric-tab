@@ -1,11 +1,11 @@
-#ifndef DS_EDITOR_LITE_CLEANLYRIC_H
-#define DS_EDITOR_LITE_CLEANLYRIC_H
+#ifndef LYRIC_TAB_UTILS_LYRIC_SPLITTER_H
+#define LYRIC_TAB_UTILS_LYRIC_SPLITTER_H
 
 #include <lyric-tab/LangCommon.h>
 
 namespace FillLyric
 {
-    class CleanLyric {
+    class LyricSplitter {
     public:
         static QList<QList<LangNote>> splitAuto(const QString &input, const std::vector<std::string> &priorityG2pIds);
 
@@ -16,4 +16,4 @@ namespace FillLyric
 } // namespace FillLyric
 
 
-#endif // DS_EDITOR_LITE_CLEANLYRIC_H
+#endif // LYRIC_TAB_UTILS_LYRIC_SPLITTER_H

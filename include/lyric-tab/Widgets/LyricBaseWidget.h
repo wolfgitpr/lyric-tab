@@ -1,5 +1,5 @@
-#ifndef LYRICBASEWIDGET_H
-#define LYRICBASEWIDGET_H
+#ifndef LYRIC_TAB_WIDGETS_LYRIC_BASE_WIDGET_H
+#define LYRIC_TAB_WIDGETS_LYRIC_BASE_WIDGET_H
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -13,35 +13,43 @@
 #include <lyric-tab/LangCommon.h>
 #include <lyric-tab/LyricTabConfig.h>
 #include <lyric-tab/LyricTabGlobal.h>
+#include <lyric-tab/Widgets/WidgetTypes.h>
 
 
 namespace FillLyric
 {
-#ifndef USE_LITE_CONTROLS
-    using Button = QPushButton;
-    using ComboBox = QComboBox;
-    using LineEdit = QLineEdit;
-#endif
     enum SplitType { Auto, ByChar, Custom };
 
     class LYRIC_TAB_EXPORT LyricBaseWidget final : public QWidget {
         Q_OBJECT
-        friend class LyricTab;
 
     public:
         explicit LyricBaseWidget(const LyricTabConfig &config, std::vector<std::string> priorityG2pIds,
-                                 QMap<std::string, std::string> m_langToG2pId, QWidget *parent = nullptr);
+                                 QMap<std::string, std::string> langToG2pId, QWidget *parent = nullptr);
         ~LyricBaseWidget() override;
+
+        QString lyricText() const;
+        void setLyricText(const QString &text);
+        bool skipSlur() const;
+        void setSkipSlur(bool skip);
+        int splitMode() const;
+        QString splitters() const;
+        double fontSize() const;
+        void setToTableVisible(bool visible);
+        void setLyricPrevText(const QString &text);
 
         QList<QList<LangNote>> splitLyric(const QString &lyric) const;
 
     Q_SIGNALS:
         void modifyOption() const;
+        void reReadNoteRequested();
+        void toTableRequested();
+        void lyricPrevRequested();
 
     public Q_SLOTS:
-        void _on_btnImportLrc_clicked();
-        void _on_textEditChanged() const;
-        void _on_splitComboBox_currentIndexChanged(int index) const;
+        void onBtnImportLrcClicked();
+        void onTextEditChanged() const;
+        void onSplitComboBoxCurrentIndexChanged(int index) const;
 
     private:
         QVBoxLayout *m_mainLayout;
@@ -57,13 +65,11 @@ namespace FillLyric
         QLabel *m_textCountLabel;
         PhonicTextEdit *m_textEdit;
 
-        // textEditTop
-        Button *btnImportLrc;
-        Button *btnReReadNote;
-        Button *btnLyricPrev;
+        Button *m_btnImportLrc;
+        Button *m_btnReReadNote;
+        Button *m_btnLyricPrev;
 
-        // CheckBox
-        QCheckBox *skipSlur;
+        QCheckBox *m_skipSlur;
 
         QLabel *m_optLabel;
         QPushButton *m_optButton;
@@ -81,4 +87,4 @@ namespace FillLyric
 
 } // namespace FillLyric
 
-#endif // LYRICBASEWIDGET_H
+#endif // LYRIC_TAB_WIDGETS_LYRIC_BASE_WIDGET_H

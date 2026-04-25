@@ -1,5 +1,5 @@
-#ifndef DS_EDITOR_LITE_LRCDECODER_P_H
-#define DS_EDITOR_LITE_LRCDECODER_P_H
+#ifndef LYRIC_TAB_UTILS_LRC_DECODER_P_H
+#define LYRIC_TAB_UTILS_LRC_DECODER_P_H
 
 #include "LrcDecoder.h"
 
@@ -33,4 +33,4 @@ namespace LrcTools
     };
 } // namespace LrcTools
 
-#endif // DS_EDITOR_LITE_LRCDECODER_P_H
+#endif // LYRIC_TAB_UTILS_LRC_DECODER_P_H

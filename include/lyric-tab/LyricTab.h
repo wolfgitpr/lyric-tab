@@ -1,5 +1,5 @@
-#ifndef DS_EDITOR_LITE_LYRICWIDGET_H
-#define DS_EDITOR_LITE_LYRICWIDGET_H
+#ifndef LYRIC_TAB_LYRIC_TAB_H
+#define LYRIC_TAB_LYRIC_TAB_H
 
 #include <lyric-tab/LangCommon.h>
 
@@ -13,7 +13,6 @@ namespace FillLyric
 {
     class LYRIC_TAB_EXPORT LyricTab final : public QWidget {
         Q_OBJECT
-        friend class LyricDialog;
 
     public:
         explicit LyricTab(const QList<LangNote> &langNotes, const QStringList &priorityG2pIds = {},
@@ -28,17 +27,14 @@ namespace FillLyric
 
         bool exportSkipSlur() const;
 
-        LyricBaseWidget *m_lyricBaseWidget;
-        LyricExtWidget *m_lyricExtWidget;
-
     Q_SIGNALS:
         void shrinkWindowRight(int newWidth);
         void expandWindowRight();
-        void modifyOptionSignal(FillLyric::LyricTabConfig config);
+        void modifyOptionSignal(const FillLyric::LyricTabConfig &config);
 
     public Q_SLOTS:
-        void _on_btnInsertText_clicked() const;
-        void _on_btnToTable_clicked() const;
+        void onBtnInsertTextClicked() const;
+        void onBtnToTableClicked() const;
 
     private:
         void modifyOption();
@@ -48,14 +44,15 @@ namespace FillLyric
 
         QList<LangNote *> m_langNotes;
 
-        // Variables
-        int notesCount = 0;
+        LyricBaseWidget *m_lyricBaseWidget;
+        LyricExtWidget *m_lyricExtWidget;
 
-        // Layout
+        int m_notesCount = 0;
+
         QVBoxLayout *m_mainLayout;
         QHBoxLayout *m_lyricLayout;
     };
 
 } // namespace FillLyric
 
-#endif // DS_EDITOR_LITE_LYRICWIDGET_H
+#endif // LYRIC_TAB_LYRIC_TAB_H

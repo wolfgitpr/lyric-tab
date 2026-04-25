@@ -9,19 +9,17 @@
 namespace FillLyric
 {
     LyricBaseWidget::LyricBaseWidget(const LyricTabConfig &config, std::vector<std::string> priorityG2pIds,
-                                     QMap<std::string, std::string> m_langToG2pId, QWidget *parent) :
-        QWidget(parent), m_priorityG2pIds(std::move(priorityG2pIds)),m_langToG2pId(std::move(m_langToG2pId)) {
-        // textEdit top
+                                     QMap<std::string, std::string> langToG2pId, QWidget *parent) :
+        QWidget(parent), m_priorityG2pIds(std::move(priorityG2pIds)), m_langToG2pId(std::move(langToG2pId)) {
         m_textTopLayout = new QHBoxLayout();
-        btnImportLrc = new Button(tr("Import Lrc"));
-        btnReReadNote = new Button(tr("Reread Note"));
-        btnLyricPrev = new Button(tr("Lyric Prev"));
-        m_textTopLayout->addWidget(btnImportLrc);
-        m_textTopLayout->addWidget(btnReReadNote);
+        m_btnImportLrc = new Button(tr("Import Lrc"));
+        m_btnReReadNote = new Button(tr("Reread Note"));
+        m_btnLyricPrev = new Button(tr("Lyric Prev"));
+        m_textTopLayout->addWidget(m_btnImportLrc);
+        m_textTopLayout->addWidget(m_btnReReadNote);
         m_textTopLayout->addStretch(1);
-        m_textTopLayout->addWidget(btnLyricPrev);
+        m_textTopLayout->addWidget(m_btnLyricPrev);
 
-        // textEdit
         m_textEdit = new PhonicTextEdit();
         m_textEdit->setPlaceholderText(tr("Please input lyric here."));
 
@@ -57,7 +55,6 @@ namespace FillLyric
         m_optWidget = new QWidget();
         m_optWidget->setContentsMargins(0, 0, 0, 0);
 
-        // bottom layout
         m_splitLayout = new QHBoxLayout();
         m_splitLayout->setContentsMargins(0, 0, 0, 0);
         m_splitLabel = new QLabel(tr("Split Mode :"));
@@ -73,9 +70,9 @@ namespace FillLyric
         m_splitLayout->addWidget(m_splitters);
         m_splitLayout->addStretch(1);
 
-        skipSlur = new QCheckBox(tr("Skip Slur Note"));
+        m_skipSlur = new QCheckBox(tr("Skip Slur Note"));
         m_skipSlurLayout = new QHBoxLayout();
-        m_skipSlurLayout->addWidget(skipSlur);
+        m_skipSlurLayout->addWidget(m_skipSlur);
         m_skipSlurLayout->addStretch(1);
 
         m_optLayout = new QVBoxLayout();
@@ -86,33 +83,52 @@ namespace FillLyric
 
         this->setLayout(m_mainLayout);
 
-
         auto font = m_textEdit->font();
         font.setPointSizeF(std::max(9.0, config.lyricBaseFontSize));
         m_textEdit->setFont(font);
         m_splitComboBox->setCurrentIndex(config.splitMode);
         m_splitters->setVisible(config.splitMode == Custom);
 
-        // textEditTop signals
-        connect(btnImportLrc, &QAbstractButton::clicked, this, &LyricBaseWidget::_on_btnImportLrc_clicked);
+        connect(m_btnImportLrc, &QAbstractButton::clicked, this, &LyricBaseWidget::onBtnImportLrcClicked);
 
-        // textEdit label
-        connect(m_textEdit, &PhonicTextEdit::textChanged, this, &LyricBaseWidget::_on_textEditChanged);
+        connect(m_btnReReadNote, &QAbstractButton::clicked, this, &LyricBaseWidget::reReadNoteRequested);
+        connect(m_btnToTable, &QAbstractButton::clicked, this, &LyricBaseWidget::toTableRequested);
+        connect(m_btnLyricPrev, &QAbstractButton::clicked, this, &LyricBaseWidget::lyricPrevRequested);
+
+        connect(m_textEdit, &PhonicTextEdit::textChanged, this, &LyricBaseWidget::onTextEditChanged);
 
         connect(m_textEdit, &PhonicTextEdit::fontChanged, this, &LyricBaseWidget::modifyOption);
 
         connect(m_splitComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-                &LyricBaseWidget::_on_splitComboBox_currentIndexChanged);
+                &LyricBaseWidget::onSplitComboBoxCurrentIndexChanged);
 
         connect(m_optButton, &QPushButton::clicked, this,
                 [this] { m_optWidget->setVisible(!m_optWidget->isVisible()); });
 
-        connect(skipSlur, &QCheckBox::checkStateChanged, this, &LyricBaseWidget::modifyOption);
+        connect(m_skipSlur, &QCheckBox::checkStateChanged, this, &LyricBaseWidget::modifyOption);
     }
 
     LyricBaseWidget::~LyricBaseWidget() = default;
 
-    void LyricBaseWidget::_on_textEditChanged() const {
+    QString LyricBaseWidget::lyricText() const { return m_textEdit->toPlainText(); }
+
+    void LyricBaseWidget::setLyricText(const QString &text) { m_textEdit->setPlainText(text); }
+
+    bool LyricBaseWidget::skipSlur() const { return m_skipSlur->isChecked(); }
+
+    void LyricBaseWidget::setSkipSlur(bool skip) { m_skipSlur->setChecked(skip); }
+
+    int LyricBaseWidget::splitMode() const { return m_splitComboBox->currentIndex(); }
+
+    QString LyricBaseWidget::splitters() const { return m_splitters->text(); }
+
+    double LyricBaseWidget::fontSize() const { return m_textEdit->font().pointSizeF(); }
+
+    void LyricBaseWidget::setToTableVisible(bool visible) { m_btnToTable->setVisible(visible); }
+
+    void LyricBaseWidget::setLyricPrevText(const QString &text) { m_btnLyricPrev->setText(text); }
+
+    void LyricBaseWidget::onTextEditChanged() const {
         const QString text = this->m_textEdit->toPlainText();
         const auto splitRes = this->splitLyric(text);
         int count = 0;
@@ -122,7 +138,7 @@ namespace FillLyric
         this->m_textCountLabel->setText(tr("Note Count: ") + QString::number(count));
     }
 
-    void LyricBaseWidget::_on_btnImportLrc_clicked() {
+    void LyricBaseWidget::onBtnImportLrcClicked() {
         const QString fileName = QFileDialog::getOpenFileName(this, tr("Open Lrc File"), "", tr("Lrc Files (*.lrc)"));
         if (fileName.isEmpty()) {
             return;
@@ -145,20 +161,20 @@ namespace FillLyric
 
         QList<QList<LangNote>> splitNotes;
         if (splitType == Auto) {
-            splitNotes = CleanLyric::splitAuto(lyric, m_priorityG2pIds);
+            splitNotes = LyricSplitter::splitAuto(lyric, m_priorityG2pIds);
         } else if (splitType == ByChar) {
-            splitNotes = CleanLyric::splitByChar(lyric);
+            splitNotes = LyricSplitter::splitByChar(lyric);
         } else if (splitType == Custom) {
-            splitNotes = CleanLyric::splitCustom(lyric, this->m_splitters->text().split(' '));
+            splitNotes = LyricSplitter::splitCustom(lyric, this->m_splitters->text().split(' '));
         }
 
         return splitNotes;
     }
 
-    void LyricBaseWidget::_on_splitComboBox_currentIndexChanged(int index) const {
+    void LyricBaseWidget::onSplitComboBoxCurrentIndexChanged(int index) const {
         const auto splitType = static_cast<SplitType>(index);
         m_splitters->setVisible(splitType == Custom);
-        this->_on_textEditChanged();
+        this->onTextEditChanged();
         modifyOption();
     }
 

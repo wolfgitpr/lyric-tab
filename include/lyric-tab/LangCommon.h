@@ -1,5 +1,5 @@
-#ifndef LYRIC_TAB_LANGCOMMON_H
-#define LYRIC_TAB_LANGCOMMON_H
+#ifndef LYRIC_TAB_LANG_COMMON_H
+#define LYRIC_TAB_LANG_COMMON_H
 
 #include <QString>
 #include <QStringList>
@@ -22,4 +22,4 @@ struct LYRIC_TAB_EXPORT LangNote {
     explicit LangNote(QString lyric, QString language, QString g2pId) :
         lyric(std::move(lyric)), language(std::move(language)), g2pId(std::move(g2pId)) {}
 };
-#endif // LYRIC_TAB_LANGCOMMON_H
+#endif // LYRIC_TAB_LANG_COMMON_H

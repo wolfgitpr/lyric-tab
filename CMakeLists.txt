@@ -53,7 +53,48 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-file(GLOB_RECURSE _src include/*.h src/*.h src/*.cpp)
+set(HEADERS
+    include/lyric-tab/LangCommon.h
+    include/lyric-tab/LyricTab.h
+    include/lyric-tab/LyricTabConfig.h
+    include/lyric-tab/LyricTabGlobal.h
+    include/lyric-tab/Controls/CellList.h
+    include/lyric-tab/Controls/EditDialog.h
+    include/lyric-tab/Controls/HandleItem.h
+    include/lyric-tab/Controls/LyricCell.h
+    include/lyric-tab/Controls/LyricWrapView.h
+    include/lyric-tab/Controls/PhonicTextEdit.h
+    include/lyric-tab/Controls/SplitterItem.h
+    include/lyric-tab/Widgets/LyricBaseWidget.h
+    include/lyric-tab/Widgets/LyricExtWidget.h
+    include/lyric-tab/Widgets/WidgetTypes.h
+    include/lyric-tab/Utils/G2pService.h
+    include/lyric-tab/Utils/QssParser.h
+    src/Utils/SplitLyric.h
+    src/Utils/TextSplitter.h
+    src/Utils/TextTagger.h
+    src/Utils/LrcTools/LrcDecoder.h
+    src/Utils/LrcTools/LrcDecoder_p.h
+)
+
+set(SOURCES
+    src/View/LyricTab.cpp
+    src/View/Controls/CellList.cpp
+    src/View/Controls/EditDialog.cpp
+    src/View/Controls/HandleItem.cpp
+    src/View/Controls/LyricCell.cpp
+    src/View/Controls/LyricWrapView.cpp
+    src/View/Controls/PhonicTextEdit.cpp
+    src/View/Controls/SplitterItem.cpp
+    src/View/Widgets/LyricBaseWidget.cpp
+    src/View/Widgets/LyricExtWidget.cpp
+    src/Utils/SplitLyric.cpp
+    src/Utils/TextSplitter.cpp
+    src/Utils/TextTagger.cpp
+    src/Utils/LrcTools/LrcDecoder.cpp
+    src/Utils/G2pService.cpp
+    src/Utils/QssParser.cpp
+)
 
 if (LYRIC_TAB_BUILD_STATIC)
     add_library(${PROJECT_NAME} STATIC)
@@ -63,7 +104,7 @@ else ()
 endif ()
 target_compile_definitions(${PROJECT_NAME} PRIVATE LYRIC_TAB_LIBRARY)
 
-target_sources(${PROJECT_NAME} PRIVATE ${_src} lyric-tab_res.qrc)
+target_sources(${PROJECT_NAME} PRIVATE ${HEADERS} ${SOURCES} lyric-tab_res.qrc)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 if (LYRIC_TAB_BUILD_TESTS)
@@ -93,6 +134,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::Core Qt${QT_
 find_package(LangCore CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC LangCore::LangCore)
 
+find_package(re2 CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC re2::re2)
+
 target_include_directories(${PROJECT_NAME} PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
@@ -102,6 +146,13 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_CURRENT_SOURCE_DIR}/share/translations
         ${CMAKE_BINARY_DIR}/bin/share/translations
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND
+        ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Utils/configs
+        ${CMAKE_BINARY_DIR}/bin/configs
 )
 
 # ----------------------------------

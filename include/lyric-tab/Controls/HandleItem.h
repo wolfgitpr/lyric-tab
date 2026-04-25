@@ -1,5 +1,5 @@
-#ifndef HANDLEITEM_H
-#define HANDLEITEM_H
+#ifndef LYRIC_TAB_CONTROLS_HANDLE_ITEM_H
+#define LYRIC_TAB_CONTROLS_HANDLE_ITEM_H
 
 #include <QGraphicsItem>
 #include <QGraphicsView>
@@ -52,8 +52,8 @@ namespace FillLyric
 
         QVector<QBrush> m_backgroundBrush = {QColor(83, 83, 85), QColor(137, 137, 139), QColor(112, 156, 255)};
 
-        qreal mW = 13;
-        qreal mH = 0;
+        qreal m_width = 13;
+        qreal m_height = 0;
 
         qreal m_margin = 4;
         QGraphicsView *m_view;
@@ -61,4 +61,4 @@ namespace FillLyric
 
 } // namespace FillLyric
 
-#endif // HANDLEITEM_H
+#endif // LYRIC_TAB_CONTROLS_HANDLE_ITEM_H

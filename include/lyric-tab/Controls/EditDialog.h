@@ -1,5 +1,5 @@
-#ifndef EDITDIALOG_H
-#define EDITDIALOG_H
+#ifndef LYRIC_TAB_CONTROLS_EDIT_DIALOG_H
+#define LYRIC_TAB_CONTROLS_EDIT_DIALOG_H
 
 #include <QDialog>
 #include <QKeyEvent>
@@ -19,4 +19,4 @@ namespace FillLyric
     };
 } // namespace FillLyric
 
-#endif // EDITDIALOG_H
+#endif // LYRIC_TAB_CONTROLS_EDIT_DIALOG_H

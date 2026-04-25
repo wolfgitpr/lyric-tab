@@ -13,7 +13,6 @@ add_executable(${PROJECT_NAME} ${_src})
 #endif ()
 
 find_package(LangCore CONFIG REQUIRED)
-find_package(LangPlugins CONFIG REQUIRED)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
 
@@ -28,12 +27,18 @@ install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         # copy LangMgr plugins
         COMMAND "${CMAKE_COMMAND}" -E copy_directory
-        "$<TARGET_FILE_DIR:LangPlugins::LangPlugins>/../lib/plugins/LangPlugins"
-        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/LangPlugins"
+        "$<TARGET_FILE_DIR:LangCore::LangCore>/../lib/plugins"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins"
 )
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND "${CMAKE_COMMAND}" -E copy_directory
         "${LangCore_DIR}/G2pPackages"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/G2pPackages"
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../src/Utils/configs"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/configs"
 )

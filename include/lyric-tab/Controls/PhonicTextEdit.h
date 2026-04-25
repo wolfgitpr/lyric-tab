@@ -1,5 +1,5 @@
-#ifndef DS_EDITOR_LITE_PHONICTEXTEDIT_H
-#define DS_EDITOR_LITE_PHONICTEXTEDIT_H
+#ifndef LYRIC_TAB_CONTROLS_PHONIC_TEXT_EDIT_H
+#define LYRIC_TAB_CONTROLS_PHONIC_TEXT_EDIT_H
 
 #include <QPlainTextEdit>
 
@@ -21,4 +21,4 @@ namespace FillLyric
     };
 } // namespace FillLyric
 
-#endif // DS_EDITOR_LITE_PHONICTEXTEDIT_H
+#endif // LYRIC_TAB_CONTROLS_PHONIC_TEXT_EDIT_H

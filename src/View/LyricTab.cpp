@@ -7,7 +7,7 @@
 #include <QMessageBox>
 #include <QTranslator>
 
-#include <LangCore/Core/Manager.h>
+#include <lyric-tab/Utils/G2pService.h>
 
 #include "../Utils/SplitLyric.h"
 
@@ -36,41 +36,26 @@ namespace FillLyric
         }
         QCoreApplication::installTranslator(translator);
 
-        const auto langMgr = LangCore::Manager::instance();
-        std::vector<std::string> taggerInput;
+        QList<LangNote> inputNotes;
         for (const auto &note : m_langNotes)
-            taggerInput.push_back(note->lyric.toStdString());
-        const auto taggerRes = langMgr->tag(taggerInput, false, false, m_priorityG2pIds);
+            inputNotes.append(*note);
 
-        std::vector<LangCore::G2pInput *> g2pInputs;
-        for (int i = 0; i < m_langNotes.size(); i++) {
-            const auto language = m_langNotes[i]->language == QStringLiteral("unknown")
-                ? taggerRes[i].language
-                : m_langNotes[i]->language.toStdString();
-            g2pInputs.push_back(new LangCore::G2pInput(taggerRes[i].lyric, m_langToG2pId.value(language, language)));
+        const auto g2pResults = G2pService::convert(inputNotes, m_priorityG2pIds, m_langToG2pId);
+        for (int i = 0; i < g2pResults.size(); i++) {
+            m_langNotes[i]->language = g2pResults[i].language;
+            m_langNotes[i]->g2pId = g2pResults[i].g2pId;
+            m_langNotes[i]->syllable = g2pResults[i].syllable;
+            m_langNotes[i]->candidates = g2pResults[i].candidates;
         }
 
-        const auto g2pRes = langMgr->convert(g2pInputs);
-        for (int i = 0; i < g2pRes.size(); i++) {
-            m_langNotes[i]->language = taggerRes[i].language.c_str();
-            m_langNotes[i]->g2pId = m_langToG2pId.value(taggerRes[i].language, taggerRes[i].language).c_str();
-            m_langNotes[i]->syllable = g2pRes[i].pronunciation.c_str();
-            m_langNotes[i]->candidates = QStringList({g2pRes[i].pronunciation.begin(), g2pRes[i].pronunciation.end()});
-        }
-
-        // textWidget
         m_lyricBaseWidget = new LyricBaseWidget(config, m_priorityG2pIds, m_langToG2pId);
+        m_lyricExtWidget = new LyricExtWidget(&m_notesCount, config, m_priorityG2pIds, m_langToG2pId);
 
-        // lyricExtWidget
-        m_lyricExtWidget = new LyricExtWidget(&notesCount, config, m_priorityG2pIds, m_langToG2pId);
-
-        // lyric layout
         m_lyricLayout = new QHBoxLayout();
         m_lyricLayout->setContentsMargins(0, 0, 0, 0);
         m_lyricLayout->addWidget(m_lyricBaseWidget, 1);
         m_lyricLayout->addWidget(m_lyricExtWidget, 2);
 
-        // main layout
         m_mainLayout = new QVBoxLayout(this);
         m_mainLayout->setContentsMargins(0, 10, 0, 10);
         m_mainLayout->addLayout(m_lyricLayout);
@@ -78,37 +63,31 @@ namespace FillLyric
         connect(m_lyricBaseWidget, &LyricBaseWidget::modifyOption, this, &LyricTab::modifyOption);
         connect(m_lyricExtWidget, &LyricExtWidget::modifyOption, this, &LyricTab::modifyOption);
 
-        connect(m_lyricBaseWidget->btnReReadNote, &QAbstractButton::clicked, this, &LyricTab::setLangNotes);
+        connect(m_lyricBaseWidget, &LyricBaseWidget::reReadNoteRequested, this, [this] { setLangNotes(false);});
+        connect(m_lyricBaseWidget, &LyricBaseWidget::toTableRequested, this, &LyricTab::onBtnToTableClicked);
+        connect(m_lyricExtWidget, &LyricExtWidget::insertTextRequested, this, &LyricTab::onBtnInsertTextClicked);
 
-        // phonicWidget signals
-        connect(m_lyricExtWidget->m_btnInsertText, &QAbstractButton::clicked, this,
-                &LyricTab::_on_btnInsertText_clicked);
-        connect(m_lyricBaseWidget->m_btnToTable, &QAbstractButton::clicked, this, &LyricTab::_on_btnToTable_clicked);
-
-        // fold right
-        connect(m_lyricBaseWidget->btnLyricPrev, &QPushButton::clicked, this,
+        connect(m_lyricBaseWidget, &LyricBaseWidget::lyricPrevRequested, this,
                 [this]
                 {
                     m_lyricExtWidget->setVisible(!m_lyricExtWidget->isVisible());
-                    m_lyricBaseWidget->btnLyricPrev->setText(m_lyricExtWidget->isVisible() ? tr("Fold Preview")
-                                                                                           : tr("Lyric Prev"));
-                    m_lyricBaseWidget->m_btnToTable->setVisible(m_lyricExtWidget->isVisible());
-
-                    if (!m_lyricExtWidget->isVisible()) {
-                        Q_EMIT this->shrinkWindowRight(m_lyricBaseWidget->width() + 20);
-                    } else {
+                    m_lyricBaseWidget->setToTableVisible(m_lyricExtWidget->isVisible());
+                    m_lyricBaseWidget->setLyricPrevText(
+                        m_lyricExtWidget->isVisible() ? tr("Fold Preview") : tr("Lyric Prev"));
+                    if (m_lyricExtWidget->isVisible()) {
                         Q_EMIT this->expandWindowRight();
+                    } else {
+                        Q_EMIT this->shrinkWindowRight(m_lyricBaseWidget->width() + 20);
                     }
                     modifyOption();
                 });
 
-        // fold left
-        connect(m_lyricExtWidget->btnFoldLeft, &QPushButton::clicked, this,
+        connect(m_lyricExtWidget, &LyricExtWidget::foldLeftRequested, this,
                 [this]
                 {
                     m_lyricBaseWidget->setVisible(!m_lyricBaseWidget->isVisible());
-                    m_lyricExtWidget->btnFoldLeft->setText(m_lyricBaseWidget->isVisible() ? tr("Fold Left")
-                                                                                          : tr("Expand Left"));
+                    m_lyricExtWidget->setFoldLeftText(
+                        m_lyricBaseWidget->isVisible() ? tr("Fold Left") : tr("Expand Left"));
                     modifyOption();
                 });
 
@@ -117,25 +96,28 @@ namespace FillLyric
 
         if (!baseVisible) {
             m_lyricBaseWidget->setVisible(baseVisible);
-            m_lyricExtWidget->btnFoldLeft->setText(tr("Expand Left"));
+            m_lyricExtWidget->setFoldLeftText(tr("Expand Left"));
         }
 
         if (!extVisible) {
             m_lyricExtWidget->setVisible(extVisible);
-            m_lyricBaseWidget->m_btnToTable->setVisible(extVisible);
-            m_lyricBaseWidget->btnLyricPrev->setText(tr("Lyric Prev"));
+            m_lyricBaseWidget->setToTableVisible(false);
+            m_lyricBaseWidget->setLyricPrevText(tr("Lyric Prev"));
         } else {
-            m_lyricBaseWidget->btnLyricPrev->setText(tr("Fold Preview"));
+            m_lyricBaseWidget->setLyricPrevText(tr("Fold Preview"));
         }
 
-        m_lyricBaseWidget->skipSlur->setChecked(config.baseSkipSlur);
-        connect(m_lyricBaseWidget->skipSlur, &QCheckBox::checkStateChanged, this, &LyricTab::setLangNotes);
+        m_lyricBaseWidget->setSkipSlur(config.baseSkipSlur);
+        connect(m_lyricBaseWidget, &LyricBaseWidget::modifyOption, this, [this] { setLangNotes(false); });
     }
 
-    LyricTab::~LyricTab() = default;
+    LyricTab::~LyricTab() {
+        qDeleteAll(m_langNotes);
+        m_langNotes.clear();
+    }
 
     void LyricTab::setLangNotes(const bool warn) {
-        const bool skipSlurRes = m_lyricBaseWidget->skipSlur->isChecked();
+        const bool skipSlurRes = m_lyricBaseWidget->skipSlur();
 
         bool setLangNotes = false;
         if (warn) {
@@ -155,13 +137,11 @@ namespace FillLyric
                 langNotes.append(*langNote);
                 lyrics.append(langNote->lyric);
             }
-            notesCount = static_cast<int>(langNotes.size());
-            m_lyricBaseWidget->m_textEdit->setPlainText(lyrics.join(" "));
-            m_lyricExtWidget->m_wrapView->init({langNotes});
+            m_notesCount = static_cast<int>(langNotes.size());
+            m_lyricBaseWidget->setLyricText(lyrics.join(" "));
+            m_lyricExtWidget->wrapView()->init({langNotes});
         } else {
-            disconnect(m_lyricBaseWidget->skipSlur, &QCheckBox::checkStateChanged, this, &LyricTab::setLangNotes);
-            m_lyricBaseWidget->skipSlur->setCheckState(!skipSlurRes ? Qt::Checked : Qt::Unchecked);
-            connect(m_lyricBaseWidget->skipSlur, &QCheckBox::checkStateChanged, this, &LyricTab::setLangNotes);
+            m_lyricBaseWidget->setSkipSlur(!skipSlurRes);
             modifyOption();
         }
     }
@@ -170,43 +150,24 @@ namespace FillLyric
         if (m_lyricExtWidget->isVisible()) {
             return this->modelExport();
         }
-        auto langNotes = m_lyricBaseWidget->splitLyric(m_lyricBaseWidget->m_textEdit->toPlainText());
+        auto langNotes = m_lyricBaseWidget->splitLyric(m_lyricBaseWidget->lyricText());
 
         QList<QList<LangNote>> result;
-        const auto langMgr = LangCore::Manager::instance();
         for (auto &notes : langNotes) {
-            QList<LangNote *> inputNotes;
-            QList<LangNote> lineRes;
-
-            for (auto &note : notes)
-                inputNotes.append(&note);
-
-            std::vector<std::string> taggerInput;
-            for (const auto &note : inputNotes)
-                taggerInput.push_back(note->lyric.toStdString());
-            const auto splitRes = langMgr->tag(taggerInput, false, {});
-
-            std::vector<LangCore::G2pInput *> g2pInputs;
-            for (const auto &note : splitRes)
-                g2pInputs.push_back(new LangCore::G2pInput(note.lyric, note.language));
-
-            const auto g2pRes = langMgr->convert(g2pInputs);
-            for (int i = 0; i < g2pRes.size(); i++) {
-                inputNotes[i]->language = splitRes[i].language.c_str();
-                inputNotes[i]->syllable = g2pRes[i].pronunciation.c_str();
-                inputNotes[i]->candidates = {g2pRes[i].pronunciation.begin(), g2pRes[i].pronunciation.end()};
+            const auto g2pResults = G2pService::convert(notes, m_priorityG2pIds, m_langToG2pId);
+            for (int i = 0; i < g2pResults.size(); i++) {
+                notes[i].language = g2pResults[i].language;
+                notes[i].g2pId = g2pResults[i].g2pId;
+                notes[i].syllable = g2pResults[i].syllable;
+                notes[i].candidates = g2pResults[i].candidates;
             }
-
-            for (const auto &note : inputNotes) {
-                lineRes.append(*note);
-            }
-            result.append(lineRes);
+            result.append(notes);
         }
-        return langNotes;
+        return result;
     }
 
     QList<QList<LangNote>> LyricTab::modelExport() const {
-        const auto cellLists = m_lyricExtWidget->m_wrapView->cellLists();
+        const auto cellLists = m_lyricExtWidget->wrapView()->cellLists();
 
         QList<QList<LangNote>> noteList;
         for (const auto &cellList : cellLists) {
@@ -220,41 +181,31 @@ namespace FillLyric
         return noteList;
     }
 
-    bool LyricTab::exportSkipSlur() const { return m_lyricBaseWidget->skipSlur->isChecked(); }
+    bool LyricTab::exportSkipSlur() const { return m_lyricBaseWidget->skipSlur(); }
 
-    void LyricTab::_on_btnInsertText_clicked() const {
-        const QString text = "halloween蝉 声--陪かな伴着qwe行云流浪---\nka回-忆-开始132后安静遥望远方"
-                             "\n荒草覆没的古井--枯塘\n匀-散asdaw一缕过往\n";
-        m_lyricBaseWidget->m_textEdit->setPlainText(text);
-        m_lyricExtWidget->m_wrapView->init(CleanLyric::splitAuto(text, m_priorityG2pIds));
+    void LyricTab::onBtnInsertTextClicked() const {
+        const QString text = m_lyricBaseWidget->lyricText();
+        if (text.isEmpty())
+            return;
+        m_lyricExtWidget->wrapView()->init(LyricSplitter::splitAuto(text, m_priorityG2pIds));
     }
 
-    void LyricTab::_on_btnToTable_clicked() const {
-        const auto splitType = static_cast<SplitType>(m_lyricBaseWidget->m_splitComboBox->currentIndex());
-
-        const QString text = m_lyricBaseWidget->m_textEdit->toPlainText();
-
-        QList<QList<LangNote>> splitRes;
-        if (splitType == Auto) {
-            splitRes = CleanLyric::splitAuto(text, m_priorityG2pIds);
-        } else if (splitType == ByChar) {
-            splitRes = CleanLyric::splitByChar(text);
-        } else if (splitType == Custom) {
-            splitRes = CleanLyric::splitCustom(text, m_lyricBaseWidget->m_splitters->text().split(' '));
-        }
+    void LyricTab::onBtnToTableClicked() const {
+        const QString text = m_lyricBaseWidget->lyricText();
+        const auto splitRes = m_lyricBaseWidget->splitLyric(text);
 
         const QMessageBox::StandardButton res =
             QMessageBox::question(nullptr, tr("Preview Lyric"), tr("Split the lyric into Preview window?"),
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
         if (res == QMessageBox::Yes)
-            m_lyricExtWidget->m_wrapView->init(splitRes);
+            m_lyricExtWidget->wrapView()->init(splitRes);
     }
 
     void LyricTab::modifyOption() {
         Q_EMIT this->modifyOptionSignal(
             {m_lyricBaseWidget->isVisible(), m_lyricExtWidget->isVisible(),
-             m_lyricBaseWidget->m_textEdit->font().pointSizeF(), m_lyricBaseWidget->skipSlur->isChecked(),
-             m_lyricBaseWidget->m_splitComboBox->currentIndex(), m_lyricExtWidget->m_wrapView->font().pointSizeF()});
+             m_lyricBaseWidget->fontSize(), m_lyricBaseWidget->skipSlur(),
+             m_lyricBaseWidget->splitMode(), m_lyricExtWidget->fontSize()});
     }
 } // namespace FillLyric

@@ -1,5 +1,5 @@
-#ifndef LYRICEXTWIDGET_H
-#define LYRICEXTWIDGET_H
+#ifndef LYRIC_TAB_WIDGETS_LYRIC_EXT_WIDGET_H
+#define LYRIC_TAB_WIDGETS_LYRIC_EXT_WIDGET_H
 
 #include <QCheckBox>
 #include <QHBoxLayout>
@@ -10,45 +10,44 @@
 
 #include <lyric-tab/LyricTabConfig.h>
 #include <lyric-tab/LyricTabGlobal.h>
+#include <lyric-tab/Widgets/WidgetTypes.h>
 
 namespace FillLyric
 {
-#ifndef USE_LITE_CONTROLS
-    using Button = QPushButton;
-    using SwitchButton = QCheckBox;
-#endif
     class LYRIC_TAB_EXPORT LyricExtWidget final : public QWidget {
         Q_OBJECT
-        friend class LyricTab;
 
     public:
         explicit LyricExtWidget(int *notesCount, const LyricTabConfig &config,
                                 const std::vector<std::string> &priorityG2pIds,
-                                QMap<std::string, std::string> m_langToG2pId, QWidget *parent = nullptr);
+                                QMap<std::string, std::string> langToG2pId, QWidget *parent = nullptr);
         ~LyricExtWidget() override;
+
+        LyricWrapView *wrapView() const;
+        double fontSize() const;
+        void setFoldLeftText(const QString &text);
 
     Q_SIGNALS:
         void modifyOption() const;
+        void foldLeftRequested();
+        void insertTextRequested();
 
     public Q_SLOTS:
-        // count
-        void _on_notesCountChanged(const int &count) const;
+        void onNotesCountChanged(const int &count) const;
 
     private:
-        int *notesCount = nullptr;
+        int *m_notesCount = nullptr;
         QHBoxLayout *m_tableTopLayout;
 
         QHBoxLayout *m_mainLayout;
         QVBoxLayout *m_tableLayout;
         QHBoxLayout *m_tableCountLayout;
 
-        // Widgets
         LyricWrapView *m_wrapView;
 
-        // Labels
-        QLabel *noteCountLabel;
+        QLabel *m_noteCountLabel;
 
-        Button *btnFoldLeft;
+        Button *m_btnFoldLeft;
         Button *m_btnInsertText;
 
         std::vector<std::string> m_priorityG2pIds;
@@ -57,4 +56,4 @@ namespace FillLyric
 
 } // namespace FillLyric
 
-#endif // LYRICEXTWIDGET_H
+#endif // LYRIC_TAB_WIDGETS_LYRIC_EXT_WIDGET_H

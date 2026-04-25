@@ -24,11 +24,13 @@ namespace FillLyric
         this->updateLyricRect();
     }
 
-    LyricCell::~LyricCell() = default;
+    LyricCell::~LyricCell() { delete m_note; }
 
     void LyricCell::clear() {
         delete m_note;
         m_note = new LangNote();
+        Q_EMIT this->updateWidth(width());
+        update();
     }
 
     QPainterPath LyricCell::shape() const {
@@ -67,7 +69,14 @@ namespace FillLyric
 
     void LyricCell::setMargin(const qreal &margin) { m_rectPadding = margin; }
 
-    void LyricCell::setFont(const QFont &font) { m_font = font; }
+    void LyricCell::setFont(const QFont &font) {
+        m_font = font;
+        m_syllableFont = font;
+        if (m_syllableFont.pointSize() - 3 >= 0)
+            m_syllableFont.setPointSize(m_syllableFont.pointSize() - 3);
+        m_syllableFontBold = m_syllableFont;
+        m_syllableFontBold.setWeight(QFont::Bold);
+    }
 
     void LyricCell::setLyricRect(const QRect &rect) { m_lRect = rect; }
 
@@ -214,11 +223,7 @@ namespace FillLyric
             lyricFlag = MultiTone;
         }
 
-        QFont syllableFont(m_font);
-        if (lyricFlag != 0)
-            syllableFont.setWeight(QFont::Bold);
-        if (syllableFont.pointSize() - 3 >= 0)
-            syllableFont.setPointSize(syllableFont.pointSize() - 3);
+        const auto &syllableFont = (lyricFlag != 0) ? m_syllableFontBold : m_syllableFont;
 
         const auto sPos = syllablePos();
         painter->setFont(syllableFont);

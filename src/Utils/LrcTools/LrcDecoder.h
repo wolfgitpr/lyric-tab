@@ -1,5 +1,5 @@
-#ifndef DS_EDITOR_LITE_LRCDECODER_H
-#define DS_EDITOR_LITE_LRCDECODER_H
+#ifndef LYRIC_TAB_UTILS_LRC_DECODER_H
+#define LYRIC_TAB_UTILS_LRC_DECODER_H
 
 #include <QObject>
 #include <QSharedPointer>
@@ -44,4 +44,4 @@ namespace LrcTools
 
 } // namespace LrcTools
 
-#endif // DS_EDITOR_LITE_LRCDECODER_H
+#endif // LYRIC_TAB_UTILS_LRC_DECODER_H

@@ -1,8 +1,9 @@
-#ifndef SPLITTERGRAPHICSITEM_H
-#define SPLITTERGRAPHICSITEM_H
+#ifndef LYRIC_TAB_CONTROLS_SPLITTER_ITEM_H
+#define LYRIC_TAB_CONTROLS_SPLITTER_ITEM_H
 
 #include <QGraphicsItem>
 #include <QGraphicsView>
+#include <QPen>
 
 #include <lyric-tab/LyricTabGlobal.h>
 
@@ -37,7 +38,7 @@ namespace FillLyric
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     private:
-        qreal mW = 0;
+        qreal m_width = 0;
 
         qreal m_lineHeight = 1;
 
@@ -49,4 +50,4 @@ namespace FillLyric
     };
 } // namespace FillLyric
 
-#endif // SPLITTERGRAPHICSITEM_H
+#endif // LYRIC_TAB_CONTROLS_SPLITTER_ITEM_H

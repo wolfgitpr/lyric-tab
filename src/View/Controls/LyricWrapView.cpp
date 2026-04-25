@@ -5,16 +5,19 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QScrollBar>
+#include <QTimer>
 #include <utility>
 
-#include <LangCore/Core/Manager.h>
+#include <lyric-tab/Utils/G2pService.h>
 
 #include <QFile>
 
 namespace FillLyric
 {
-    LyricWrapView::LyricWrapView(QString qssPath, QStringList priorityG2pIds, QWidget *parent) :
-        QGraphicsView(parent), m_qssPath(std::move(qssPath)), m_priorityG2pIds(std::move(priorityG2pIds)) {
+    LyricWrapView::LyricWrapView(QString qssPath, QStringList priorityG2pIds,
+                                 QMap<std::string, std::string> langToG2pId, QWidget *parent) :
+        QGraphicsView(parent), m_qssPath(std::move(qssPath)), m_priorityG2pIds(std::move(priorityG2pIds)),
+        m_langToG2pId(std::move(langToG2pId)) {
         setAttribute(Qt::WA_StyledBackground, true);
         auto qssFile = QFile(m_qssPath);
         if (qssFile.open(QIODevice::ReadOnly)) {
@@ -24,6 +27,7 @@ namespace FillLyric
 
         m_font = this->font();
         m_scene = new QGraphicsScene(this);
+        m_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 
         this->setScene(m_scene);
         this->setDragMode(NoDrag);
@@ -35,9 +39,14 @@ namespace FillLyric
         setRenderHint(QPainter::Antialiasing, true);
         this->installEventFilter(this);
 
-        // notesCount
-        connect(m_scene, &QGraphicsScene::changed, this, [this]
-                { Q_EMIT noteCountChanged(static_cast<int>(m_scene->items().size() - m_cellLists.size() * 3)); });
+        // notesCount - use a deferred single-shot timer to avoid recounting on every scene change
+        auto *noteCountTimer = new QTimer(this);
+        noteCountTimer->setSingleShot(true);
+        noteCountTimer->setInterval(0);
+        connect(noteCountTimer, &QTimer::timeout, this,
+                [this] { Q_EMIT noteCountChanged(static_cast<int>(m_scene->items().size() - m_cellLists.size() * 3)); });
+        connect(m_scene, &QGraphicsScene::changed, noteCountTimer,
+                static_cast<void (QTimer::*)()>(&QTimer::start));
     }
 
     LyricWrapView::~LyricWrapView() = default;
@@ -120,9 +129,7 @@ namespace FillLyric
                     font.setPointSizeF(newSize);
                     this->setFont(font);
                     Q_EMIT this->fontSizeChanged();
-                    for (const auto &cellList : m_cellLists) {
-                        cellList->setFont(font);
-                    }
+                    this->updateCellRect();
                     event->accept();
                 }
             }
@@ -135,7 +142,7 @@ namespace FillLyric
         const auto scenePos = mapToScene(event->pos()).toPoint();
 
         if (event->button() == Qt::LeftButton)
-            rubberBandOrigin = scenePos;
+            m_rubberBandOrigin = scenePos;
 
         QGraphicsView::mousePressEvent(event);
     }
@@ -144,11 +151,11 @@ namespace FillLyric
         if (event->buttons() & Qt::LeftButton && !(event->modifiers() & Qt::ShiftModifier)) {
             const auto scenePos = mapToScene(event->pos()).toPoint();
 
-            if ((event->pos() - rubberBandOrigin).manhattanLength() > 10) {
-                if (const auto cellList = mapToList(rubberBandOrigin))
+            if ((event->pos() - m_rubberBandOrigin).manhattanLength() > 10) {
+                if (const auto cellList = mapToList(m_rubberBandOrigin))
                     cellList->setSelected(false);
 
-                this->selectCells(rubberBandOrigin, scenePos);
+                this->selectCells(m_rubberBandOrigin, scenePos);
             }
 
             event->accept();
@@ -159,28 +166,27 @@ namespace FillLyric
 
     void LyricWrapView::mouseReleaseEvent(QMouseEvent *event) {
         if (event->button() == Qt::LeftButton && !(event->modifiers() & Qt::ShiftModifier))
-            lastClickPos = mapToScene(event->pos()).toPoint();
+            m_lastClickPos = mapToScene(event->pos()).toPoint();
 
-        // 如果按下了shift
         if (event->button() == Qt::LeftButton) {
             const auto scenePos = mapToScene(event->pos()).toPoint();
 
             if (event->modifiers() & Qt::ShiftModifier) {
                 for (const auto item : scene()->selectedItems()) {
-                    if (!item->contains(lastClickPos))
+                    if (!item->contains(m_lastClickPos))
                         item->setSelected(false);
                 }
 
-                this->selectCells(lastClickPos, scenePos);
+                this->selectCells(m_lastClickPos, scenePos);
                 event->accept();
                 return;
             }
 
-            if ((event->pos() - rubberBandOrigin).manhattanLength() > 10) {
-                if (const auto cellList = mapToList(rubberBandOrigin))
+            if ((event->pos() - m_rubberBandOrigin).manhattanLength() > 10) {
+                if (const auto cellList = mapToList(m_rubberBandOrigin))
                     cellList->setSelected(false);
 
-                this->selectCells(rubberBandOrigin, scenePos);
+                this->selectCells(m_rubberBandOrigin, scenePos);
             }
             event->accept();
             return;
@@ -277,7 +283,7 @@ namespace FillLyric
 
     CellList *LyricWrapView::createNewList() {
         const auto width = this->width() - this->verticalScrollBar()->width();
-        const auto cellList = new CellList(0, 0, {}, m_scene, this, &m_cellLists);
+        const auto cellList = new CellList(0, 0, {}, m_scene, this, &m_cellLists, m_priorityG2pIds, m_langToG2pId);
         cellList->setFont(this->font());
         cellList->setWidth(width);
         this->connectCellList(cellList);
@@ -316,7 +322,8 @@ namespace FillLyric
     void LyricWrapView::appendList(const QList<LangNote *> &noteList) {
         const auto width = this->width() - this->verticalScrollBar()->width();
         const auto cellList =
-            new CellList(0, cellBaseY(static_cast<int>(m_cellLists.size())), noteList, m_scene, this, &m_cellLists);
+            new CellList(0, cellBaseY(static_cast<int>(m_cellLists.size())), noteList, m_scene, this, &m_cellLists,
+                         m_priorityG2pIds, m_langToG2pId);
         cellList->setFont(this->font());
         cellList->setWidth(width);
         m_cellLists.append(cellList);
@@ -325,9 +332,9 @@ namespace FillLyric
 
     void LyricWrapView::moveUpLists(const QList<CellList *> &cellLists) {
         for (auto cellList : cellLists) {
-            if (const qlonglong i = m_cellLists.indexOf(cellList))
-                if (i >= 1)
-                    qSwap(m_cellLists[i], m_cellLists[i - 1]);
+            const qlonglong i = m_cellLists.indexOf(cellList);
+            if (i >= 1)
+                qSwap(m_cellLists[i], m_cellLists[i - 1]);
         }
     }
 
@@ -361,23 +368,19 @@ namespace FillLyric
     void LyricWrapView::init(const QList<QList<LangNote>> &noteLists) {
         this->clear();
 
-        const auto langMgr = LangCore::Manager::instance();
+        std::vector<std::string> priorityG2pIds;
+        for (const auto &id : m_priorityG2pIds)
+            priorityG2pIds.push_back(id.toStdString());
 
-        for (const auto &notes : noteLists) {
-            std::vector<LangCore::G2pInput *> g2pInputs;
+        for (auto notes : noteLists) {
+            const auto g2pResults = G2pService::convert(notes, priorityG2pIds, m_langToG2pId);
             QList<LangNote *> tempNotes;
-            for (const auto &note : notes) {
-                g2pInputs.push_back(new LangCore::G2pInput(note.lyric.toStdString(), note.g2pId.toStdString()));
-                tempNotes.append(new LangNote(note));
-            }
-
-            const auto g2pRes = langMgr->convert(g2pInputs);
-            for (int i = 0; i < g2pRes.size(); i++) {
-                tempNotes[i]->syllable = g2pRes[i].pronunciation.c_str();
-                QStringList candidates;
-                for (const auto &it : g2pRes[i].candidates)
-                    candidates.push_back(it.c_str());
-                tempNotes[i]->candidates = candidates;
+            for (int i = 0; i < notes.size(); i++) {
+                notes[i].language = g2pResults[i].language;
+                notes[i].g2pId = g2pResults[i].g2pId;
+                notes[i].syllable = g2pResults[i].syllable;
+                notes[i].candidates = g2pResults[i].candidates;
+                tempNotes.append(new LangNote(notes[i]));
             }
             if (!tempNotes.isEmpty())
                 this->appendList(tempNotes);
@@ -386,28 +389,41 @@ namespace FillLyric
     }
 
     void LyricWrapView::updateCellRect() {
+        this->setUpdatesEnabled(false);
         for (const auto &cellList : m_cellLists) {
-            cellList->setFont(this->font());
+            cellList->blockSignals(true);
+            cellList->updateFontOnly(this->font());
+            cellList->blockSignals(false);
         }
+        this->setUpdatesEnabled(true);
         this->repaintCellLists();
     }
 
     void LyricWrapView::repaintCellLists() {
+        const bool wasEnabled = updatesEnabled();
+        if (wasEnabled)
+            this->setUpdatesEnabled(false);
+
         qreal height = 0;
         const auto width = this->width() - this->verticalScrollBar()->width();
-        for (const auto &m_cellList : m_cellLists) {
-            m_cellList->setBaseY(height);
-            if (width != this->sceneRect().width())
-                m_cellList->setWidth(width);
-            height += m_cellList->height();
+        const bool widthChanged = (width != this->sceneRect().width());
+
+        for (const auto &cellList : m_cellLists) {
+            cellList->setBaseY(height);
+            if (widthChanged) {
+                cellList->setWidth(width);
+            } else {
+                cellList->updateCellPos();
+            }
+            cellList->updateSplitter(width);
+            height += cellList->height();
         }
 
-        for (const auto &m_cellList : m_cellLists) {
-            m_cellList->updateSplitter(width);
-        }
-
-        if (width != this->sceneRect().width() || height != this->sceneRect().height())
+        if (widthChanged || height != this->sceneRect().height())
             this->setSceneRect(QRectF(0, 0, width, height));
+
+        if (wasEnabled)
+            this->setUpdatesEnabled(true);
         this->update();
     }
 
@@ -435,34 +451,34 @@ namespace FillLyric
         connect(cellList, &CellList::linebreakSignal,
                 [this, cellList](const int cellIndex) { this->lineBreak(cellList, cellIndex); });
 
-        connect(cellList, &CellList::deleteLine, [this, cellList] { this->removeList(cellList); });
-        connect(cellList, &CellList::addPrevLine,
-                [this, cellList]
+        connect(cellList, &CellList::requestDeleteLine, [this](CellList *list) { this->removeList(list); });
+        connect(cellList, &CellList::requestAddPrevLine,
+                [this](CellList *list)
                 {
                     const auto newList = this->createNewList();
                     newList->insertCell(0, newList->createNewCell());
-                    this->insertList(m_cellLists.indexOf(cellList), newList);
+                    this->insertList(m_cellLists.indexOf(list), newList);
                 });
-        connect(cellList, &CellList::addNextLine,
-                [this, cellList]
+        connect(cellList, &CellList::requestAddNextLine,
+                [this](CellList *list)
                 {
                     const auto newList = this->createNewList();
                     newList->insertCell(0, newList->createNewCell());
-                    this->insertList(m_cellLists.indexOf(cellList) + 1, newList);
+                    this->insertList(m_cellLists.indexOf(list) + 1, newList);
                 });
-        connect(cellList, &CellList::moveUpLine,
-                [this, cellList]
+        connect(cellList, &CellList::requestMoveUpLine,
+                [this](CellList *list)
                 {
                     QMap<qlonglong, CellList *> map;
-                    map[this->cellLists().indexOf(cellList)] = cellList;
+                    map[this->cellLists().indexOf(list)] = list;
                     this->moveUpLists(map.values());
                     this->repaintCellLists();
                 });
-        connect(cellList, &CellList::moveDownLine,
-                [this, cellList]
+        connect(cellList, &CellList::requestMoveDownLine,
+                [this](CellList *list)
                 {
                     QMap<qlonglong, CellList *> map;
-                    map[this->cellLists().indexOf(cellList)] = cellList;
+                    map[this->cellLists().indexOf(list)] = list;
                     this->moveDownLists(map.values());
                     this->repaintCellLists();
                 });

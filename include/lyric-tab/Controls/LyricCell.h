@@ -1,5 +1,5 @@
-#ifndef LYRICCELL_H
-#define LYRICCELL_H
+#ifndef LYRIC_TAB_CONTROLS_LYRIC_CELL_H
+#define LYRIC_TAB_CONTROLS_LYRIC_CELL_H
 
 #include <QApplication>
 #include <QObject>
@@ -106,6 +106,8 @@ namespace FillLyric
         qreal m_reckBorder = 2.5;
 
         QFont m_font = QApplication::font();
+        QFont m_syllableFont = QApplication::font();
+        QFont m_syllableFontBold = QApplication::font();
 
         enum State {
             Normal = 0,
@@ -126,4 +128,4 @@ namespace FillLyric
     };
 } // namespace FillLyric
 
-#endif // LYRICCELL_H
+#endif // LYRIC_TAB_CONTROLS_LYRIC_CELL_H

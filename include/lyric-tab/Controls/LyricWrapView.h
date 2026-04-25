@@ -1,8 +1,11 @@
-#ifndef LYRICWRAPVIEW_H
-#define LYRICWRAPVIEW_H
+#ifndef LYRIC_TAB_CONTROLS_LYRIC_WRAP_VIEW_H
+#define LYRIC_TAB_CONTROLS_LYRIC_WRAP_VIEW_H
 
 #include <QFont>
 #include <QGraphicsView>
+#include <QMap>
+
+#include <string>
 
 #include <lyric-tab/LangCommon.h>
 #include <lyric-tab/LyricTabGlobal.h>
@@ -22,7 +25,8 @@ namespace FillLyric
         Q_PROPERTY(QStringList spliterPen READ spliterPen WRITE setSpliterPen)
 
     public:
-        explicit LyricWrapView(QString qssPath = "", QStringList priorityG2pIds = {}, QWidget *parent = nullptr);
+        explicit LyricWrapView(QString qssPath = "", QStringList priorityG2pIds = {},
+                               QMap<std::string, std::string> langToG2pId = {}, QWidget *parent = nullptr);
         ~LyricWrapView() override;
 
         void clear();
@@ -51,6 +55,7 @@ namespace FillLyric
     Q_SIGNALS:
         void fontSizeChanged();
         void noteCountChanged(const int &count);
+        void cellBackgroundBrushChanged();
 
     protected:
         void keyPressEvent(QKeyEvent *event) override;
@@ -103,17 +108,15 @@ namespace FillLyric
         QList<CellList *> m_cellLists;
         QList<LyricCell *> m_selectedCells{};
 
-        QPoint rubberBandOrigin;
-        QPoint lastClickPos;
+        QPoint m_rubberBandOrigin;
+        QPoint m_lastClickPos;
 
         QString m_qssPath;
         QStringList m_priorityG2pIds;
-
-    Q_SIGNALS:
-        void cellBackgroundBrushChanged();
+        QMap<std::string, std::string> m_langToG2pId;
 
     private Q_SLOTS:
         void updateRect();
     };
 } // namespace FillLyric
-#endif // LYRICWRAPVIEW_H
+#endif // LYRIC_TAB_CONTROLS_LYRIC_WRAP_VIEW_H

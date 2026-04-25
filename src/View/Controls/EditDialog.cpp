@@ -2,7 +2,6 @@
 
 #include <QHBoxLayout>
 #include <QLineEdit>
-#include <qvalidator.h>
 
 namespace FillLyric
 {
@@ -21,13 +20,10 @@ namespace FillLyric
         const auto offset = fm.horizontalAdvance(" ") * 2;
         auto adjust = [=](const QString &text)
         {
-            this->resize(fm.horizontalAdvance(text) + offset * 4, lineEdit->height()); //
+            this->resize(fm.horizontalAdvance(text) + offset * 4, lineEdit->height());
         };
         connect(lineEdit, &QLineEdit::textChanged, this, adjust);
         connect(lineEdit, &QLineEdit::editingFinished, [=] { text = lineEdit->text(); });
-
-        QDoubleValidator validator(0.0, std::numeric_limits<double>::max(), 3);
-        validator.setNotation(QDoubleValidator::StandardNotation);
 
         const auto layout = new QHBoxLayout();
         layout->setContentsMargins(0, 0, 0, 0);
@@ -38,7 +34,6 @@ namespace FillLyric
         this->move(parent->mapToGlobal(QPoint(rect.left(), rect.center().y() - this->height() / 2)));
 
         lineEdit->setFocus();
-        lineEdit->setValidator(&validator);
         adjust(lineEdit->text());
     }
 

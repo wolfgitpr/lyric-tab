@@ -1,5 +1,5 @@
-#ifndef LYRICTABGLOBAL_H
-#define LYRICTABGLOBAL_H
+#ifndef LYRIC_TAB_LYRIC_TAB_GLOBAL_H
+#define LYRIC_TAB_LYRIC_TAB_GLOBAL_H
 
 #ifdef _MSC_VER
 #define LYRIC_TAB_DECL_EXPORT __declspec(dllexport)
@@ -21,4 +21,4 @@
 #endif
 #endif
 
-#endif // LYRICTABGLOBAL_H
+#endif // LYRIC_TAB_LYRIC_TAB_GLOBAL_H

@@ -1,8 +1,11 @@
-#ifndef CELLLIST_H
-#define CELLLIST_H
+#ifndef LYRIC_TAB_CONTROLS_CELL_LIST_H
+#define LYRIC_TAB_CONTROLS_CELL_LIST_H
 
 #include <QApplication>
+#include <QMap>
 #include <QTimer>
+
+#include <string>
 
 #include <lyric-tab/Controls/HandleItem.h>
 #include <lyric-tab/Controls/SplitterItem.h>
@@ -19,12 +22,13 @@ namespace FillLyric
 
     public:
         explicit CellList(const qreal &x, const qreal &y, const QList<LangNote *> &noteList, QGraphicsScene *scene,
-                          QGraphicsView *view, QList<CellList *> *cellLists);
+                          QGraphicsView *view, QList<CellList *> *cellLists,
+                          const QStringList &priorityG2pIds = {},
+                          const QMap<std::string, std::string> &langToG2pId = {});
 
         void clear();
 
         qreal deltaX() const;
-
         qreal deltaY() const;
 
         void setBaseY(const qreal &y);
@@ -50,10 +54,12 @@ namespace FillLyric
         void updateSplitter(const qreal &width);
 
         void setFont(const QFont &font);
+        void updateFontOnly(const QFont &font);
+        void recalcCellRects();
         void updateRect(LyricCell *cell);
         void updateCellPos();
 
-        void connectCell(const LyricCell *cell) const;
+        void connectCell(const LyricCell *cell);
         void disconnectCell(const LyricCell *cell) const;
 
         QList<LyricCell *> m_cells;
@@ -62,11 +68,11 @@ namespace FillLyric
         void heightChanged() const;
         void cellPosChanged() const;
 
-        void deleteLine() const;
-        void addPrevLine() const;
-        void addNextLine() const;
-        void moveUpLine() const;
-        void moveDownLine() const;
+        void requestDeleteLine(CellList *cellList);
+        void requestAddPrevLine(CellList *cellList);
+        void requestAddNextLine(CellList *cellList);
+        void requestMoveUpLine(CellList *cellList);
+        void requestMoveDownLine(CellList *cellList);
 
         void linebreakSignal(const int &cellIndex) const;
 
@@ -82,7 +88,7 @@ namespace FillLyric
     private:
         void showContextMenu(const QPointF &pos);
         void setCellQss() const;
-        QVector<QPen> qssPens(const QString &property) const;
+        QFont syllableFont() const;
 
         qreal m_curWidth = 0;
         qreal m_height = 0;
@@ -98,6 +104,9 @@ namespace FillLyric
         CellQss *m_cellQss;
         QList<CellList *> *m_cellLists;
 
+        QStringList m_priorityG2pIds;
+        QMap<std::string, std::string> m_langToG2pId;
+
     private Q_SLOTS:
         void editCell(FillLyric::LyricCell *cell, const QString &lyric);
         void changeSyllable(FillLyric::LyricCell *cell, const QString &syllable);
@@ -109,4 +118,4 @@ namespace FillLyric
     };
 } // namespace FillLyric
 
-#endif // CELLLIST_H
+#endif // LYRIC_TAB_CONTROLS_CELL_LIST_H

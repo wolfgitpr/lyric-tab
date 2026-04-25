@@ -1,5 +1,5 @@
-#ifndef LYRICTABCONFIG_H
-#define LYRICTABCONFIG_H
+#ifndef LYRIC_TAB_LYRIC_TAB_CONFIG_H
+#define LYRIC_TAB_LYRIC_TAB_CONFIG_H
 
 #include <lyric-tab/LyricTabGlobal.h>
 
@@ -20,4 +20,4 @@ namespace FillLyric
         bool exportLanguage = false;
     };
 } // namespace FillLyric
-#endif // LYRICTABCONFIG_H
+#endif // LYRIC_TAB_LYRIC_TAB_CONFIG_H
